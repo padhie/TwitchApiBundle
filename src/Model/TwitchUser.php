@@ -137,7 +137,7 @@ class TwitchUser
      *
      * @return $this
      */
-    public function setBio(string ?$bio): self
+    public function setBio(?string $bio): self
     {
         $this->bio = $bio;
 
