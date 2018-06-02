@@ -70,7 +70,7 @@ class TwitchChannel
     private $video_banner;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $profile_banner;
 
@@ -356,9 +356,9 @@ class TwitchChannel
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getProfileBanner(): string
+    public function getProfileBanner(): ?string
     {
         return $this->profile_banner;
     }
