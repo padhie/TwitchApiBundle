@@ -75,7 +75,7 @@ class TwitchChannel
     private $profile_banner;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $profile_banner_background_color;
 
@@ -376,19 +376,19 @@ class TwitchChannel
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getProfileBannerBackgroundColor(): string
+    public function getProfileBannerBackgroundColor(): ?string
     {
         return $this->profile_banner_background_color;
     }
 
     /**
-     * @param string $profile_banner_background_color
+     * @param string|null $profile_banner_background_color
      *
      * @return $this
      */
-    public function setProfileBannerBackgroundColor(string $profile_banner_background_color): self
+    public function setProfileBannerBackgroundColor(?string $profile_banner_background_color): self
     {
         $this->profile_banner_background_color = $profile_banner_background_color;
 
