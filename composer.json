@@ -1,0 +1,20 @@
+{
+    "name":        "padhie/TwitchApiBundle",
+    "type":        "symfony-bundle",
+    "license":     "MIT",
+    "description": "Support for authenticating users using both OAuth1.0a and OAuth2 in Symfony2.",
+    "authors": [
+        {
+            "name": "padhie",
+            "email": "admin@padhie.de"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "TwitchApiBundle\\": "src/"
+        }
+    }
+}
