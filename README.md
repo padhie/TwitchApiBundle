@@ -4,7 +4,9 @@ A little collection to work with the Twitch-Api https://dev.twitch.tv/docs/v5/
 ## How to use
 ```php
 <?php
-$twitchApiService = new TwitchApiBundle\Service\TwitchApiService('client_Id', 'client_secret', 'redirekt_url');
+use TwitchApiBundle\Service\TwitchApiService;
+
+$twitchApiService = new TwitchApiService('client_Id', 'client_secret', 'redirekt_url');
 
 // get authorisation url
 $url = $twitchApiService->getAccessTokenUrl(TwitchApiService::SCOPE_CHANNEL);
