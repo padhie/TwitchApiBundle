@@ -65,7 +65,7 @@ class TwitchChannel
     private $logo;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $video_banner;
 
@@ -336,19 +336,19 @@ class TwitchChannel
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getVideoBanner(): string
+    public function getVideoBanner(): ?string
     {
         return $this->video_banner;
     }
 
     /**
-     * @param string $video_banner
+     * @param string|null $video_banner
      *
      * @return $this
      */
-    public function setVideoBanner(string $video_banner): self
+    public function setVideoBanner(?string $video_banner): self
     {
         $this->video_banner = $video_banner;
 
