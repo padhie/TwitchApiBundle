@@ -1,5 +1,5 @@
 {
-    "name":        "padhie/TwitchApiBundle",
+    "name":        "padhie/twitch-api-bundle",
     "type":        "symfony-bundle",
     "license":     "MIT",
     "description": "Support for authenticating users using both OAuth1.0a and OAuth2 in Symfony2.",
