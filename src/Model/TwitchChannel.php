@@ -368,7 +368,7 @@ class TwitchChannel
      *
      * @return $this
      */
-    public function setProfileBanner(string $profile_banner): self
+    public function setProfileBanner(?string $profile_banner): self
     {
         $this->profile_banner = $profile_banner;
 
