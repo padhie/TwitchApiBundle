@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Hinata Ryokan
- * Date: 20.01.2018
- * Time: 12:55
- */
 
 namespace TwitchApiBundle\Model;
-
 
 class TwitchUser
 {

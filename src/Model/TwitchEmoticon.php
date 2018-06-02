@@ -2,7 +2,6 @@
 
 namespace TwitchApiBundle\Model;
 
-
 class TwitchEmoticon
 {
     /**

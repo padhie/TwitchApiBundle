@@ -6,7 +6,6 @@ use TwitchApiBundle\Model\TwitchChannel;
 use TwitchApiBundle\Model\TwitchEmoticon;
 use TwitchApiBundle\Model\TwitchEmoticonImage;
 use TwitchApiBundle\Model\TwitchFollower;
-use TwitchApiBundle\Model\TwitchHost;
 use TwitchApiBundle\Model\TwitchStream;
 use TwitchApiBundle\Model\TwitchSubscription;
 use TwitchApiBundle\Model\TwitchTeam;

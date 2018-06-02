@@ -13,16 +13,12 @@ use TwitchApiBundle\Model\TwitchTeam;
 use TwitchApiBundle\Model\TwitchUser;
 use TwitchApiBundle\Model\TwitchVideo;
 
-/**
- * Class TwitchApiService
- * @package AppBundle\Service
- */
 class TwitchApiService
 {
     /**
      * @var array
      */
-    public static $SCOPE_USER = [
+    public const SCOPE_USER = [
         'user_read',
         'user_follows_edit',
     ];
@@ -30,7 +26,7 @@ class TwitchApiService
     /**
      * @var array
      */
-    public static $SCOPE_CHANNEL = [
+    public const SCOPE_CHANNEL = [
         'channel_read',
         'channel_stream',
         'channel_editor',
