@@ -2,7 +2,7 @@
 
 namespace TwitchApiBundle\Model;
 
-class TwitchSubscription
+class TwitchSubscription extends TwitchModel
 {
     /**
      * @var integer

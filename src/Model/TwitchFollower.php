@@ -2,7 +2,7 @@
 
 namespace TwitchApiBundle\Model;
 
-class TwitchFollower
+class TwitchFollower extends TwitchModel
 {
     /**
      * @var \DateTime

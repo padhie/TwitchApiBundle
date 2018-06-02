@@ -2,7 +2,7 @@
 
 namespace TwitchApiBundle\Model;
 
-class TwitchTeam
+class TwitchTeam extends TwitchModel
 {
     /**
      * @var integer

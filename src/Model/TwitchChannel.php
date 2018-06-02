@@ -2,7 +2,7 @@
 
 namespace TwitchApiBundle\Model;
 
-class TwitchChannel
+class TwitchChannel extends TwitchModel
 {
     /**
      * @var boolean

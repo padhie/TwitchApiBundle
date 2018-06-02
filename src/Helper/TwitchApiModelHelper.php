@@ -6,6 +6,7 @@ use TwitchApiBundle\Model\TwitchChannel;
 use TwitchApiBundle\Model\TwitchEmoticon;
 use TwitchApiBundle\Model\TwitchEmoticonImage;
 use TwitchApiBundle\Model\TwitchFollower;
+use TwitchApiBundle\Model\TwitchModel;
 use TwitchApiBundle\Model\TwitchStream;
 use TwitchApiBundle\Model\TwitchSubscription;
 use TwitchApiBundle\Model\TwitchTeam;
@@ -14,6 +15,23 @@ use TwitchApiBundle\Model\TwitchVideo;
 
 class TwitchApiModelHelper
 {
+    /**
+     * @param TwitchModel $model
+     *
+     * @return array
+     */
+    public static function convertToArray(TwitchModel $model): array
+    {
+        $modelData = (array) $model;
+        $returnValue = [];
+        foreach ($modelData AS $key => $value) {
+            $newKey = substr($key, strrpos($key, "\x00")+1);
+            $returnValue[$newKey] = $value;
+        }
+
+        return $returnValue;
+    }
+
     /**
      * @param                    $json
      * @param TwitchChannel|null $channel [optional]

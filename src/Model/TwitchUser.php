@@ -2,7 +2,7 @@
 
 namespace TwitchApiBundle\Model;
 
-class TwitchUser
+class TwitchUser extends TwitchModel
 {
     /**
      * @var string

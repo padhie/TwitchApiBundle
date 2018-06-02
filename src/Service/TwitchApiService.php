@@ -612,7 +612,7 @@ class TwitchApiService
      * @return TwitchStream|null Return TwitchStream if data return else NULL
      * @throws ApiErrorException
      */
-    public function getStream(): TwitchStream
+    public function getStream(): ?TwitchStream
     {
         $this->get('streams/' . $this->getChannelId());
         $returnData = $this->getData();

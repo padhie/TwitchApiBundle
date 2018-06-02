@@ -2,7 +2,7 @@
 
 namespace TwitchApiBundle\Model;
 
-class TwitchEmoticon
+class TwitchEmoticon extends TwitchModel
 {
     /**
      * @var integer

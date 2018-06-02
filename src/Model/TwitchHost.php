@@ -2,7 +2,7 @@
 
 namespace TwitchApiBundle\Model;
 
-class TwitchHost
+class TwitchHost extends TwitchModel
 {
     /**
      * @var TwitchChannel
