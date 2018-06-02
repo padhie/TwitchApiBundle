@@ -25,7 +25,7 @@ class TwitchUser
     private $type;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $bio;
 
@@ -125,19 +125,19 @@ class TwitchUser
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getBio(): string
+    public function getBio(): ?string
     {
         return $this->bio;
     }
 
     /**
-     * @param string $bio
+     * @param string|null $bio
      *
      * @return $this
      */
-    public function setBio(string $bio): self
+    public function setBio(string ?$bio): self
     {
         $this->bio = $bio;
 
