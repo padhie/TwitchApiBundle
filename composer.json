@@ -2,7 +2,7 @@
     "name":        "padhie/twitch-api-bundle",
     "type":        "symfony-bundle",
     "license":     "MIT",
-    "description": "Support for authenticating users using both OAuth1.0a and OAuth2 in Symfony2.",
+    "description": "A little collection to work with the Twitch-Api https://dev.twitch.tv/docs/v5/",
     "authors": [
         {
             "name": "padhie",
