@@ -1,7 +1,15 @@
 {
-    "name":        "padhie/twitch-api-bundle",
-    "type":        "symfony-bundle",
-    "license":     "MIT",
+    "name": "padhie/twitch-api-bundle",
+    "version": "1.0.0",
+    "type": "library",
+    "keywords": [
+        "twitch",
+        "twitch.tv",
+        "twitch-tv",
+        "twitch-api",
+        "api"
+    ],
+    "license": "MIT",
     "description": "A little collection to work with the Twitch-Api https://dev.twitch.tv/docs/v5/",
     "authors": [
         {
