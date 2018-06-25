@@ -6,7 +6,7 @@ class TwitchVideo extends TwitchModel
 {
 
     /**
-     * @var integer
+     * @var string
      */
     private $_id;
 
@@ -63,7 +63,7 @@ class TwitchVideo extends TwitchModel
     /**
      * @var array
      */
-    private $muted_segments;
+    private $muted_segments = [];
 
     /**
      * @var array
@@ -91,9 +91,9 @@ class TwitchVideo extends TwitchModel
     private $tag_list;
 
     /**
-     * @var array
+     * @var TwitchVideoThumbnail[]
      */
-    private $thubnails;
+    private $thumbnails = [];
 
     /**
      * @var string
@@ -121,19 +121,19 @@ class TwitchVideo extends TwitchModel
     private $views;
 
     /**
-     * @return int
+     * @return string
      */
-    public function getId(): int
+    public function getId(): string
     {
         return $this->_id;
     }
 
     /**
-     * @param int $id
+     * @param string $id
      *
      * @return $this
      */
-    public function setId(int $id): self
+    public function setId(string $id): self
     {
         $this->_id = $id;
 
@@ -361,6 +361,18 @@ class TwitchVideo extends TwitchModel
     }
 
     /**
+     * @param TwitchVideoMutedSegments $muted_segment
+     *
+     * @return $this
+     */
+    public function addMutedSegment(TwitchVideoMutedSegments $muted_segment): self
+    {
+        $this->muted_segments[] = $muted_segment;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getPreview(): array
@@ -461,21 +473,34 @@ class TwitchVideo extends TwitchModel
     }
 
     /**
-     * @return array
+     * @return TwitchVideoThumbnail[]
      */
-    public function getThubnails(): array
+    public function getThumbnails(): array
     {
-        return $this->thubnails;
+        return $this->thumbnails;
     }
 
     /**
-     * @param array $thubnails
+     * @param TwitchVideoThumbnail[] $thumbnails
      *
      * @return $this
      */
-    public function setThubnails(array $thubnails): self
+    public function setThumbnails(array $thumbnails): self
     {
-        $this->thubnails = $thubnails;
+        $this->thumbnails = $thumbnails;
+
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     * @param TwitchVideoThumbnail[]  $thumbnail
+     *
+     * @return $this
+     */
+    public function addThumbnail(string $type, array $thumbnail): self
+    {
+        $this->thumbnails[$type] = $thumbnail;
 
         return $this;
     }

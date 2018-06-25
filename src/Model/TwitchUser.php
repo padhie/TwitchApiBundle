@@ -125,7 +125,7 @@ class TwitchUser extends TwitchModel
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getBio(): ?string
     {
@@ -133,7 +133,7 @@ class TwitchUser extends TwitchModel
     }
 
     /**
-     * @param string|null $bio
+     * @param string $bio
      *
      * @return $this
      */
@@ -185,9 +185,9 @@ class TwitchUser extends TwitchModel
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getLogo(): string
+    public function getLogo(): ?string
     {
         return $this->logo;
     }

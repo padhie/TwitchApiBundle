@@ -12,67 +12,83 @@ use TwitchApiBundle\Model\TwitchSubscription;
 use TwitchApiBundle\Model\TwitchTeam;
 use TwitchApiBundle\Model\TwitchUser;
 use TwitchApiBundle\Model\TwitchVideo;
+use TwitchApiBundle\Model\TwitchVideoMutedSegments;
+use TwitchApiBundle\Model\TwitchVideoThumbnail;
 
 class TwitchApiModelHelper
 {
-    /**
-     * @param TwitchModel $model
-     *
-     * @return array
-     */
     public static function convertToArray(TwitchModel $model): array
     {
-        $modelData = (array) $model;
+        $modelData   = (array)$model;
         $returnValue = [];
         foreach ($modelData AS $key => $value) {
-            $newKey = substr($key, strrpos($key, "\x00")+1);
+            $newKey               = substr($key, strrpos($key, "\x00") + 1);
             $returnValue[$newKey] = $value;
         }
 
         return $returnValue;
     }
 
-    /**
-     * @param                    $json
-     * @param TwitchChannel|null $channel [optional]
-     *
-     * @return TwitchChannel
-     */
-    public static function fillChannelModelByJson($json, TwitchChannel $channel = null): TwitchChannel
+    public static function fillChannelModelByJson(array $json, ?TwitchChannel $channel = null): TwitchChannel
     {
         if (!($channel instanceof TwitchChannel)) {
             $channel = new TwitchChannel();
         }
 
-        $channel->setMature($json['mature']);
-        $channel->setStatus($json['status']);
-        $channel->setBroadcasterLanguage($json['broadcaster_language']);
-        $channel->setDisplayName($json['display_name']);
-        $channel->setGame($json['game']);
-        $channel->setLanguage($json['language']);
         $channel->setId($json['_id']);
         $channel->setName($json['name']);
-        $channel->setCreatedAt(new \DateTime($json['created_at']));
-        $channel->setUpdatedAt(new \DateTime($json['updated_at']));
-        $channel->setPartner($json['partner']);
-        $channel->setLogo($json['logo']);
-        $channel->setVideoBanner($json['video_banner']);
-        $channel->setProfileBanner($json['profile_banner']);
-        $channel->setProfileBannerBackgroundColor($json['profile_banner_background_color']);
-        $channel->setUrl($json['url']);
-        $channel->setViews($json['views']);
-        $channel->setFollowers($json['followers']);
+        $channel->setDisplayName($json['display_name']);
+
+        if (isset($json['mature'])) {
+            $channel->setMature($json['mature']);
+        }
+        if (isset($json['status'])) {
+            $channel->setStatus($json['status']);
+        }
+        if (isset($json['broadcaster_language'])) {
+            $channel->setBroadcasterLanguage($json['broadcaster_language']);
+        }
+        if (isset($json['game'])) {
+            $channel->setGame($json['game']);
+        }
+        if (isset($json['language'])) {
+            $channel->setLanguage($json['language']);
+        }
+        if (isset($json['created_at'])) {
+            $channel->setCreatedAt(new \DateTime($json['created_at']));
+        }
+        if (isset($json['updated_at'])) {
+            $channel->setUpdatedAt(new \DateTime($json['updated_at']));
+        }
+        if (isset($json['partner'])) {
+            $channel->setPartner($json['partner']);
+        }
+        if (isset($json['logo'])) {
+            $channel->setLogo($json['logo']);
+        }
+        if (isset($json['video_banner'])) {
+            $channel->setVideoBanner($json['video_banner']);
+        }
+        if (isset($json['profile_banner'])) {
+            $channel->setProfileBanner($json['profile_banner']);
+        }
+        if (isset($json['profile_banner_background_color'])) {
+            $channel->setProfileBannerBackgroundColor($json['profile_banner_background_color']);
+        }
+        if (isset($json['url'])) {
+            $channel->setUrl($json['url']);
+        }
+        if (isset($json['views'])) {
+            $channel->setViews($json['views']);
+        }
+        if (isset($json['followers'])) {
+            $channel->setFollowers($json['followers']);
+        }
 
         return $channel;
     }
 
-    /**
-     * @param array               $json
-     * @param TwitchEmoticon|null $emoticon [optional]
-     *
-     * @return TwitchEmoticon
-     */
-    public static function fillEmoticonModelByJson(array $json, TwitchEmoticon $emoticon = null): TwitchEmoticon
+    public static function fillEmoticonModelByJson(array $json, ?TwitchEmoticon $emoticon = null): TwitchEmoticon
     {
         if (!($emoticon instanceof TwitchEmoticon)) {
             $emoticon = new TwitchEmoticon();
@@ -88,13 +104,7 @@ class TwitchApiModelHelper
         return $emoticon;
     }
 
-    /**
-     * @param array                    $json
-     * @param TwitchEmoticonImage|null $image [optional]
-     *
-     * @return TwitchEmoticonImage
-     */
-    public static function fillEmoticonImageModelByJson(array $json, TwitchEmoticonImage $image = null): TwitchEmoticonImage
+    public static function fillEmoticonImageModelByJson(array $json, ?TwitchEmoticonImage $image = null): TwitchEmoticonImage
     {
         if (!($image instanceof TwitchEmoticonImage)) {
             $image = new TwitchEmoticonImage();
@@ -108,13 +118,7 @@ class TwitchApiModelHelper
         return $image;
     }
 
-    /**
-     * @param array               $json
-     * @param TwitchFollower|null $follower [optional]
-     *
-     * @return TwitchFollower
-     */
-    public static function fillFollowerModelByJson(array $json, TwitchFollower $follower = null): TwitchFollower
+    public static function fillFollowerModelByJson(array $json, ?TwitchFollower $follower = null): TwitchFollower
     {
         if (!($follower instanceof TwitchFollower)) {
             $follower = new TwitchFollower();
@@ -134,13 +138,7 @@ class TwitchApiModelHelper
         return $follower;
     }
 
-    /**
-     * @param array           $json
-     * @param TwitchUser|null $user [optional]
-     *
-     * @return TwitchUser
-     */
-    public static function fillUserModelByJson(array $json, TwitchUser $user = null): TwitchUser
+    public static function fillUserModelByJson(array $json, ?TwitchUser $user = null): TwitchUser
     {
         if (!($user instanceof TwitchUser)) {
             $user = new TwitchUser();
@@ -150,21 +148,21 @@ class TwitchApiModelHelper
         $user->setId($json['_id']);
         $user->setName($json['name']);
         $user->setType($json['type']);
-        $user->setBio($json['bio']);
         $user->setCreatedAt(new \DateTime($json['created_at']));
         $user->setUpdatedAt(new \DateTime($json['updated_at']));
-        $user->setLogo($json['logo']);
+
+        if (isset($json['bio'])) {
+            $user->setBio($json['bio']);
+        }
+
+        if (isset($json['logo'])) {
+            $user->setLogo($json['logo']);
+        }
 
         return $user;
     }
 
-    /**
-     * @param array                   $json
-     * @param TwitchSubscription|null $subscription [optional]
-     *
-     * @return TwitchSubscription
-     */
-    public static function fillSubscriptionModelByJson(array $json, TwitchSubscription $subscription = null): TwitchSubscription
+    public static function fillSubscriptionModelByJson(array $json, ?TwitchSubscription $subscription = null): TwitchSubscription
     {
         if (!($subscription instanceof TwitchSubscription)) {
             $subscription = new TwitchSubscription();
@@ -186,13 +184,7 @@ class TwitchApiModelHelper
         return $subscription;
     }
 
-    /**
-     * @param array            $json
-     * @param TwitchVideo|null $video [optional]
-     *
-     * @return TwitchVideo
-     */
-    public static function fillVideoModelByJson(array $json, TwitchVideo $video = null): TwitchVideo
+    public static function fillVideoModelByJson(array $json, ?TwitchVideo $video = null): TwitchVideo
     {
         if (!($video instanceof TwitchVideo)) {
             $video = new TwitchVideo();
@@ -208,12 +200,10 @@ class TwitchApiModelHelper
         $video->setGame($json['game']);
         $video->setLanguage($json['language']);
         $video->setLength($json['length']);
-        $video->setMutedSegments($json['muted_segments']);
         $video->setPreview($json['preview']);
         $video->setPublishedAt(new \DateTime($json['published_at']));
         $video->setStatus($json['status']);
         $video->setTagList($json['tag_list']);
-        $video->setThubnails($json['thumbnails']);
         $video->setTitle($json['title']);
         $video->setUrl($json['url']);
         $video->setViewable($json['viewable']);
@@ -221,16 +211,58 @@ class TwitchApiModelHelper
         $video->setViews($json['views']);
         $video->setChannel(self::fillChannelModelByJson($json['channel']));
 
+        if (isset($json['thumbnails'])) {
+            /** @var array $thumbnail */
+            foreach ($json['thumbnails'] AS $type => $thumbnail) {
+                $video->addThumbnail($type, self::fillVideoThumbnailsModelByJson($thumbnail));
+            }
+        }
+
+        if (isset($json['muted_segments'])) {
+            foreach ($json['muted_segments'] AS $muted_segment) {
+                $video->addMutedSegment(self::fillVideoMutedSegmentsModelByJson($muted_segment));
+            }
+        }
+
         return $video;
     }
 
     /**
-     * @param array             $json
-     * @param TwitchStream|null $stream [optional]
+     * @param array                       $json
+     * @param null|TwitchVideoThumbnail[] $thumbnail
      *
-     * @return TwitchStream
+     * @return TwitchVideoThumbnail[]
      */
-    public static function fillStreamModelByJson(array $json, TwitchStream $stream = null): TwitchStream
+    public static function fillVideoThumbnailsModelByJson(array $json, ?array $thumbnails = null): array
+    {
+        if (!($thumbnails instanceof TwitchVideoThumbnail)) {
+            $thumbnails = [];
+        }
+
+        foreach ($json AS $thumbnailJson) {
+            $thumbnail = new TwitchVideoThumbnail();
+            $thumbnail->setType($thumbnailJson['type']);
+            $thumbnail->setUrl($thumbnailJson['url']);
+
+            $thumbnails[] = $thumbnail;
+        }
+
+        return $thumbnails;
+    }
+
+    public static function fillVideoMutedSegmentsModelByJson(array $json, ?TwitchVideoMutedSegments $mutedSegments = null): TwitchVideoMutedSegments
+    {
+        if (!($mutedSegments instanceof TwitchVideoMutedSegments)) {
+            $mutedSegments = new TwitchVideoMutedSegments();
+        }
+
+        $mutedSegments->setDuration($json['duration']);
+        $mutedSegments->setOffset($json['offset']);
+
+        return $mutedSegments;
+    }
+
+    public static function fillStreamModelByJson(array $json, ?TwitchStream $stream = null): TwitchStream
     {
         if (!($stream instanceof TwitchStream)) {
             $stream = new TwitchStream();
@@ -238,7 +270,7 @@ class TwitchApiModelHelper
 
         $stream->setId($json['_id']);
         $stream->setGame($json['game']);
-        $stream->setVideoHeight($json['viewers']);
+        $stream->setViewers($json['viewers']);
         $stream->setVideoHeight($json['video_height']);
         $stream->setAverageFps($json['average_fps']);
         $stream->setDelay($json['delay']);
@@ -250,20 +282,13 @@ class TwitchApiModelHelper
         return $stream;
     }
 
-    /**
-     * @param array           $json
-     * @param TwitchTeam|null $team [optional]
-     *
-     * @return TwitchTeam
-     */
-    public static function fillTeamModelByJson(array $json, TwitchTeam $team = null): TwitchTeam
+    public static function fillTeamModelByJson(array $json, ?TwitchTeam $team = null): TwitchTeam
     {
         if (!($team instanceof TwitchTeam)) {
             $team = new TwitchTeam();
         }
 
         $team->setId($json['_id']);
-        $team->setBackground($json['background']);
         $team->setBanner($json['banner']);
         $team->setCreatedAt(new \DateTime($json['created_at']));
         $team->setDisplayName($json['display_name']);
@@ -271,6 +296,10 @@ class TwitchApiModelHelper
         $team->setLogo($json['logo']);
         $team->setName($json['name']);
         $team->setUpdatedAt(new \DateTime($json['updated_at']));
+
+        if (isset($json['background'])) {
+            $team->setBackground($json['background']);
+        }
 
         return $team;
     }

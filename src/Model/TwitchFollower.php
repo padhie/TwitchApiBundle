@@ -63,9 +63,9 @@ class TwitchFollower extends TwitchModel
     }
 
     /**
-     * @return TwitchUser
+     * @return null|TwitchUser
      */
-    public function getUser(): TwitchUser
+    public function getUser(): ?TwitchUser
     {
         return $this->user;
     }
@@ -83,9 +83,9 @@ class TwitchFollower extends TwitchModel
     }
 
     /**
-     * @return TwitchChannel
+     * @return null|TwitchChannel
      */
-    public function getChannel(): TwitchChannel
+    public function getChannel(): ?TwitchChannel
     {
         return $this->channel;
     }

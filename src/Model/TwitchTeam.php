@@ -62,9 +62,9 @@ class TwitchTeam extends TwitchModel
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getBackground(): string
+    public function getBackground(): ?string
     {
         return $this->background;
     }

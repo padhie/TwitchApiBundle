@@ -5,7 +5,7 @@ namespace TwitchApiBundle\Model;
 class TwitchSubscription extends TwitchModel
 {
     /**
-     * @var integer
+     * @var string
      */
     private $_id;
     /**
@@ -32,19 +32,19 @@ class TwitchSubscription extends TwitchModel
     private $channel;
 
     /**
-     * @return int
+     * @return string
      */
-    public function getId(): int
+    public function getId(): string
     {
         return $this->_id;
     }
 
     /**
-     * @param int $id
+     * @param string $id
      *
      * @return $this
      */
-    public function setId(int $id): self
+    public function setId(string $id): self
     {
         $this->_id = $id;
 
@@ -112,9 +112,9 @@ class TwitchSubscription extends TwitchModel
     }
 
     /**
-     * @return TwitchUser
+     * @return null|TwitchUser
      */
-    public function getUser(): TwitchUser
+    public function getUser(): ?TwitchUser
     {
         return $this->user;
     }
@@ -132,9 +132,9 @@ class TwitchSubscription extends TwitchModel
     }
 
     /**
-     * @return TwitchChannel
+     * @return null|TwitchChannel
      */
-    public function getChannel(): TwitchChannel
+    public function getChannel(): ?TwitchChannel
     {
         return $this->channel;
     }
