@@ -11,6 +11,7 @@ use TwitchApiBundle\Model\TwitchStream;
 use TwitchApiBundle\Model\TwitchSubscription;
 use TwitchApiBundle\Model\TwitchTeam;
 use TwitchApiBundle\Model\TwitchUser;
+use TwitchApiBundle\Model\TwitchUserNotifications;
 use TwitchApiBundle\Model\TwitchVideo;
 use TwitchApiBundle\Model\TwitchVideoMutedSegments;
 use TwitchApiBundle\Model\TwitchVideoThumbnail;
@@ -19,11 +20,19 @@ class TwitchApiModelHelper
 {
     public static function convertToArray(TwitchModel $model): array
     {
-        $modelData   = (array)$model;
+        $modelData = (array)$model;
         $returnValue = [];
         foreach ($modelData AS $key => $value) {
-            $newKey               = substr($key, strrpos($key, "\x00") + 1);
+            $newKey = substr($key, strrpos($key, "\x00") + 1);
+
+            if ($value instanceof TwitchModel) {
+                $value = self::convertToArray($value);
+            } elseif ($value instanceof \DateTime) {
+                $value = $value->format('Y-m-d H:i:s');
+            }
+
             $returnValue[$newKey] = $value;
+
         }
 
         return $returnValue;
@@ -128,11 +137,19 @@ class TwitchApiModelHelper
         $follower->setNotifications($json['notifications']);
 
         if (isset($json['user'])) {
-            $follower->setUser(self::fillUserModelByJson($json['user']));
+            if ($json['user'] instanceof TwitchUser) {
+                $follower->setUser($json['user']);
+            } else {
+                $follower->setUser(self::fillUserModelByJson($json['user']));
+            }
         }
 
         if (isset($json['channel'])) {
-            $follower->setChannel(self::fillChannelModelByJson($json['channel']));
+            if ($json['channel'] instanceof TwitchChannel) {
+                $follower->setChannel($json['channel']);
+            } else {
+                $follower->setChannel(self::fillChannelModelByJson($json['channel']));
+            }
         }
 
         return $follower;
@@ -158,6 +175,13 @@ class TwitchApiModelHelper
         if (isset($json['logo'])) {
             $user->setLogo($json['logo']);
         }
+
+        if (isset($json['notifications'])) {
+            $userNotifications = new TwitchUserNotifications();
+            $userNotifications->setEmail($json['notifications']['email'])->setPush($json['notifications']['push']);
+            $user->setNotifications($userNotifications);
+        }
+
 
         return $user;
     }
@@ -229,16 +253,12 @@ class TwitchApiModelHelper
 
     /**
      * @param array                       $json
-     * @param null|TwitchVideoThumbnail[] $thumbnail
+     * @param TwitchVideoThumbnail[]|null $thumbnails
      *
      * @return TwitchVideoThumbnail[]
      */
-    public static function fillVideoThumbnailsModelByJson(array $json, ?array $thumbnails = null): array
+    public static function fillVideoThumbnailsModelByJson(array $json, ?array $thumbnails = []): array
     {
-        if (!($thumbnails instanceof TwitchVideoThumbnail)) {
-            $thumbnails = [];
-        }
-
         foreach ($json AS $thumbnailJson) {
             $thumbnail = new TwitchVideoThumbnail();
             $thumbnail->setType($thumbnailJson['type']);

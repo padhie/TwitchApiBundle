@@ -2,7 +2,11 @@
 
 namespace TwitchApiBundle\Service;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Psr7\Request;
 use TwitchApiBundle\Exception\ApiErrorException;
+use TwitchApiBundle\Exception\UserNotExistsException;
 use TwitchApiBundle\Helper\TwitchApiModelHelper;
 use TwitchApiBundle\Model\TwitchChannel;
 use TwitchApiBundle\Model\TwitchEmoticon;
@@ -35,6 +39,15 @@ class TwitchApiService
         'channel_commercial',
     ];
 
+    /**
+     * @var int
+     */
+    private const REQUEST_READ_LIMIT = 8192;
+
+    /**
+     * @var Client
+     */
+    private $guzzle;
 
     /**
      * @var string
@@ -101,6 +114,7 @@ class TwitchApiService
      */
     private $video_id;
 
+
     /**
      * TwitchApiService constructor.
      *
@@ -110,6 +124,7 @@ class TwitchApiService
      */
     public function __construct(string $clientId, string $clientSecret, string $redirectUrl)
     {
+        $this->guzzle = new Client();
         $this->client_id = $clientId;
         $this->client_secret = $clientSecret;
         $this->redirect_url = $redirectUrl;
@@ -151,7 +166,7 @@ class TwitchApiService
     {
         $scope = implode('+', $scopeList);
 
-        $sUrl    = $this->base_url . "oauth2/authorize?";
+        $sUrl = $this->base_url . "oauth2/authorize?";
         $sParams = "response_type=token" .
             "&client_id=" . $this->client_id .
             "&scope=" . $scope .
@@ -249,16 +264,18 @@ class TwitchApiService
     }
 
     /**
-     * @return array
+     * @param string[] $header [optional]
+     *
+     * @return string[]
      */
-    private function getHeader(): array
+    private function combineHeader(array $header = []): array
     {
-        return [
-            'Accept: ' . $this->header_application,
-            'Client-ID: ' . $this->client_id,
-            'Authorization: OAuth ' . $this->oauth,
-            'Cache-Control: no-cache',
-        ];
+        return array_merge($header, [
+            'Accept'        => $this->header_application,
+            'Client-ID'     => $this->client_id,
+            'Authorization' => 'OAuth ' . $this->oauth,
+            'Cache-Control' => 'no-cache',
+        ]);
     }
 
 
@@ -284,21 +301,18 @@ class TwitchApiService
             $additional_string .= '?' . implode("&", $dataList);
         }
 
-        if (empty($header)) {
-            $header = $this->getHeader();
-        }
+        $options = $this->combineHeader($header);
+        $url = $this->base_url . $url_extension . $additional_string;
 
-        $url  = $this->base_url . $url_extension . $additional_string;
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_FRESH_CONNECT, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $this->_raw_response = curl_exec($curl);
-        $this->response      = json_decode($this->_raw_response, true);
-        curl_close($curl);
+        try {
+            $request = new Request('GET', $url, $options);
+            $response = $this->guzzle->send($request);
+
+            $this->_raw_response = $response->getBody()->read(self::REQUEST_READ_LIMIT);
+        } catch (GuzzleException $e) {
+            throw new ApiErrorException('Can\'t connect', 1530908311 );
+        }
+        $this->response = json_decode($this->_raw_response, true);
 
         if (isset($this->response['error'])) {
             $message = $this->response['message'];
@@ -321,23 +335,18 @@ class TwitchApiService
      */
     protected function put($url_extension, $data = [], $header = []): self
     {
-        if (empty($header)) {
-            $header = $this->getHeader();
-        }
+        $options = array_merge($this->combineHeader($header), ['body' => $data]);
+        $url = $this->base_url . $url_extension . $this->additional_string;
 
-        $url  = $this->base_url . $url_extension . $this->additional_string;
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_FRESH_CONNECT, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-        $this->_raw_response = curl_exec($curl);
-        $this->response      = json_decode($this->_raw_response, true);
-        curl_close($curl);
+        try {
+            $request = new Request('PUT', $url, $options);
+            $response = $this->guzzle->send($request);
+
+            $this->_raw_response = $response->getBody()->read(self::REQUEST_READ_LIMIT);
+        } catch (GuzzleException $e) {
+            throw new ApiErrorException('Can\'t connect', 1530908311 );
+        }
+        $this->response = json_decode($this->_raw_response, true);
 
         if (isset($this->response['error'])) {
             $message = $this->response['message'];
@@ -361,17 +370,21 @@ class TwitchApiService
      *
      * @return TwitchUser
      * @throws ApiErrorException
+     * @throws UserNotExistsException
      */
     public function getUserByName($name): TwitchUser
     {
         $this->get('users?login=' . $name);
+
+        if (!isset($this->getData()['users'][0])) {
+            throw new UserNotExistsException('No userdata exists', 1530903951);
+        }
 
         return TwitchApiModelHelper::fillUserModelByJson($this->getData()['users'][0]);
     }
 
     /**
      * Scope: user_read
-     *
      * @return TwitchUser
      * @throws ApiErrorException
      */
@@ -384,7 +397,6 @@ class TwitchApiService
 
     /**
      * Scope: -
-     *
      * @return TwitchUser
      * @throws ApiErrorException
      */
@@ -397,7 +409,6 @@ class TwitchApiService
 
     /**
      * Scope: user_subscriptions
-     *
      * @return bool
      */
     public function isUserSubscribingChannel(): bool
@@ -415,7 +426,19 @@ class TwitchApiService
 
     /**
      * Scope: -
-     *
+     * @return TwitchFollower
+     */
+    public function getUserFollowingChannel(): TwitchFollower
+    {
+        $this->isUserFollowingChannel();
+        $data = $this->getData();
+        $data['user'] = $this->getUser();
+
+        return TwitchApiModelHelper::fillFollowerModelByJson($data);
+    }
+
+    /**
+     * Scope: -
      * @return bool
      */
     public function isUserFollowingChannel(): bool
@@ -433,11 +456,10 @@ class TwitchApiService
 
     /**
      * Scope: -
-     *
      * @return TwitchFollower[]
      * @throws ApiErrorException
      */
-    public function getUserFollowingChannel(): array
+    public function getChannelFollower(): array
     {
         $this->get('users/' . $this->getUserId() . '/follows/channels');
 
@@ -451,7 +473,6 @@ class TwitchApiService
 
     /**
      * Scope: user_follows_edit
-     *
      * @return TwitchChannel
      * @throws ApiErrorException
      */
@@ -468,7 +489,6 @@ class TwitchApiService
     // ###################
     /**
      * Scope: channel_read
-     *
      * @return TwitchChannel
      * @throws ApiErrorException
      */
@@ -481,7 +501,6 @@ class TwitchApiService
 
     /**
      * Scope: -
-     *
      * @return TwitchChannel
      * @throws ApiErrorException
      */
@@ -494,7 +513,6 @@ class TwitchApiService
 
     /**
      * Scope: -
-     *
      * @return TwitchFollower[]
      * @throws ApiErrorException
      */
@@ -512,7 +530,6 @@ class TwitchApiService
 
     /**
      * Scope: -
-     *
      * @return TwitchTeam[]
      * @throws ApiErrorException
      */
@@ -566,22 +583,20 @@ class TwitchApiService
 
     /**
      * Data get out from API
-     *
      * Scope: -
-     *
      * @return TwitchHost[]
      * @throws ApiErrorException
      */
     public function getHosts(): array
     {
-        $_tmpBaseUrl    = $this->base_url;
+        $_tmpBaseUrl = $this->base_url;
         $this->base_url = 'https://tmi.twitch.tv/';
         $this->get("hosts?include_logins=1&target=" . $this->getChannelId(), [], ['Cache-Control: no-cache']);
         $this->base_url = $_tmpBaseUrl;
 
         $origChannelId = $this->getChannelId();
-        $data          = $this->getData();
-        $hostList      = [];
+        $data = $this->getData();
+        $hostList = [];
         foreach ($data["hosts"] AS $host) {
             $twitchHost = new TwitchHost();
 
@@ -608,7 +623,6 @@ class TwitchApiService
     // ##################
     /**
      * Scope: -
-     *
      * @return TwitchStream|null Return TwitchStream if data return else NULL
      * @throws ApiErrorException
      */
@@ -626,9 +640,7 @@ class TwitchApiService
 
     /**
      * Scope: user_read
-     *
      * Return a list of all online and playlist streams
-     *
      * @return TwitchStream[]
      * @throws ApiErrorException
      */
@@ -650,7 +662,6 @@ class TwitchApiService
     // ################
     /**
      * Scope: -
-     *
      * @return array
      * @throws ApiErrorException
      */
@@ -663,15 +674,13 @@ class TwitchApiService
 
     /**
      * Data get out from API
-     *
      * Scope: -
-     *
      * @return string
      * @throws ApiErrorException
      */
     public function getUserList(): string
     {
-        $_tmpBaseUrl    = $this->base_url;
+        $_tmpBaseUrl = $this->base_url;
         $this->base_url = 'https://tmi.twitch.tv/';
         $this->get('group/user/' . $this->getChannelName() . '/chatters', [], ['Cache-Control: no-cache']);
         $this->base_url = $_tmpBaseUrl;
@@ -681,7 +690,6 @@ class TwitchApiService
 
     /**
      * Scope: -
-     *
      * @return TwitchEmoticon[]
      * @throws ApiErrorException
      */
@@ -691,7 +699,7 @@ class TwitchApiService
 
         $emoticonList = [];
         foreach ($this->getData()['emoticons'] AS $emoticonsData) {
-            $emoticon       = TwitchApiModelHelper::fillEmoticonModelByJson($emoticonsData);
+            $emoticon = TwitchApiModelHelper::fillEmoticonModelByJson($emoticonsData);
             $emoticonList[] = $emoticon;
         }
 
@@ -704,7 +712,6 @@ class TwitchApiService
     // #################
     /**
      * Scope: -
-     *
      * @return TwitchVideo
      * @throws ApiErrorException
      */
