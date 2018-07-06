@@ -45,6 +45,11 @@ class TwitchUser extends TwitchModel
     private $logo;
 
     /**
+     * @var TwitchUserNotifications
+     */
+    private $notifications;
+
+    /**
      * @return string
      */
     public function getDisplayName(): string
@@ -200,6 +205,26 @@ class TwitchUser extends TwitchModel
     public function setLogo(string $logo): self
     {
         $this->logo = $logo;
+
+        return $this;
+    }
+
+    /**
+     * @return TwitchUserNotifications
+     */
+    public function getNotifications(): TwitchUserNotifications
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * @param TwitchUserNotifications $notifications
+     *
+     * @return TwitchUser
+     */
+    public function setNotifications(TwitchUserNotifications $notifications): self
+    {
+        $this->notifications = $notifications;
 
         return $this;
     }
