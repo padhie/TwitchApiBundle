@@ -4,6 +4,7 @@ namespace TwitchApiBundle\Service;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
 use TwitchApiBundle\Exception\ApiErrorException;
 use TwitchApiBundle\Exception\UserNotExistsException;
@@ -113,6 +114,11 @@ class TwitchApiService
      * @var integer
      */
     private $video_id;
+
+    /**
+     * @var string
+     */
+    private $last_url;
 
 
     /**
@@ -302,24 +308,20 @@ class TwitchApiService
         }
 
         $options = $this->combineHeader($header);
-        $url = $this->base_url . $url_extension . $additional_string;
+        $this->last_url = $this->base_url . $url_extension . $additional_string;
 
         try {
-            $request = new Request('GET', $url, $options);
+            $request = new Request('GET', $this->last_url, $options);
             $response = $this->guzzle->send($request);
 
             $this->_raw_response = $response->getBody()->read(self::REQUEST_READ_LIMIT);
+        } catch (ClientException $e) {
+            $this->_raw_response = $e->getResponse()->getBody()->read(self::REQUEST_READ_LIMIT);
         } catch (GuzzleException $e) {
-            throw new ApiErrorException('Can\'t connect', 1530908311 );
-        }
-        $this->response = json_decode($this->_raw_response, true);
-
-        if (isset($this->response['error'])) {
-            $message = $this->response['message'];
-            if (empty($message)) {
-                $message = $this->response['error'];
-            }
-            throw new ApiErrorException($url . ' - ' . $message, $this->response['status']);
+            throw new ApiErrorException('Can\'t connect', 1530908311);
+        } finally {
+            $this->response = json_decode($this->_raw_response, true);
+            $this->errorCheck();
         }
 
         return $this;
@@ -336,27 +338,36 @@ class TwitchApiService
     protected function put($url_extension, $data = [], $header = []): self
     {
         $options = array_merge($this->combineHeader($header), ['body' => $data]);
-        $url = $this->base_url . $url_extension . $this->additional_string;
+        $this->last_url = $this->base_url . $url_extension . $this->additional_string;
 
         try {
-            $request = new Request('PUT', $url, $options);
+            $request = new Request('PUT', $this->last_url, $options);
             $response = $this->guzzle->send($request);
 
             $this->_raw_response = $response->getBody()->read(self::REQUEST_READ_LIMIT);
+            $this->response = json_decode($this->_raw_response, true);
         } catch (GuzzleException $e) {
-            throw new ApiErrorException('Can\'t connect', 1530908311 );
+            throw new ApiErrorException('Can\'t connect', 1530908311);
+        } finally {
+            $this->response = json_decode($this->_raw_response, true);
+            $this->errorCheck();
         }
-        $this->response = json_decode($this->_raw_response, true);
 
+        return $this;
+    }
+
+    /**
+     * @throws ApiErrorException
+     */
+    private function errorCheck(): void
+    {
         if (isset($this->response['error'])) {
             $message = $this->response['message'];
             if (empty($message)) {
                 $message = $this->response['error'];
             }
-            throw new ApiErrorException($url . ' - ' . $message, $this->response['status']);
+            throw new ApiErrorException($this->last_url . ' - ' . $message, $this->response['status']);
         }
-
-        return $this;
     }
 
 
@@ -415,10 +426,16 @@ class TwitchApiService
     {
         try {
             $this->get('users/' . $this->getUserId() . '/subscriptions/' . $this->getChannelId());
+            $data = $this->getData();
+            if (!isset($data['_total']) || $data['_total'] === 0) {
+                return false;
+            }
         } catch (ApiErrorException $e) {
             if (strpos($e->getMessage(), 'no subscriptions')) {
                 return false;
             }
+
+            throw new $e;
         }
 
         return true;
@@ -446,9 +463,12 @@ class TwitchApiService
         try {
             $this->get('users/' . $this->getUserId() . '/follows/channels/' . $this->getChannelId());
         } catch (ApiErrorException $e) {
-            if (strpos($e->getMessage(), 'is not following')) {
+            if (strpos($e->getMessage(), 'is not following')
+                || strpos($e->getMessage(), 'Follow not found')) {
                 return false;
             }
+
+            throw new $e;
         }
 
         return true;
