@@ -37,6 +37,6 @@
     },
     "scripts": {
         "phpunit": ["vendor/bin/phpunit tests"],
-        "phpstan": ["vendor/bin/phpstan analyse -l 7 --ansi src tests"]
+        "phpstan": ["vendor/bin/phpstan analyse -l 7 --ansi src"]
     }
 }
