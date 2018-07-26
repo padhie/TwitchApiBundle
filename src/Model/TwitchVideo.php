@@ -494,13 +494,28 @@ class TwitchVideo extends TwitchModel
 
     /**
      * @param string $type
-     * @param TwitchVideoThumbnail[]  $thumbnail
+     * @param TwitchVideoThumbnail  $thumbnail
      *
      * @return $this
      */
-    public function addThumbnail(string $type, array $thumbnail): self
+    public function addThumbnail(string $type, TwitchVideoThumbnail $thumbnail): self
     {
         $this->thumbnails[$type] = $thumbnail;
+
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     * @param TwitchVideoThumbnail[]  $thumbnails
+     *
+     * @return $this
+     */
+    public function addThumbnails(string $type, array $thumbnails): self
+    {
+        foreach ($thumbnails AS $thumbnail) {
+            $this->addThumbnail($type, $thumbnail);
+        }
 
         return $this;
     }
