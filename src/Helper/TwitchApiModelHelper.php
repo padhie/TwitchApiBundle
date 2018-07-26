@@ -22,6 +22,7 @@ class TwitchApiModelHelper
     {
         $modelData = (array)$model;
         $returnValue = [];
+        /** @var mixed $value */
         foreach ($modelData AS $key => $value) {
             $newKey = substr($key, strrpos($key, "\x00") + 1);
 
@@ -238,7 +239,7 @@ class TwitchApiModelHelper
         if (isset($json['thumbnails'])) {
             /** @var array $thumbnail */
             foreach ($json['thumbnails'] AS $type => $thumbnail) {
-                $video->addThumbnail($type, self::fillVideoThumbnailsModelByJson($thumbnail));
+                $video->addThumbnails($type, self::fillVideoThumbnailsModelByJson($thumbnail));
             }
         }
 
@@ -259,6 +260,7 @@ class TwitchApiModelHelper
      */
     public static function fillVideoThumbnailsModelByJson(array $json, ?array $thumbnails = []): array
     {
+        $thumbnails = $thumbnails ?? [];
         foreach ($json AS $thumbnailJson) {
             $thumbnail = new TwitchVideoThumbnail();
             $thumbnail->setType($thumbnailJson['type']);

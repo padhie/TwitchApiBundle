@@ -316,7 +316,10 @@ class TwitchApiService
 
             $this->_raw_response = $response->getBody()->read(self::REQUEST_READ_LIMIT);
         } catch (ClientException $e) {
-            $this->_raw_response = $e->getResponse()->getBody()->read(self::REQUEST_READ_LIMIT);
+            $this->_raw_response =
+                $e->getResponse() !== null
+                ? $e->getResponse()->getBody()->read(self::REQUEST_READ_LIMIT)
+                : var_export($e, true);
         } catch (GuzzleException $e) {
             throw new ApiErrorException('Can\'t connect', 1530908311);
         } finally {

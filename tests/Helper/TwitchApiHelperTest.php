@@ -1,5 +1,7 @@
 <?php
 
+namespace tests\Helper;
+
 use PHPUnit\Framework\TestCase;
 use \TwitchApiBundle\Helper\TwitchApiModelHelper;
 use \TwitchApiBundle\Model\TwitchUser;

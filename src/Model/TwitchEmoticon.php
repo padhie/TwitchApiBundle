@@ -80,11 +80,11 @@ class TwitchEmoticon extends TwitchModel
     }
 
     /**
-     * @param $image
+     * @param TwitchEmoticonImage $image
      *
      * @return $this
      */
-    public function addImage($image): self
+    public function addImage(TwitchEmoticonImage $image): self
     {
         $this->images[] = $image;
 
