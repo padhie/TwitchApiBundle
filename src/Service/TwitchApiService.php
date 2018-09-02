@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use TwitchApiBundle\Exception\ApiErrorException;
 use TwitchApiBundle\Exception\UserNotExistsException;
 use TwitchApiBundle\Helper\TwitchApiModelHelper;
@@ -315,12 +316,12 @@ class TwitchApiService
             $request = new Request('GET', $this->last_url, $options);
             $response = $this->guzzle->send($request);
 
-            $this->_raw_response = $response->getBody()->read(self::REQUEST_READ_LIMIT);
+            $this->loadHoleBody($response);
         } catch (ClientException $e) {
             $this->_raw_response =
                 $e->getResponse() !== null
-                ? $e->getResponse()->getBody()->read(self::REQUEST_READ_LIMIT)
-                : var_export($e, true);
+                    ? $e->getResponse()->getBody()->read(self::REQUEST_READ_LIMIT)
+                    : var_export($e, true);
         } catch (GuzzleException $e) {
             throw new ApiErrorException('Can\'t connect', 1530908311);
         } finally {
@@ -348,7 +349,7 @@ class TwitchApiService
             $request = new Request('PUT', $this->last_url, $options);
             $response = $this->guzzle->send($request);
 
-            $this->_raw_response = $response->getBody()->read(self::REQUEST_READ_LIMIT);
+            $this->loadHoleBody($response);
             $this->response = json_decode($this->_raw_response, true);
         } catch (GuzzleException $e) {
             throw new ApiErrorException('Can\'t connect', 1530908311);
@@ -358,6 +359,20 @@ class TwitchApiService
         }
 
         return $this;
+    }
+
+    private function loadHoleBody(Response $response): void
+    {
+        $this->_raw_response = '';
+
+        $check = true;
+        while($check) {
+            $tmpRawRespnse = $response->getBody()->read(self::REQUEST_READ_LIMIT);
+            $this->_raw_response .= $tmpRawRespnse;
+            if (strlen($tmpRawRespnse) < self::REQUEST_READ_LIMIT) {
+                $check = false;
+            }
+        }
     }
 
     /**
@@ -734,12 +749,10 @@ class TwitchApiService
     /**
      * Scope: -
      *
-     * @param string $emoticonset List of emoticonsets with , (comma) seperated
-     *
      * @return TwitchEmoticonImage[]
      * @throws ApiErrorException
      */
-    public function getEmoticonImageList($emoticonset = ''): array
+    public function getEmoticonImageList(): array
     {
         $data = [];
         if (!empty($emoticonset)) {
@@ -751,6 +764,35 @@ class TwitchApiService
         foreach ($this->getData()['emoticons'] AS $emoticonsData) {
             $emoticon = TwitchApiModelHelper::fillEmoticonImageModelByJson($emoticonsData);
             $emoticonList[] = $emoticon;
+        }
+
+        return $emoticonList;
+    }
+
+    /**
+     * Scope: -
+     *
+     * @param string $emoticonsets List of emoticonsets with , (comma) seperated
+     *
+     * @return TwitchEmoticonImage[]
+     * @throws ApiErrorException
+     */
+    public function getEmoticonImageListByEmoteiconSets($emoticonsets): array
+    {
+        $data = [];
+        if (!empty($emoticonsets)) {
+            $data['emotesets'] = $emoticonsets;
+        }
+        $this->get('chat/emoticon_images', $data);
+
+        $emoticonList = [];
+        foreach ($this->getData()['emoticon_sets'] AS $id => $emoticonsData) {
+            foreach ($emoticonsData AS $data) {
+                $emoticon = TwitchApiModelHelper::fillEmoticonImageModelByJson($data);
+                $emoticon->setEmoticonSet($id);
+                $emoticonList[] = $emoticon;
+
+            }
         }
 
         return $emoticonList;
