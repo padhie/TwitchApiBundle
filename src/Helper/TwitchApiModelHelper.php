@@ -120,10 +120,24 @@ class TwitchApiModelHelper
             $image = new TwitchEmoticonImage();
         }
 
-        $image->setWidth($json['width']);
-        $image->setHeight($json['height']);
-        $image->setUrl($json['url']);
-        $image->setEmoticonSet($json['emoticon_set']);
+        if (isset($json['id'])) {
+            $image->setId($json['id']);
+        }
+        if (isset($json['code'])) {
+            $image->setCode($json['code']);
+        }
+        if (isset($json['width'])) {
+            $image->setWidth($json['width']);
+        }
+        if (isset($json['height'])) {
+            $image->setHeight($json['height']);
+        }
+        if (isset($json['url'])) {
+            $image->setUrl($json['url']);
+        }
+        if (isset($json['emoticon_set'])) {
+            $image->setEmoticonSet($json['emoticon_set']);
+        }
 
         return $image;
     }
