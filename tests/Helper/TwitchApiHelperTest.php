@@ -62,13 +62,25 @@ class TwitchApiModelHelperTest extends TestCase
 
     public function testFillEmoticonImageModelByJson(): void
     {
-        $fixture = $this->loadFixture('emoticon')['images'][0];
-        $imageModel = $this->modelHelper->fillEmoticonImageModelByJson($fixture);
+        $fixture = $this->loadFixture('emoticon');
+        $fixtureImages = $fixture['images'][0];
 
-        self::assertEquals($imageModel->getWidth(), $fixture['width']);
-        self::assertEquals($imageModel->getHeight(), $fixture['height']);
-        self::assertEquals($imageModel->getUrl(), $fixture['url']);
-        self::assertEquals($imageModel->getEmoticonSet(), $fixture['emoticon_set']);
+        $imageModel = $this->modelHelper->fillEmoticonImageModelByJson($fixtureImages);
+        self::assertEquals($imageModel->getWidth(), $fixtureImages['width']);
+        self::assertEquals($imageModel->getHeight(), $fixtureImages['height']);
+        self::assertEquals($imageModel->getUrl(), $fixtureImages['url']);
+        self::assertEquals($imageModel->getEmoticonSet(), $fixtureImages['emoticon_set']);
+        self::assertNull($imageModel->getId());
+        self::assertNull($imageModel->getCode());
+
+        $fixtureImages = $fixture['images'][1];
+        $imageModel = $this->modelHelper->fillEmoticonImageModelByJson($fixtureImages);
+        self::assertNull($imageModel->getWidth());
+        self::assertNull($imageModel->getHeight());
+        self::assertNull($imageModel->getUrl());
+        self::assertEquals($imageModel->getEmoticonSet(), $fixtureImages['emoticon_set']);
+        self::assertEquals($imageModel->getId(), $fixtureImages['id']);
+        self::assertEquals($imageModel->getCode(), $fixtureImages['code']);
     }
 
     public function testFillFollowerModelByJson(): void

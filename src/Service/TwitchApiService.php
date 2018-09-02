@@ -11,6 +11,7 @@ use TwitchApiBundle\Exception\UserNotExistsException;
 use TwitchApiBundle\Helper\TwitchApiModelHelper;
 use TwitchApiBundle\Model\TwitchChannel;
 use TwitchApiBundle\Model\TwitchEmoticon;
+use TwitchApiBundle\Model\TwitchEmoticonImage;
 use TwitchApiBundle\Model\TwitchFollower;
 use TwitchApiBundle\Model\TwitchHost;
 use TwitchApiBundle\Model\TwitchStream;
@@ -713,6 +714,7 @@ class TwitchApiService
 
     /**
      * Scope: -
+     * @deprecated
      * @return TwitchEmoticon[]
      * @throws ApiErrorException
      */
@@ -723,6 +725,31 @@ class TwitchApiService
         $emoticonList = [];
         foreach ($this->getData()['emoticons'] AS $emoticonsData) {
             $emoticon = TwitchApiModelHelper::fillEmoticonModelByJson($emoticonsData);
+            $emoticonList[] = $emoticon;
+        }
+
+        return $emoticonList;
+    }
+
+    /**
+     * Scope: -
+     *
+     * @param string $emoticonset List of emoticonsets with , (comma) seperated
+     *
+     * @return TwitchEmoticonImage[]
+     * @throws ApiErrorException
+     */
+    public function getEmoticonImageList($emoticonset = ''): array
+    {
+        $data = [];
+        if (!empty($emoticonset)) {
+            $data['emotesets'] = $emoticonset;
+        }
+        $this->get('chat/emoticon_images', $data);
+
+        $emoticonList = [];
+        foreach ($this->getData()['emoticons'] AS $emoticonsData) {
+            $emoticon = TwitchApiModelHelper::fillEmoticonImageModelByJson($emoticonsData);
             $emoticonList[] = $emoticon;
         }
 

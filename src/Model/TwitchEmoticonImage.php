@@ -7,27 +7,37 @@ class TwitchEmoticonImage extends TwitchModel
     /**
      * @var integer
      */
-    private $width;
-
-    /**
-     * @var integer
-     */
-    private $height;
+    private $id = null;
 
     /**
      * @var string
      */
-    private $url;
+    private $code = null;
 
     /**
      * @var integer
      */
-    private $emoticon_set;
+    private $width = null;
 
     /**
-     * @return int
+     * @var integer
      */
-    public function getWidth(): int
+    private $height = null;
+
+    /**
+     * @var string
+     */
+    private $url = null;
+
+    /**
+     * @var integer
+     */
+    private $emoticon_set = null;
+
+    /**
+     * @return int|null
+     */
+    public function getWidth(): ?int
     {
         return $this->width;
     }
@@ -45,9 +55,9 @@ class TwitchEmoticonImage extends TwitchModel
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getHeight(): int
+    public function getHeight(): ?int
     {
         return $this->height;
     }
@@ -65,9 +75,9 @@ class TwitchEmoticonImage extends TwitchModel
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }
@@ -85,9 +95,9 @@ class TwitchEmoticonImage extends TwitchModel
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getEmoticonSet(): int
+    public function getEmoticonSet(): ?int
     {
         return $this->emoticon_set;
     }
@@ -100,6 +110,46 @@ class TwitchEmoticonImage extends TwitchModel
     public function setEmoticonSet(int $emoticon_set): self
     {
         $this->emoticon_set = $emoticon_set;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param string $code
+     *
+     * @return $this
+     */
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }
