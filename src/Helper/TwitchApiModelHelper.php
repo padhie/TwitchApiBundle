@@ -12,6 +12,7 @@ use TwitchApiBundle\Model\TwitchSubscription;
 use TwitchApiBundle\Model\TwitchTeam;
 use TwitchApiBundle\Model\TwitchUser;
 use TwitchApiBundle\Model\TwitchUserNotifications;
+use TwitchApiBundle\Model\TwitchValidate;
 use TwitchApiBundle\Model\TwitchVideo;
 use TwitchApiBundle\Model\TwitchVideoMutedSegments;
 use TwitchApiBundle\Model\TwitchVideoThumbnail;
@@ -37,6 +38,24 @@ class TwitchApiModelHelper
         }
 
         return $returnValue;
+    }
+
+    public static function fillValidateModelByJson(array $json, ?TwitchUser $user = null, ?TwitchValidate $validate = null): TwitchValidate
+    {
+        if (!($validate instanceof TwitchValidate)) {
+            $validate = new TwitchValidate();
+        }
+
+        $validate->setClientId($json['client_id']);
+        $validate->setLogin($json['login']);
+        $validate->setScope($json['scopes']);
+        $validate->setUserId($json['user_id']);
+
+        if ($user instanceof TwitchUser) {
+            $validate->setUser($user);
+        }
+
+        return $validate;
     }
 
     public static function fillChannelModelByJson(array $json, ?TwitchChannel $channel = null): TwitchChannel
