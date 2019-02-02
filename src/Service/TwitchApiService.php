@@ -18,6 +18,7 @@ use TwitchApiBundle\Model\TwitchHost;
 use TwitchApiBundle\Model\TwitchStream;
 use TwitchApiBundle\Model\TwitchTeam;
 use TwitchApiBundle\Model\TwitchUser;
+use TwitchApiBundle\Model\TwitchValidate;
 use TwitchApiBundle\Model\TwitchVideo;
 
 class TwitchApiService
@@ -389,6 +390,22 @@ class TwitchApiService
         }
     }
 
+    // #######################
+    // # GENERAL API METHODS #
+    // #######################
+    public function validate(): TwitchValidate
+    {
+        $_tmpBaseUrl = $this->base_url;
+        $this->base_url = 'https://id.twitch.tv/oauth2/validate';
+        $this->get('');
+        $this->base_url = $_tmpBaseUrl;
+
+        $user = $this->getUserByName($this->getData()['login']);
+
+        return TwitchApiModelHelper::fillValidateModelByJson($this->getData(), $user);
+
+
+    }
 
     // ################
     // # USER METHODS #

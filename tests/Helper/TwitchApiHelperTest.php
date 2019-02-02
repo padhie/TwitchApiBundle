@@ -9,9 +9,7 @@ use \TwitchApiBundle\Model\TwitchChannel;
 
 class TwitchApiModelHelperTest extends TestCase
 {
-    /**
-     * @var TwitchApiModelHelper
-     */
+    /** @var TwitchApiModelHelper */
     private $modelHelper;
 
     public function setUp(): void
@@ -200,5 +198,20 @@ class TwitchApiModelHelperTest extends TestCase
         self::assertEquals($teamModel->getLogo(), $fixture['logo']);
         self::assertEquals($teamModel->getName(), $fixture['name']);
         self::assertTrue($teamModel->getUpdatedAt() instanceof \DateTime);
+    }
+
+    public function testFillValidateModelByJson(): void
+    {
+        $validateFixture = $this->loadFixture('validate');
+        $userFixture = $this->loadFixture('user');
+
+        $userModel = $this->modelHelper->fillUserModelByJson($userFixture);
+        $validateModel = $this->modelHelper->fillValidateModelByJson($validateFixture, $userModel);
+
+        self::assertEquals($validateFixture['client_id'], $validateModel->getClientId());
+        self::assertEquals($validateFixture['login'], $validateModel->getLogin());
+        self::assertEquals($validateFixture['scopes'], $validateModel->getScope());
+        self::assertEquals($validateFixture['user_id'], $validateModel->getUserId());
+        self::assertEquals($userModel, $validateModel->getUser());
     }
 }
