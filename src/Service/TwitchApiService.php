@@ -400,11 +400,10 @@ class TwitchApiService
         $this->get('');
         $this->base_url = $_tmpBaseUrl;
 
-        $user = $this->getUserByName($this->getData()['login']);
+        $validateData = $this->getData();
+        $user = $this->getUserByName($validateData['login']);
 
-        return TwitchApiModelHelper::fillValidateModelByJson($this->getData(), $user);
-
-
+        return TwitchApiModelHelper::fillValidateModelByJson($validateData, $user);
     }
 
     // ################
