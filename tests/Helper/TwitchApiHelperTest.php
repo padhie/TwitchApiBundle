@@ -36,8 +36,6 @@ class TwitchApiModelHelperTest extends TestCase
         self::assertEquals($channelModel->getLanguage(), $fixture['language']);
         self::assertEquals($channelModel->getId(), $fixture['_id']);
         self::assertEquals($channelModel->getName(), $fixture['name']);
-        self::assertTrue($channelModel->getCreatedAt() instanceof \DateTime);
-        self::assertTrue($channelModel->getUpdatedAt() instanceof \DateTime);
         self::assertEquals($channelModel->isPartner(), $fixture['partner']);
         self::assertEquals($channelModel->getLogo(), $fixture['logo']);
         self::assertEquals($channelModel->getVideoBanner(), $fixture['video_banner']);
@@ -46,6 +44,10 @@ class TwitchApiModelHelperTest extends TestCase
         self::assertEquals($channelModel->getUrl(), $fixture['url']);
         self::assertEquals($channelModel->getViews(), $fixture['views']);
         self::assertEquals($channelModel->getFollowers(), $fixture['followers']);
+
+        // check return type
+        $channelModel->getCreatedAt();
+        $channelModel->getUpdatedAt();
     }
 
     public function testFillEmoticonModelByJson(): void
@@ -86,10 +88,12 @@ class TwitchApiModelHelperTest extends TestCase
         $fixture = $this->loadFixture('follow');
         $followModel = $this->modelHelper->fillFollowerModelByJson($fixture);
 
-        self::assertTrue($followModel->getCreatedAt() instanceof \DateTime);
         self::assertEquals($followModel->isNotifications(), $fixture['notifications']);
-        self::assertTrue($followModel->getUser() instanceof TwitchUser);
         self::assertNull($followModel->getChannel());
+
+        // check return type
+        $followModel->getCreatedAt();
+        $followModel->getUser();
     }
 
     public function testFillUserModelByJson(): void
@@ -102,9 +106,11 @@ class TwitchApiModelHelperTest extends TestCase
         self::assertEquals($userModel->getName(), $fixture['name']);
         self::assertEquals($userModel->getType(), $fixture['type']);
         self::assertEquals($userModel->getBio(), $fixture['bio']);
-        self::assertTrue($userModel->getCreatedAt() instanceof \DateTime);
-        self::assertTrue($userModel->getUpdatedAt() instanceof \DateTime);
         self::assertEquals($userModel->getLogo(), $fixture['logo']);
+
+        // check return type
+        $userModel->getCreatedAt();
+        $userModel->getUpdatedAt();
     }
 
     public function testFillSubscriptionModelByJson(): void
@@ -113,11 +119,13 @@ class TwitchApiModelHelperTest extends TestCase
         $subscriptionModel = $this->modelHelper->fillSubscriptionModelByJson($fixture);
 
         self::assertEquals($subscriptionModel->getId(), $fixture['_id']);
-        self::assertTrue($subscriptionModel->getCreatedAt() instanceof \DateTime);
         self::assertEquals($subscriptionModel->getSubPlan(), $fixture['sub_plan']);
         self::assertEquals($subscriptionModel->getSubPlanName(), $fixture['sub_plan_name']);
-        self::assertTrue($subscriptionModel->getUser() instanceof TwitchUser);
         self::assertNull($subscriptionModel->getChannel());
+
+        // check return type
+        $subscriptionModel->getCreatedAt();
+        $subscriptionModel->getUser();
     }
 
     public function testFillVideoModelByJson(): void
@@ -128,7 +136,6 @@ class TwitchApiModelHelperTest extends TestCase
         self::assertEquals($videoModel->getId(), $fixture['_id']);
         self::assertEquals($videoModel->getBroadcastId(), $fixture['broadcast_id']);
         self::assertEquals($videoModel->getBroadcastType(), $fixture['broadcast_type']);
-        self::assertTrue($videoModel->getCreatedAt() instanceof \DateTime);
         self::assertEquals($videoModel->getDescription(), $fixture['description']);
         self::assertEquals($videoModel->getDescriptionHtml(), $fixture['description_html']);
         self::assertEquals($videoModel->getFps(), $fixture['fps']);
@@ -137,16 +144,19 @@ class TwitchApiModelHelperTest extends TestCase
         self::assertEquals($videoModel->getLength(), $fixture['length']);
         self::assertNotEmpty($videoModel->getMutedSegments());
         self::assertEquals($videoModel->getPreview(), $fixture['preview']);
-        self::assertTrue($videoModel->getPublishedAt() instanceof \DateTime);
         self::assertEquals($videoModel->getStatus(), $fixture['status']);
         self::assertEquals($videoModel->getTagList(), $fixture['tag_list']);
         self::assertNotEmpty($videoModel->getThumbnails());
         self::assertEquals($videoModel->getTitle(), $fixture['title']);
         self::assertEquals($videoModel->getUrl(), $fixture['url']);
         self::assertEquals($videoModel->getViewable(), $fixture['viewable']);
-        self::assertTrue($videoModel->getViewableAt() instanceof \DateTime);
         self::assertEquals($videoModel->getViews(), $fixture['views']);
-        self::assertTrue($videoModel->getChannel() instanceof TwitchChannel);
+
+        // check return type
+        $videoModel->getCreatedAt();
+        $videoModel->getPublishedAt();
+        $videoModel->getViewableAt();
+        $videoModel->getChannel();
     }
 
     public function testFillVideoThumbnailsModelByJson(): void
@@ -178,26 +188,29 @@ class TwitchApiModelHelperTest extends TestCase
         self::assertEquals($streamModel->getVideoHeight(), $fixture['video_height']);
         self::assertEquals($streamModel->getAverageFps(), $fixture['average_fps']);
         self::assertEquals($streamModel->getDelay(), $fixture['delay']);
-        self::assertTrue($streamModel->getCreatedAt() instanceof \DateTime);
         self::assertEquals($streamModel->isPlaylist(), $fixture['is_playlist']);
         self::assertEquals($streamModel->getPreview(), $fixture['preview']);
-        self::assertTrue($streamModel->getChannel() instanceof TwitchChannel);
+
+        // check return type
+        $streamModel->getCreatedAt();
+        $streamModel->getChannel();
     }
 
     public function testFillTeamModelByJson(): void
     {
         $fixture = $this->loadFixture('team');
         $teamModel = $this->modelHelper->fillTeamModelByJson($fixture);
-
         self::assertEquals($teamModel->getId(), $fixture['_id']);
         self::assertEquals($teamModel->getBackground(), $fixture['background']);
         self::assertEquals($teamModel->getBanner(), $fixture['banner']);
-        self::assertTrue($teamModel->getCreatedAt() instanceof \DateTime);
         self::assertEquals($teamModel->getDisplayName(), $fixture['display_name']);
         self::assertEquals($teamModel->getInfo(), $fixture['info']);
         self::assertEquals($teamModel->getLogo(), $fixture['logo']);
         self::assertEquals($teamModel->getName(), $fixture['name']);
-        self::assertTrue($teamModel->getUpdatedAt() instanceof \DateTime);
+
+        // check return type
+        $teamModel->getCreatedAt();
+        $teamModel->getUpdatedAt();
     }
 
     public function testFillValidateModelByJson(): void
@@ -210,7 +223,7 @@ class TwitchApiModelHelperTest extends TestCase
 
         self::assertEquals($validateFixture['client_id'], $validateModel->getClientId());
         self::assertEquals($validateFixture['login'], $validateModel->getLogin());
-        self::assertEquals($validateFixture['scopes'], $validateModel->getScope());
+        self::assertEquals($validateFixture['scopes'], $validateModel->getScopes());
         self::assertEquals($validateFixture['user_id'], $validateModel->getUserId());
         self::assertEquals($userModel, $validateModel->getUser());
     }

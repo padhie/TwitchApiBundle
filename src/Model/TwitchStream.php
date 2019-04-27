@@ -2,71 +2,36 @@
 
 namespace TwitchApiBundle\Model;
 
+use DateTime;
+
 class TwitchStream extends TwitchModel
 {
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $_id;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $game;
-
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $viewers;
-
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $video_height;
-
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $average_fps;
-
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $delay;
-
-    /**
-     * @var \DateTime
-     */
+    /** @var DateTime */
     private $created_at;
-
-    /**
-     * @var boolean
-     */
+    /** @var boolean */
     private $is_playlist;
-
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $preview;
-
-    /**
-     * @var TwitchChannel
-     */
+    /** @var TwitchChannel */
     private $channel;
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->_id;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return $this
-     */
     public function setId(int $id): self
     {
         $this->_id = $id;
@@ -74,19 +39,11 @@ class TwitchStream extends TwitchModel
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getGame(): string
     {
         return $this->game;
     }
 
-    /**
-     * @param string $game
-     *
-     * @return $this
-     */
     public function setGame(string $game): self
     {
         $this->game = $game;
@@ -94,19 +51,11 @@ class TwitchStream extends TwitchModel
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getViewers(): int
     {
         return $this->viewers;
     }
 
-    /**
-     * @param int $viewers
-     *
-     * @return $this
-     */
     public function setViewers(int $viewers): self
     {
         $this->viewers = $viewers;
@@ -114,19 +63,11 @@ class TwitchStream extends TwitchModel
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getVideoHeight(): int
     {
         return $this->video_height;
     }
 
-    /**
-     * @param int $video_height
-     *
-     * @return $this
-     */
     public function setVideoHeight(int $video_height): self
     {
         $this->video_height = $video_height;
@@ -134,19 +75,11 @@ class TwitchStream extends TwitchModel
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getAverageFps(): int
     {
         return $this->average_fps;
     }
 
-    /**
-     * @param int $average_fps
-     *
-     * @return $this
-     */
     public function setAverageFps(int $average_fps): self
     {
         $this->average_fps = $average_fps;
@@ -154,19 +87,11 @@ class TwitchStream extends TwitchModel
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getDelay(): int
     {
         return $this->delay;
     }
 
-    /**
-     * @param int $delay
-     *
-     * @return $this
-     */
     public function setDelay(int $delay): self
     {
         $this->delay = $delay;
@@ -174,39 +99,23 @@ class TwitchStream extends TwitchModel
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->created_at;
     }
 
-    /**
-     * @param \DateTime $created_at
-     *
-     * @return $this
-     */
-    public function setCreatedAt(\DateTime $created_at): self
+    public function setCreatedAt(DateTime $created_at): self
     {
         $this->created_at = $created_at;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isPlaylist(): bool
     {
         return $this->is_playlist;
     }
 
-    /**
-     * @param bool $is_playlist
-     *
-     * @return $this
-     */
     public function setIsPlaylist(bool $is_playlist): self
     {
         $this->is_playlist = $is_playlist;
@@ -224,8 +133,6 @@ class TwitchStream extends TwitchModel
 
     /**
      * @param string[] $preview
-     *
-     * @return $this
      */
     public function setPreview(array $preview): self
     {
@@ -234,19 +141,11 @@ class TwitchStream extends TwitchModel
         return $this;
     }
 
-    /**
-     * @return TwitchChannel
-     */
     public function getChannel(): TwitchChannel
     {
         return $this->channel;
     }
 
-    /**
-     * @param TwitchChannel $channel
-     *
-     * @return $this
-     */
     public function setChannel(TwitchChannel $channel): self
     {
         $this->channel = $channel;

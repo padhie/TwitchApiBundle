@@ -48,7 +48,7 @@ class TwitchApiModelHelper
 
         $validate->setClientId($json['client_id']);
         $validate->setLogin($json['login']);
-        $validate->setScope($json['scopes']);
+        $validate->setScopes($json['scopes']);
         $validate->setUserId($json['user_id']);
 
         if ($user instanceof TwitchUser) {

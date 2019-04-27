@@ -6,16 +6,12 @@ class TwitchValidate extends TwitchModel
 {
     /** @var string */
     private $clientId;
-
     /** @var string */
     private $login;
-
     /** @var string[] */
-    private $scope;
-
+    private $scopes;
     /** @var string */
     private $userId;
-
     /** @var TwitchUser */
     private $user;
 
@@ -32,9 +28,9 @@ class TwitchValidate extends TwitchModel
     /**
      * @return string[]
      */
-    public function getScope(): array
+    public function getScopes(): array
     {
-        return $this->scope;
+        return $this->scopes;
     }
 
     public function getUserId(): string
@@ -61,12 +57,19 @@ class TwitchValidate extends TwitchModel
         return $this;
     }
 
+    public function addScope(string $scope): TwitchValidate
+    {
+        $this->scopes[] = $scope;
+
+        return $this;
+    }
+
     /**
      * @param string[] $scope
      */
-    public function setScope(array $scope): TwitchValidate
+    public function setScopes(array $scope): TwitchValidate
     {
-        $this->scope = $scope;
+        $this->scopes = $scope;
 
         return $this;
     }
