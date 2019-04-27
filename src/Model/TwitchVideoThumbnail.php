@@ -5,50 +5,29 @@ namespace TwitchApiBundle\Model;
 
 class TwitchVideoThumbnail
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $type;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $url;
 
-    /**
-     * @return string
-     */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @param string $type
-     *
-     * @return $this
-     */
-    public function setType($type): self
+    public function setType(string $type): self
     {
         $this->type = $type;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->url;
     }
 
-    /**
-     * @param string $url
-     *
-     * @return $this
-     */
-    public function setUrl($url): self
+    public function setUrl(string $url): self
     {
         $this->url = $url;
 

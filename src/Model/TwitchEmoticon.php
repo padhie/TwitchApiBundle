@@ -4,34 +4,18 @@ namespace TwitchApiBundle\Model;
 
 class TwitchEmoticon extends TwitchModel
 {
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $id;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $regex;
-
-    /**
-     * @var TwitchEmoticonImage[]
-     */
+    /** @var TwitchEmoticonImage[] */
     private $images;
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return $this
-     */
     public function setId(int $id): self
     {
         $this->id = $id;
@@ -39,19 +23,11 @@ class TwitchEmoticon extends TwitchModel
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getRegex(): string
     {
         return $this->regex;
     }
 
-    /**
-     * @param string $regex
-     *
-     * @return $this
-     */
     public function setRegex(string $regex): self
     {
         $this->regex = $regex;
@@ -69,8 +45,6 @@ class TwitchEmoticon extends TwitchModel
 
     /**
      * @param TwitchEmoticonImage[] $images
-     *
-     * @return $this
      */
     public function setImages(array $images): self
     {
@@ -79,11 +53,6 @@ class TwitchEmoticon extends TwitchModel
         return $this;
     }
 
-    /**
-     * @param TwitchEmoticonImage $image
-     *
-     * @return $this
-     */
     public function addImage(TwitchEmoticonImage $image): self
     {
         $this->images[] = $image;
