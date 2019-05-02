@@ -1,6 +1,6 @@
 <?php
 
-namespace TwitchApiBundle\Model;
+namespace Padhie\TwitchApiBundle\Model;
 
 class TwitchHost extends TwitchModel
 {

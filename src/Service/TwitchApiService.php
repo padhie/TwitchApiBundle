@@ -1,25 +1,25 @@
 <?php
 
-namespace TwitchApiBundle\Service;
+namespace Padhie\TwitchApiBundle\Service;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use TwitchApiBundle\Exception\ApiErrorException;
-use TwitchApiBundle\Exception\UserNotExistsException;
-use TwitchApiBundle\Helper\TwitchApiModelHelper;
-use TwitchApiBundle\Model\TwitchChannel;
-use TwitchApiBundle\Model\TwitchEmoticon;
-use TwitchApiBundle\Model\TwitchEmoticonImage;
-use TwitchApiBundle\Model\TwitchFollower;
-use TwitchApiBundle\Model\TwitchHost;
-use TwitchApiBundle\Model\TwitchStream;
-use TwitchApiBundle\Model\TwitchTeam;
-use TwitchApiBundle\Model\TwitchUser;
-use TwitchApiBundle\Model\TwitchValidate;
-use TwitchApiBundle\Model\TwitchVideo;
+use Padhie\TwitchApiBundle\Exception\ApiErrorException;
+use Padhie\TwitchApiBundle\Exception\UserNotExistsException;
+use Padhie\TwitchApiBundle\Helper\TwitchApiModelHelper;
+use Padhie\TwitchApiBundle\Model\TwitchChannel;
+use Padhie\TwitchApiBundle\Model\TwitchEmoticon;
+use Padhie\TwitchApiBundle\Model\TwitchEmoticonImage;
+use Padhie\TwitchApiBundle\Model\TwitchFollower;
+use Padhie\TwitchApiBundle\Model\TwitchHost;
+use Padhie\TwitchApiBundle\Model\TwitchStream;
+use Padhie\TwitchApiBundle\Model\TwitchTeam;
+use Padhie\TwitchApiBundle\Model\TwitchUser;
+use Padhie\TwitchApiBundle\Model\TwitchValidate;
+use Padhie\TwitchApiBundle\Model\TwitchVideo;
 
 class TwitchApiService
 {
@@ -770,11 +770,7 @@ class TwitchApiService
      */
     public function getEmoticonImageList(): array
     {
-        $data = [];
-        if (!empty($emoticonset)) {
-            $data['emotesets'] = $emoticonset;
-        }
-        $this->get('chat/emoticon_images', $data);
+        $this->get('chat/emoticon_images');
 
         $emoticonList = [];
         foreach ($this->getData()['emoticons'] AS $emoticonsData) {
