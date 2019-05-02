@@ -1,6 +1,6 @@
 <?php
 
-namespace TwitchApiBundle\Exception;
+namespace Padhie\TwitchApiBundle\Exception;
 
 class UserNotExistsException extends ApiErrorException
 {

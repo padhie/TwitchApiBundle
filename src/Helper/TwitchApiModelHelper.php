@@ -1,21 +1,21 @@
 <?php
 
-namespace TwitchApiBundle\Helper;
+namespace Padhie\TwitchApiBundle\Helper;
 
-use TwitchApiBundle\Model\TwitchChannel;
-use TwitchApiBundle\Model\TwitchEmoticon;
-use TwitchApiBundle\Model\TwitchEmoticonImage;
-use TwitchApiBundle\Model\TwitchFollower;
-use TwitchApiBundle\Model\TwitchModel;
-use TwitchApiBundle\Model\TwitchStream;
-use TwitchApiBundle\Model\TwitchSubscription;
-use TwitchApiBundle\Model\TwitchTeam;
-use TwitchApiBundle\Model\TwitchUser;
-use TwitchApiBundle\Model\TwitchUserNotifications;
-use TwitchApiBundle\Model\TwitchValidate;
-use TwitchApiBundle\Model\TwitchVideo;
-use TwitchApiBundle\Model\TwitchVideoMutedSegments;
-use TwitchApiBundle\Model\TwitchVideoThumbnail;
+use Padhie\TwitchApiBundle\Model\TwitchChannel;
+use Padhie\TwitchApiBundle\Model\TwitchEmoticon;
+use Padhie\TwitchApiBundle\Model\TwitchEmoticonImage;
+use Padhie\TwitchApiBundle\Model\TwitchFollower;
+use Padhie\TwitchApiBundle\Model\TwitchModel;
+use Padhie\TwitchApiBundle\Model\TwitchStream;
+use Padhie\TwitchApiBundle\Model\TwitchSubscription;
+use Padhie\TwitchApiBundle\Model\TwitchTeam;
+use Padhie\TwitchApiBundle\Model\TwitchUser;
+use Padhie\TwitchApiBundle\Model\TwitchUserNotifications;
+use Padhie\TwitchApiBundle\Model\TwitchValidate;
+use Padhie\TwitchApiBundle\Model\TwitchVideo;
+use Padhie\TwitchApiBundle\Model\TwitchVideoMutedSegments;
+use Padhie\TwitchApiBundle\Model\TwitchVideoThumbnail;
 
 class TwitchApiModelHelper
 {

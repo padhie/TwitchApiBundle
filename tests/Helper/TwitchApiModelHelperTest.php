@@ -1,22 +1,12 @@
 <?php
 
-namespace tests\Helper;
+namespace Padhie\tests\Helper;
 
 use PHPUnit\Framework\TestCase;
-use \TwitchApiBundle\Helper\TwitchApiModelHelper;
-use \TwitchApiBundle\Model\TwitchUser;
-use \TwitchApiBundle\Model\TwitchChannel;
+use Padhie\TwitchApiBundle\Helper\TwitchApiModelHelper;
 
 class TwitchApiModelHelperTest extends TestCase
 {
-    /** @var TwitchApiModelHelper */
-    private $modelHelper;
-
-    public function setUp(): void
-    {
-        $this->modelHelper = new TwitchApiModelHelper();
-    }
-
     public function loadFixture(String $filename): array
     {
         $raw = file_get_contents(__DIR__ . '/../Fixtures/' . $filename . '.json');
@@ -26,7 +16,7 @@ class TwitchApiModelHelperTest extends TestCase
     public function testFillChannelModelByJson(): void
     {
         $fixture = $this->loadFixture('channel');
-        $channelModel = $this->modelHelper->fillChannelModelByJson($fixture);
+        $channelModel = TwitchApiModelHelper::fillChannelModelByJson($fixture);
 
         self::assertEquals($channelModel->isMature(), $fixture['mature']);
         self::assertEquals($channelModel->getStatus(), $fixture['status']);
@@ -53,11 +43,11 @@ class TwitchApiModelHelperTest extends TestCase
     public function testFillEmoticonModelByJson(): void
     {
         $fixture = $this->loadFixture('emoticon');
-        $emoticonModel = $this->modelHelper->fillEmoticonModelByJson($fixture);
+        $emoticonModel = TwitchApiModelHelper::fillEmoticonModelByJson($fixture);
 
         self::assertEquals($emoticonModel->getId(), $fixture['id']);
         self::assertEquals($emoticonModel->getRegex(), $fixture['regex']);
-        self::assertInternalType('array', $emoticonModel->getImages());
+        self::assertIsArray($emoticonModel->getImages());
     }
 
     public function testFillEmoticonImageModelByJson(): void
@@ -65,7 +55,7 @@ class TwitchApiModelHelperTest extends TestCase
         $fixture = $this->loadFixture('emoticon');
         $fixtureImages = $fixture['images'][0];
 
-        $imageModel = $this->modelHelper->fillEmoticonImageModelByJson($fixtureImages);
+        $imageModel = TwitchApiModelHelper::fillEmoticonImageModelByJson($fixtureImages);
         self::assertEquals($imageModel->getWidth(), $fixtureImages['width']);
         self::assertEquals($imageModel->getHeight(), $fixtureImages['height']);
         self::assertEquals($imageModel->getUrl(), $fixtureImages['url']);
@@ -74,7 +64,7 @@ class TwitchApiModelHelperTest extends TestCase
         self::assertNull($imageModel->getCode());
 
         $fixtureImages = $fixture['images'][1];
-        $imageModel = $this->modelHelper->fillEmoticonImageModelByJson($fixtureImages);
+        $imageModel = TwitchApiModelHelper::fillEmoticonImageModelByJson($fixtureImages);
         self::assertNull($imageModel->getWidth());
         self::assertNull($imageModel->getHeight());
         self::assertNull($imageModel->getUrl());
@@ -86,7 +76,7 @@ class TwitchApiModelHelperTest extends TestCase
     public function testFillFollowerModelByJson(): void
     {
         $fixture = $this->loadFixture('follow');
-        $followModel = $this->modelHelper->fillFollowerModelByJson($fixture);
+        $followModel = TwitchApiModelHelper::fillFollowerModelByJson($fixture);
 
         self::assertEquals($followModel->isNotifications(), $fixture['notifications']);
         self::assertNull($followModel->getChannel());
@@ -99,7 +89,7 @@ class TwitchApiModelHelperTest extends TestCase
     public function testFillUserModelByJson(): void
     {
         $fixture = $this->loadFixture('follow')['user'];
-        $userModel = $this->modelHelper->fillUserModelByJson($fixture);
+        $userModel = TwitchApiModelHelper::fillUserModelByJson($fixture);
 
         self::assertEquals($userModel->getDisplayName(), $fixture['display_name']);
         self::assertEquals($userModel->getId(), $fixture['_id']);
@@ -116,7 +106,7 @@ class TwitchApiModelHelperTest extends TestCase
     public function testFillSubscriptionModelByJson(): void
     {
         $fixture = $this->loadFixture('subscription');
-        $subscriptionModel = $this->modelHelper->fillSubscriptionModelByJson($fixture);
+        $subscriptionModel = TwitchApiModelHelper::fillSubscriptionModelByJson($fixture);
 
         self::assertEquals($subscriptionModel->getId(), $fixture['_id']);
         self::assertEquals($subscriptionModel->getSubPlan(), $fixture['sub_plan']);
@@ -131,7 +121,7 @@ class TwitchApiModelHelperTest extends TestCase
     public function testFillVideoModelByJson(): void
     {
         $fixture = $this->loadFixture('video');
-        $videoModel = $this->modelHelper->fillVideoModelByJson($fixture);
+        $videoModel = TwitchApiModelHelper::fillVideoModelByJson($fixture);
 
         self::assertEquals($videoModel->getId(), $fixture['_id']);
         self::assertEquals($videoModel->getBroadcastId(), $fixture['broadcast_id']);
@@ -162,7 +152,7 @@ class TwitchApiModelHelperTest extends TestCase
     public function testFillVideoThumbnailsModelByJson(): void
     {
         $fixture = $this->loadFixture('video')['thumbnails']['large'];
-        $thumbnailsModel = $this->modelHelper->fillVideoThumbnailsModelByJson($fixture);
+        $thumbnailsModel = TwitchApiModelHelper::fillVideoThumbnailsModelByJson($fixture);
 
         self::assertEquals($thumbnailsModel[0]->getType(), $fixture[0]['type']);
         self::assertEquals($thumbnailsModel[0]->getUrl(), $fixture[0]['url']);
@@ -171,7 +161,7 @@ class TwitchApiModelHelperTest extends TestCase
     public function testFillVideoMutedSegmentsModelByJson(): void
     {
         $fixture = $this->loadFixture('video')['muted_segments'][0];
-        $mutedSegmentModel = $this->modelHelper->fillVideoMutedSegmentsModelByJson($fixture);
+        $mutedSegmentModel = TwitchApiModelHelper::fillVideoMutedSegmentsModelByJson($fixture);
 
         self::assertEquals($mutedSegmentModel->getDuration(), $fixture['duration']);
         self::assertEquals($mutedSegmentModel->getOffset(), $fixture['offset']);
@@ -180,7 +170,7 @@ class TwitchApiModelHelperTest extends TestCase
     public function testFillStreamModelByJson(): void
     {
         $fixture = $this->loadFixture('stream');
-        $streamModel = $this->modelHelper->fillStreamModelByJson($fixture);
+        $streamModel = TwitchApiModelHelper::fillStreamModelByJson($fixture);
 
         self::assertEquals($streamModel->getId(), $fixture['_id']);
         self::assertEquals($streamModel->getGame(), $fixture['game']);
@@ -199,7 +189,7 @@ class TwitchApiModelHelperTest extends TestCase
     public function testFillTeamModelByJson(): void
     {
         $fixture = $this->loadFixture('team');
-        $teamModel = $this->modelHelper->fillTeamModelByJson($fixture);
+        $teamModel = TwitchApiModelHelper::fillTeamModelByJson($fixture);
         self::assertEquals($teamModel->getId(), $fixture['_id']);
         self::assertEquals($teamModel->getBackground(), $fixture['background']);
         self::assertEquals($teamModel->getBanner(), $fixture['banner']);
@@ -218,8 +208,8 @@ class TwitchApiModelHelperTest extends TestCase
         $validateFixture = $this->loadFixture('validate');
         $userFixture = $this->loadFixture('user');
 
-        $userModel = $this->modelHelper->fillUserModelByJson($userFixture);
-        $validateModel = $this->modelHelper->fillValidateModelByJson($validateFixture, $userModel);
+        $userModel = TwitchApiModelHelper::fillUserModelByJson($userFixture);
+        $validateModel = TwitchApiModelHelper::fillValidateModelByJson($validateFixture, $userModel);
 
         self::assertEquals($validateFixture['client_id'], $validateModel->getClientId());
         self::assertEquals($validateFixture['login'], $validateModel->getLogin());
