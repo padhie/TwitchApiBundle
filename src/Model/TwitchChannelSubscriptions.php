@@ -2,30 +2,45 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-class TwitchChannelSubscriptions
+final class TwitchChannelSubscriptions implements TwitchModelInterface
 {
     /** @var int */
     private $_total;
-    /** @var array<TwitchSubscription> */
+    /** @var array<int, TwitchSubscription> */
     private $subscriptions;
+
+    /**
+     * @param array<int, TwitchSubscription> $subscriptions
+     */
+    private function __construct(int $_total, array $subscriptions)
+    {
+        $this->_total = $_total;
+        $this->subscriptions = $subscriptions;
+    }
+
+    public static function createFromJson(array $json): TwitchChannelSubscriptions
+    {
+        $subscriptions = [];
+        foreach ($json['subscriptions'] ?? [] as $subscription) {
+            $subscriptions[] = TwitchSubscription::createFromJson($subscription);
+        }
+
+        return new self(
+            $json['_total'] ?? 0,
+            $subscriptions
+        );
+    }
 
     public function getTotal(): int
     {
         return $this->_total;
     }
 
-    public function setTotal(int $total): void
-    {
-        $this->_total = $total;
-    }
-
+    /**
+     * @return array<int, TwitchSubscription> $subscriptions
+     */
     public function getSubscriptions(): array
     {
         return $this->subscriptions;
-    }
-
-    public function setSubscriptions(array $subscriptions): void
-    {
-        $this->subscriptions = $subscriptions;
     }
 }

@@ -4,27 +4,42 @@ namespace Padhie\TwitchApiBundle\Model;
 
 use DateTime;
 
-class TwitchFollower extends TwitchModel
+final class TwitchFollower implements TwitchModelInterface
 {
     /** @var DateTime */
-    private $created_at;
+    private $createdAt;
     /** @var boolean */
     private $notifications;
-    /** @var TwitchUser */
+    /** @var null|TwitchUser */
     private $user;
-    /** @var TwitchChannel */
+    /** @var null|TwitchChannel */
     private $channel;
+
+    private function __construct(
+        DateTime $createdAt,
+        bool $notifications,
+        ?TwitchUser $user,
+        ?TwitchChannel $channel
+    ) {
+        $this->createdAt = $createdAt;
+        $this->notifications = $notifications;
+        $this->user = $user;
+        $this->channel = $channel;
+    }
+
+    public static function createFromJson(array $json): TwitchFollower
+    {
+        return new self(
+            $json['created_at'] ? new DateTime($json['created_at']): new DateTime(),
+            $json['notifications'] ?? false,
+            $json['user'] ? TwitchUser::createFromJson($json['user']) : null,
+            $json['channel'] ? TwitchChannel::createFromJson($json['channel']) : null
+        );
+    }
 
     public function getCreatedAt(): DateTime
     {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(DateTime $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->createdAt;
     }
 
     public function isNotifications(): bool
@@ -32,35 +47,14 @@ class TwitchFollower extends TwitchModel
         return $this->notifications;
     }
 
-    public function setNotifications(bool $notifications): self
-    {
-        $this->notifications = $notifications;
-
-        return $this;
-    }
-
     public function getUser(): ?TwitchUser
     {
         return $this->user;
     }
 
-    public function setUser(TwitchUser $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     public function getChannel(): ?TwitchChannel
     {
         return $this->channel;
-    }
-
-    public function setChannel(TwitchChannel $channel): self
-    {
-        $this->channel = $channel;
-
-        return $this;
     }
     
 }

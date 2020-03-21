@@ -4,96 +4,155 @@ namespace Padhie\TwitchApiBundle\Model;
 
 use DateTime;
 
-class TwitchVideo extends TwitchModel
+final class TwitchVideo implements TwitchModelInterface
 {
-
     /** @var string */
     private $_id;
-    /** @var integer */
-    private $broadcast_id;
+    /** @var int */
+    private $broadcastId;
     /** @var string */
-    private $broadcast_type;
+    private $broadcastType;
     /** @var TwitchChannel */
     private $channel;
-    /** var DateTime */
-    private $created_at;
+    /** @var DateTime */
+    private $createdAt;
     /** @var string */
     private $description;
     /** @var string */
-    private $description_html;
-    /**
-     * @var array
-     */
+    private $descriptionHtml;
+    /** @var TwitchVideoFps */
     private $fps;
     /** @var string */
     private $game;
     /** @var string */
     private $language;
-    /** @var integer */
+    /** @var int */
     private $length;
-    /**
-     * @var array
-     */
-    private $muted_segments = [];
     /** @var array */
+    private $mutedSegments;
+    /** @var TwitchVideoPreview|null */
     private $preview;
-    /** var DateTime */
-    private $published_at;
-    /**
-     * @var array
-     */
+    /** @var DateTime */
+    private $publishedAt;
+    /** @var TwitchVideoResolutions|null */
     private $resolutions;
     /** @var string */
     private $status;
     /** @var string */
-    private $tag_list;
-    /** TwitchVideoThumbnail[] */
-    private $thumbnails = [];
+    private $tagList;
+    /** @var TwitchVideoThumbnails */
+    private $thumbnails;
     /** @var string */
     private $title;
     /** @var string */
     private $url;
     /** @var string */
     private $viewable;
-    /** var DateTime */
-    private $viewable_at;
-    /** @var integer */
+    /** @var DateTime|null */
+    private $viewableAt;
+    /** @var int */
     private $views;
+
+    /**
+     * @param array<int, TwitchVideoMutedSegment> $mutedSegments
+     */
+    private function __construct(
+        string $_id,
+        int $broadcastId,
+        string $broadcastType,
+        TwitchChannel $channel,
+        DateTime $createdAt,
+        string $description,
+        string $descriptionHtml,
+        TwitchVideoFps $fps,
+        string $game,
+        string $language,
+        int $length,
+        array $mutedSegments,
+        ?TwitchVideoPreview $preview,
+        DateTime $publishedAt,
+        ?TwitchVideoResolutions $resolutions,
+        string $status,
+        string $tagList,
+        TwitchVideoThumbnails $thumbnails,
+        string $title,
+        string $url,
+        string $viewable,
+        ?DateTime $viewableAt,
+        int $views
+    ) {
+        $this->_id = $_id;
+        $this->broadcastId = $broadcastId;
+        $this->broadcastType = $broadcastType;
+        $this->channel = $channel;
+        $this->createdAt = $createdAt;
+        $this->description = $description;
+        $this->descriptionHtml = $descriptionHtml;
+        $this->fps = $fps;
+        $this->game = $game;
+        $this->language = $language;
+        $this->length = $length;
+        $this->mutedSegments = $mutedSegments;
+        $this->preview = $preview;
+        $this->publishedAt = $publishedAt;
+        $this->resolutions = $resolutions;
+        $this->status = $status;
+        $this->tagList = $tagList;
+        $this->thumbnails = $thumbnails;
+        $this->title = $title;
+        $this->url = $url;
+        $this->viewable = $viewable;
+        $this->viewableAt = $viewableAt;
+        $this->views = $views;
+    }
+
+    public static function createFromJson(array $json): TwitchVideo
+    {
+        $mutedSegments = [];
+        foreach ($json['muted_segments'] ?? [] as $mutedSegment) {
+            $mutedSegments[] = TwitchVideoMutedSegment::createFromJson($mutedSegment);
+        }
+
+        return new self(
+            $json['_id'] ?? '',
+            $json['broadcast_id'] ?? 0,
+            $json['broadcast_type'] ?? '',
+            TwitchChannel::createFromJson($json['channel']),
+            new DateTime($json['created_at']),
+            $json['description'] ?? '',
+            $json['description_html'] ?? '',
+            TwitchVideoFps::createFromJson($json['fps']),
+            $json['game'] ?? '',
+            $json['language'] ?? '',
+            $json['length'] ?? 0,
+            $mutedSegments,
+            $json['preview'] ? TwitchVideoPreview::createFromJson($json['preview']) : null,
+            new DateTime($json['published_at']),
+            $json['resolutions'] ? TwitchVideoResolutions::createFromJson($json['resolutions']) : null,
+            $json['status'] ?? '',
+            $json['tag_list'] ?? '',
+            TwitchVideoThumbnails::createFromJson($json['thumbnails']),
+            $json['title'] ?? '',
+            $json['url'] ?? '',
+            $json['viewable'] ?? '',
+            $json['viewable_at'] ? new DateTime($json['viewable_at']) : null,
+            $json['views'] ?? 0
+        );
+    }
 
     public function getId(): string
     {
         return $this->_id;
     }
 
-    public function setId(string $id): self
-    {
-        $this->_id = $id;
-
-        return $this;
-    }
-
     public function getBroadcastId(): int
     {
-        return $this->broadcast_id;
-    }
-
-    public function setBroadcastId(int $broadcast_id): self
-    {
-        $this->broadcast_id = $broadcast_id;
-
-        return $this;
+        return $this->broadcastId;
     }
 
     public function getBroadcastType(): string
     {
-        return $this->broadcast_type;
-    }
-
-    public function setBroadcastType(string $broadcast_type): self
-    {
-        $this->broadcast_type = $broadcast_type;
-
-        return $this;
+        return $this->broadcastType;
     }
 
     public function getChannel(): TwitchChannel
@@ -101,23 +160,9 @@ class TwitchVideo extends TwitchModel
         return $this->channel;
     }
 
-    public function setChannel(TwitchChannel $channel): self
-    {
-        $this->channel = $channel;
-
-        return $this;
-    }
-
     public function getCreatedAt(): DateTime
     {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(DateTime $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->createdAt;
     }
 
     public function getDescription(): string
@@ -125,38 +170,14 @@ class TwitchVideo extends TwitchModel
         return $this->description;
     }
 
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
     public function getDescriptionHtml(): string
     {
-        return $this->description_html;
+        return $this->descriptionHtml;
     }
 
-    public function setDescriptionHtml(string $description_html): self
-    {
-        $this->description_html = $description_html;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFps(): array
+    public function getFps(): TwitchVideoFps
     {
         return $this->fps;
-    }
-
-    public function setFps(array $fps): self
-    {
-        $this->fps = $fps;
-
-        return $this;
     }
 
     public function getGame(): string
@@ -164,23 +185,9 @@ class TwitchVideo extends TwitchModel
         return $this->game;
     }
 
-    public function setGame(string $game): self
-    {
-        $this->game = $game;
-
-        return $this;
-    }
-
     public function getLanguage(): string
     {
         return $this->language;
-    }
-
-    public function setLanguage(string $language): self
-    {
-        $this->language = $language;
-
-        return $this;
     }
 
     public function getLength(): int
@@ -188,81 +195,27 @@ class TwitchVideo extends TwitchModel
         return $this->length;
     }
 
-    public function setLength(int $length): self
-    {
-        $this->length = $length;
-
-        return $this;
-    }
-
     /**
-     * @return array
+     * @return array<int, TwitchVideoMutedSegment>
      */
     public function getMutedSegments(): array
     {
-        return $this->muted_segments;
+        return $this->mutedSegments;
     }
 
-    public function setMutedSegments(array $muted_segments): self
-    {
-        $this->muted_segments = $muted_segments;
-
-        return $this;
-    }
-
-    public function addMutedSegment(TwitchVideoMutedSegments $muted_segment): self
-    {
-        $this->muted_segments[] = $muted_segment;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPreview(): array
+    public function getPreview(): ?TwitchVideoPreview
     {
         return $this->preview;
     }
 
-    /**
-     * @param array $preview
-     */
-    public function setPreview(array $preview): self
-    {
-        $this->preview = $preview;
-
-        return $this;
-    }
-
     public function getPublishedAt(): DateTime
     {
-        return $this->published_at;
+        return $this->publishedAt;
     }
 
-    public function setPublishedAt(DateTime $published_at): self
-    {
-        $this->published_at = $published_at;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getResolutions(): array
+    public function getResolutions(): ?TwitchVideoResolutions
     {
         return $this->resolutions;
-    }
-
-    /**
-     * @param array $resolutions
-     */
-    public function setResolutions(array $resolutions): self
-    {
-        $this->resolutions = $resolutions;
-
-        return $this;
     }
 
     public function getStatus(): string
@@ -270,60 +223,14 @@ class TwitchVideo extends TwitchModel
         return $this->status;
     }
 
-    public function setStatus(string $status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
     public function getTagList(): string
     {
-        return $this->tag_list;
+        return $this->tagList;
     }
 
-    public function setTagList(string $tag_list): self
-    {
-        $this->tag_list = $tag_list;
-
-        return $this;
-    }
-
-    /**
-     * @return TwitchVideoThumbnail[]
-     */
-    public function getThumbnails(): array
+    public function getThumbnails(): TwitchVideoThumbnails
     {
         return $this->thumbnails;
-    }
-
-    /**
-     * @param TwitchVideoThumbnail[] $thumbnails
-     */
-    public function setThumbnails(array $thumbnails): self
-    {
-        $this->thumbnails = $thumbnails;
-
-        return $this;
-    }
-
-    public function addThumbnail(string $type, TwitchVideoThumbnail $thumbnail): self
-    {
-        $this->thumbnails[$type] = $thumbnail;
-
-        return $this;
-    }
-
-    /**
-     * @param TwitchVideoThumbnail[]  $thumbnails
-     */
-    public function addThumbnails(string $type, array $thumbnails): self
-    {
-        foreach ($thumbnails AS $thumbnail) {
-            $this->addThumbnail($type, $thumbnail);
-        }
-
-        return $this;
     }
 
     public function getTitle(): string
@@ -331,23 +238,9 @@ class TwitchVideo extends TwitchModel
         return $this->title;
     }
 
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
     public function getUrl(): string
     {
         return $this->url;
-    }
-
-    public function setUrl(string $url): self
-    {
-        $this->url = $url;
-
-        return $this;
     }
 
     public function getViewable(): string
@@ -355,34 +248,13 @@ class TwitchVideo extends TwitchModel
         return $this->viewable;
     }
 
-    public function setViewable(string $viewable): self
+    public function getViewableAt(): ?DateTime
     {
-        $this->viewable = $viewable;
-
-        return $this;
-    }
-
-    public function getViewableAt(): DateTime
-    {
-        return $this->viewable_at;
-    }
-
-    public function setViewableAt(DateTime $viewable_at): self
-    {
-        $this->viewable_at = $viewable_at;
-
-        return $this;
+        return $this->viewableAt;
     }
 
     public function getViews(): int
     {
         return $this->views;
-    }
-
-    public function setViews(int $views): self
-    {
-        $this->views = $views;
-
-        return $this;
     }
 }

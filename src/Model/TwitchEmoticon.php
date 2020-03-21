@@ -2,25 +2,43 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-class TwitchEmoticon extends TwitchModel
+final class TwitchEmoticon implements TwitchModelInterface
 {
     /** @var integer */
     private $id;
     /** @var string */
     private $regex;
-    /** @var TwitchEmoticonImage[] */
+    /** @var array<int, TwitchEmoticonImage> */
     private $images;
+
+    /**
+     * @param array<int, TwitchEmoticonImage> $images
+     */
+    private function __construct(int $id, string $regex, array $images)
+    {
+        $this->id = $id;
+        $this->regex = $regex;
+        $this->images = $images;
+    }
+
+    public static function createFromJson(array $json): TwitchEmoticon
+    {
+        /** @var array<int, TwitchEmoticonImage> $images */
+        $images = [];
+        foreach ($json['images'] ?? [] AS $imageData) {
+            $images[] = TwitchEmoticonImage::createFromJson($imageData);
+        }
+
+        return new self(
+            $json['id'] ?? 0,
+            $json['regex'] ?? '',
+            $images
+        );
+    }
 
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getRegex(): string
@@ -28,35 +46,11 @@ class TwitchEmoticon extends TwitchModel
         return $this->regex;
     }
 
-    public function setRegex(string $regex): self
-    {
-        $this->regex = $regex;
-
-        return $this;
-    }
-
     /**
-     * @return TwitchEmoticonImage[]
+     * @return array<int, TwitchEmoticonImage>
      */
     public function getImages(): array
     {
         return $this->images;
-    }
-
-    /**
-     * @param TwitchEmoticonImage[] $images
-     */
-    public function setImages(array $images): self
-    {
-        $this->images = $images;
-
-        return $this;
-    }
-
-    public function addImage(TwitchEmoticonImage $image): self
-    {
-        $this->images[] = $image;
-
-        return $this;
     }
 }

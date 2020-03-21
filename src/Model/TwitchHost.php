@@ -2,25 +2,34 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-class TwitchHost extends TwitchModel
+final class TwitchHost implements TwitchModelInterface
 {
     /** @var TwitchChannel */
     private $channel;
     /** @var TwitchChannel */
     private $target;
-    /** @var integer */
-    private $viewer = 0;
+    /** @var int */
+    private $viewer;
+
+    private function __construct(TwitchChannel $channel, TwitchChannel $target, int $viewer)
+    {
+        $this->channel = $channel;
+        $this->target = $target;
+        $this->viewer = $viewer;
+    }
+
+    public static function createFromJson(array $json): TwitchHost
+    {
+        return new self(
+            $json['channel'],
+            $json['target'],
+            $json['viewer']
+        );
+    }
 
     public function getChannel(): TwitchChannel
     {
         return $this->channel;
-    }
-
-    public function setChannel(TwitchChannel $channel): self
-    {
-        $this->channel = $channel;
-
-        return $this;
     }
 
     public function getTarget(): TwitchChannel
@@ -28,22 +37,8 @@ class TwitchHost extends TwitchModel
         return $this->target;
     }
 
-    public function setTarget(TwitchChannel $target): self
-    {
-        $this->target = $target;
-
-        return $this;
-    }
-
     public function getViewer(): int
     {
         return $this->viewer;
-    }
-
-    public function setViewer(int $viewer): self
-    {
-        $this->viewer = $viewer;
-
-        return $this;
     }
 }

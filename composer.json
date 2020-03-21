@@ -1,6 +1,6 @@
 {
     "name": "padhie/twitch-api-bundle",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "type": "library",
     "keywords": [
         "twitch",
@@ -33,7 +33,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
+            "Padhie\\Tests\\": "tests/"
         }
     },
     "scripts": {
