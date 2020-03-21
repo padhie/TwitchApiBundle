@@ -351,10 +351,10 @@ class TwitchApiService
 
         $data = $this->getData();
         foreach ($data['subscriptions'] ?? [] as $index => $item) {
-            $data['subscriptions'][$index]['channel'] = $channel;
+            $data['subscriptions'][$index]['channel'] = $channel->jsonSerialize();
         }
 
-        return TwitchChannelSubscriptions::createFromJson($this->getData());
+        return TwitchChannelSubscriptions::createFromJson($data);
     }
 
     /**
