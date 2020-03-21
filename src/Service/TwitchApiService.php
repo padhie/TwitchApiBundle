@@ -347,9 +347,9 @@ class TwitchApiService
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         $this->get('channels/' . $channelId . '/subscriptions');
 
+        $data = $this->getData();
         $channel = $this->getChannelById($channelId);
 
-        $data = $this->getData();
         foreach ($data['subscriptions'] ?? [] as $index => $item) {
             $data['subscriptions'][$index]['channel'] = $channel->jsonSerialize();
         }
