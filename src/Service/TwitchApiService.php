@@ -55,7 +55,7 @@ class TwitchApiService
     private $additional_string;
     /** @var string */
     private $_raw_response;
-    /** @var array */
+    /** @var array<mixed> */
     private $response;
     /** @var integer */
     private $channel_id;
@@ -167,14 +167,13 @@ class TwitchApiService
 
     /**
      * @param string[] $header [optional]
-     *
      * @return string[]
      */
     private function combineHeader(array $header = []): array
     {
         return array_merge($header, [
-            'Accept'        => $this->header_application,
-            'Client-ID'     => $this->client_id,
+            'Accept' => $this->header_application,
+            'Client-ID' => $this->client_id,
             'Authorization' => 'OAuth ' . $this->oauth,
             'Cache-Control' => 'no-cache',
         ]);
@@ -185,10 +184,8 @@ class TwitchApiService
     // # BASE METHODS #
     // ################
     /**
-     * @param string $url_extension URL endpoint
-     * @param array  $data          [optional] Key => Value
-     * @param array  $header        [optional] Key => Value
-     *
+     * @param array<string, string> $data [optional] Key => Value
+     * @param array<int, string> $header [optional] Value
      * @return TwitchApiService
      * @throws ApiErrorException
      */
@@ -228,14 +225,12 @@ class TwitchApiService
     }
 
     /**
-     * @param string $url_extension URL endpoint
-     * @param array  $data          [optional] Key => Value
-     * @param array  $header        [optional] Key => Value
-     *
+     * @param array<string, string> $data [optional] Key => Value
+     * @param array<int, string> $header [optional] Value
      * @return TwitchApiService
      * @throws ApiErrorException
      */
-    protected function put($url_extension, $data = [], $header = []): self
+    protected function put(string $url_extension, array $data = [], array $header = []): self
     {
         $options = array_merge($this->combineHeader($header), ['body' => $data]);
         $this->last_url = $this->base_url . $url_extension . $this->additional_string;
@@ -262,7 +257,7 @@ class TwitchApiService
         $this->_raw_response = '';
 
         $check = true;
-        while($check) {
+        while ($check) {
             $tmpRawRespnse = $response->getBody()->read(self::REQUEST_READ_LIMIT);
             $this->_raw_response .= $tmpRawRespnse;
             if (strlen($tmpRawRespnse) < self::REQUEST_READ_LIMIT) {
@@ -614,7 +609,7 @@ class TwitchApiService
     // ################
     /**
      * Scope: -
-     * @return array
+     * @return mixed[]
      * @throws ApiErrorException
      */
     public function getBadgeList(int $channelId = 0): array
@@ -642,9 +637,9 @@ class TwitchApiService
 
     /**
      * Scope: -
-     * @deprecated
      * @return TwitchEmoticon[]
      * @throws ApiErrorException
+     * @deprecated
      */
     public function getEmoticonList(): array
     {

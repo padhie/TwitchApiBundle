@@ -15,6 +15,9 @@ final class TwitchVideoMutedSegment implements TwitchModelInterface
         $this->offset = $offset;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchVideoMutedSegment
     {
         return new self(

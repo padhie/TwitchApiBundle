@@ -18,6 +18,9 @@ final class TwitchChannelSubscriptions implements TwitchModelInterface
         $this->subscriptions = $subscriptions;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchChannelSubscriptions
     {
         $subscriptions = [];

@@ -27,6 +27,9 @@ final class TwitchFollower implements TwitchModelInterface
         $this->channel = $channel;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchFollower
     {
         return new self(

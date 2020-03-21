@@ -15,6 +15,9 @@ final class TwitchUserNotifications implements TwitchModelInterface
         $this->push = $push;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchUserNotifications
     {
         return new self(

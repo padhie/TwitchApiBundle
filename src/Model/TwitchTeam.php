@@ -47,6 +47,9 @@ final class TwitchTeam implements TwitchModelInterface
         $this->updatedAt = $updatedAt;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchTeam
     {
         return new self(

@@ -21,6 +21,9 @@ final class TwitchVideoPreview implements TwitchModelInterface
         $this->template = $template;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchVideoPreview
     {
         return new self(

@@ -33,6 +33,9 @@ final class TwitchEmoticonImage implements TwitchModelInterface
         $this->height = $height;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchEmoticonImage
     {
         return new self(

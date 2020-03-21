@@ -63,6 +63,9 @@ final class TwitchUser implements TwitchModelInterface
         $this->twitter_connected = $twitter_connected;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchUser
     {
         return new self(

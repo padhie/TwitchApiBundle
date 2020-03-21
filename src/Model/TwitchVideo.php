@@ -28,7 +28,7 @@ final class TwitchVideo implements TwitchModelInterface
     private $language;
     /** @var int */
     private $length;
-    /** @var array */
+    /** @var array<int, TwitchVideoMutedSegment> */
     private $mutedSegments;
     /** @var TwitchVideoPreview|null */
     private $preview;
@@ -106,6 +106,9 @@ final class TwitchVideo implements TwitchModelInterface
         $this->views = $views;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchVideo
     {
         $mutedSegments = [];

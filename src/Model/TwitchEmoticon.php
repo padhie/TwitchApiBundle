@@ -21,6 +21,9 @@ final class TwitchEmoticon implements TwitchModelInterface
         $this->images = $images;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchEmoticon
     {
         /** @var array<int, TwitchEmoticonImage> $images */

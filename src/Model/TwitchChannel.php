@@ -96,6 +96,9 @@ final class TwitchChannel implements TwitchModelInterface
         $this->email = $email;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchChannel
     {
         return new self(

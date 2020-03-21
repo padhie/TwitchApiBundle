@@ -27,6 +27,9 @@ final class TwitchStream implements TwitchModelInterface
     /** @var TwitchChannel */
     private $channel;
 
+    /**
+     * @param string[] $preview
+     */
     private function __construct(
         int $_id,
         string $game,
@@ -51,6 +54,9 @@ final class TwitchStream implements TwitchModelInterface
         $this->channel = $channel;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchStream
     {
         return new self(

@@ -18,6 +18,9 @@ final class TwitchHost implements TwitchModelInterface
         $this->viewer = $viewer;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchHost
     {
         return new self(

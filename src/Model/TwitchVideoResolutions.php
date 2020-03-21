@@ -24,6 +24,9 @@ final class TwitchVideoResolutions implements TwitchModelInterface
         $this->mobile = $mobile;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchVideoResolutions
     {
         return new self(

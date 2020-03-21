@@ -27,6 +27,9 @@ final class TwitchValidate implements TwitchModelInterface
         $this->user = $user;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchValidate
     {
         return new self(

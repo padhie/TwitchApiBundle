@@ -5,13 +5,13 @@ namespace Padhie\TwitchApiBundle\Model;
 
 final class TwitchVideoThumbnails implements TwitchModelInterface
 {
-    /** @var array */
+    /** @var array<int, TwitchVideoThumbnail> */
     private $large;
-    /** @var array */
+    /** @var array<int, TwitchVideoThumbnail> */
     private $medium;
-    /** @var array */
+    /** @var array<int, TwitchVideoThumbnail> */
     private $small;
-    /** @var array */
+    /** @var array<int, TwitchVideoThumbnail> */
     private $template;
 
     /**
@@ -28,6 +28,9 @@ final class TwitchVideoThumbnails implements TwitchModelInterface
         $this->template = $template;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchVideoThumbnails
     {
         $larges = [];

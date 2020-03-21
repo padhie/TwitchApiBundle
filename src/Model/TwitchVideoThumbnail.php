@@ -16,6 +16,9 @@ final class TwitchVideoThumbnail implements TwitchModelInterface
         $this->url = $url;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchVideoThumbnail
     {
         return new self(

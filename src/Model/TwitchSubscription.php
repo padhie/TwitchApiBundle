@@ -29,6 +29,9 @@ final class TwitchSubscription implements TwitchModelInterface
         $this->channel = $channel;
     }
 
+    /**
+     * @param array<string, mixed> $json
+     */
     public static function createFromJson(array $json): TwitchSubscription
     {
         return new self(
