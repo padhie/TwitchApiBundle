@@ -2,7 +2,7 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-class TwitchEmoticonImage extends TwitchModel
+final class TwitchEmoticonImage implements TwitchModelInterface
 {
     /** @var integer */
     private $id;
@@ -15,77 +15,66 @@ class TwitchEmoticonImage extends TwitchModel
     /** @var string */
     private $url;
     /** @var integer */
-    private $emoticon_set;
+    private $emoticonSet;
 
-    public function getWidth(): ?int
-    {
-        return $this->width;
-    }
-
-    public function setWidth(int $width): self
-    {
-        $this->width = $width;
-
-        return $this;
-    }
-
-    public function getHeight(): ?int
-    {
-        return $this->height;
-    }
-
-    public function setHeight(int $height): self
-    {
-        $this->height = $height;
-
-        return $this;
-    }
-
-    public function getUrl(): ?string
-    {
-        return $this->url;
-    }
-
-    public function setUrl(string $url): self
-    {
+    private function __construct(
+        int $id,
+        string $code,
+        int $emoticonSet,
+        string $url,
+        int $width,
+        int $height
+    ) {
+        $this->id = $id;
+        $this->code = $code;
+        $this->emoticonSet = $emoticonSet;
         $this->url = $url;
-
-        return $this;
+        $this->width = $width;
+        $this->height = $height;
     }
 
-    public function getEmoticonSet(): ?int
+    /**
+     * @param array<string, mixed> $json
+     */
+    public static function createFromJson(array $json): TwitchEmoticonImage
     {
-        return $this->emoticon_set;
+        return new self(
+            $json['id'] ?? 0,
+            $json['code'] ?? '',
+            $json['emoticon_set'] ?? 0,
+            $json['url'] ?? '',
+            $json['width'] ?? 0,
+            $json['height'] ?? 0
+        );
     }
 
-    public function setEmoticonSet(int $emoticon_set): self
-    {
-        $this->emoticon_set = $emoticon_set;
-
-        return $this;
-    }
-
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getCode(): ?string
+    public function getCode(): string
     {
         return $this->code;
     }
 
-    public function setCode(string $code): self
+    public function getWidth(): int
     {
-        $this->code = $code;
+        return $this->width;
+    }
 
-        return $this;
+    public function getHeight(): int
+    {
+        return $this->height;
+    }
+
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    public function getEmoticonSet(): int
+    {
+        return $this->emoticonSet;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-class TwitchValidate extends TwitchModel
+final class TwitchValidate implements TwitchModelInterface
 {
     /** @var string */
     private $clientId;
@@ -12,8 +12,34 @@ class TwitchValidate extends TwitchModel
     private $scopes;
     /** @var string */
     private $userId;
-    /** @var TwitchUser */
+    /** @var null|TwitchUser */
     private $user;
+
+    /**
+     * @param array<int, string> $scopes
+     */
+    private function __construct(string $clientId, string $login, array $scopes, string $userId, ?TwitchUser $user)
+    {
+        $this->clientId = $clientId;
+        $this->login = $login;
+        $this->scopes = $scopes;
+        $this->userId = $userId;
+        $this->user = $user;
+    }
+
+    /**
+     * @param array<string, mixed> $json
+     */
+    public static function createFromJson(array $json): TwitchValidate
+    {
+        return new self(
+            $json['client_id'] ?? '',
+            $json['login'] ?? '',
+            $json['scopes'] ?? [],
+            $json['user_id'] ?? '',
+            $json['user'] ?? null
+        );
+    }
 
     public function getClientId(): string
     {
@@ -38,53 +64,8 @@ class TwitchValidate extends TwitchModel
         return $this->userId;
     }
 
-    public function getUser(): TwitchUser
+    public function getUser(): ?TwitchUser
     {
         return $this->user;
-    }
-
-    public function setClientId(string $clientId): TwitchValidate
-    {
-        $this->clientId = $clientId;
-
-        return $this;
-    }
-
-    public function setLogin(string $login): TwitchValidate
-    {
-        $this->login = $login;
-
-        return $this;
-    }
-
-    public function addScope(string $scope): TwitchValidate
-    {
-        $this->scopes[] = $scope;
-
-        return $this;
-    }
-
-    /**
-     * @param string[] $scope
-     */
-    public function setScopes(array $scope): TwitchValidate
-    {
-        $this->scopes = $scope;
-
-        return $this;
-    }
-
-    public function setUserId(string $userId): TwitchValidate
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    public function setUser(TwitchUser $user): TwitchValidate
-    {
-        $this->user = $user;
-
-        return $this;
     }
 }

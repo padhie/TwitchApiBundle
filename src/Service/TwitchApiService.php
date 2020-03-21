@@ -9,8 +9,8 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Padhie\TwitchApiBundle\Exception\ApiErrorException;
 use Padhie\TwitchApiBundle\Exception\UserNotExistsException;
-use Padhie\TwitchApiBundle\Helper\TwitchApiModelHelper;
 use Padhie\TwitchApiBundle\Model\TwitchChannel;
+use Padhie\TwitchApiBundle\Model\TwitchChannelSubscriptions;
 use Padhie\TwitchApiBundle\Model\TwitchEmoticon;
 use Padhie\TwitchApiBundle\Model\TwitchEmoticonImage;
 use Padhie\TwitchApiBundle\Model\TwitchFollower;
@@ -23,17 +23,10 @@ use Padhie\TwitchApiBundle\Model\TwitchVideo;
 
 class TwitchApiService
 {
-    /**
-     * @var array
-     */
     public const SCOPE_USER = [
         'user_read',
         'user_follows_edit',
     ];
-
-    /**
-     * @var array
-     */
     public const SCOPE_CHANNEL = [
         'channel_read',
         'channel_stream',
@@ -42,95 +35,39 @@ class TwitchApiService
         'channel_check_subscription',
         'channel_commercial',
     ];
-
-    /**
-     * @var int
-     */
     private const REQUEST_READ_LIMIT = 8192;
 
-    /**
-     * @var Client
-     */
+    /** @var Client */
     private $guzzle;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $client_id;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $client_secret;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $redirect_url;
-
-    /**
-     * @var string
-     */
-    private $base_url = "https://api.twitch.tv/kraken/";
-
-    /**
-     * @var string
-     */
+    /** @var string */
+    private $base_url = 'https://api.twitch.tv/kraken/';
+    /** @var string */
     private $header_application = 'application/vnd.twitchtv.v5+json';
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $oauth;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $additional_string;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $_raw_response;
-
-    /**
-     * @var array
-     */
+    /** @var array<mixed> */
     private $response;
-
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $channel_id;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $channel_name;
-
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $user_id;
-
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $video_id;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $last_url;
 
-
-    /**
-     * TwitchApiService constructor.
-     *
-     * @param string $clientId
-     * @param string $clientSecret
-     * @param string $redirectUrl
-     */
     public function __construct(string $clientId, string $clientSecret, string $redirectUrl)
     {
         $this->guzzle = new Client();
@@ -142,11 +79,6 @@ class TwitchApiService
     // #########################
     // # SETTER/GETTER METHODS #
     // #########################
-    /**
-     * @param string $oauth
-     *
-     * @return $this
-     */
     public function setOAuth(string $oauth): self
     {
         $this->oauth = $oauth;
@@ -154,11 +86,6 @@ class TwitchApiService
         return $this;
     }
 
-    /**
-     * @param string $additional
-     *
-     * @return $this
-     */
     public function setAdditionalString(string $additional): self
     {
         $this->additional_string = $additional;
@@ -167,28 +94,21 @@ class TwitchApiService
     }
 
     /**
-     * @param array $scopeList
-     *
-     * @return string
+     * @param array<int, string> $scopeList
      */
     public function getAccessTokenUrl(array $scopeList = []): string
     {
         $scope = implode('+', $scopeList);
 
-        $sUrl = $this->base_url . "oauth2/authorize?";
-        $sParams = "response_type=token" .
-            "&client_id=" . $this->client_id .
-            "&scope=" . $scope .
-            "&redirect_uri=" . $this->redirect_url;
+        $sUrl = $this->base_url . 'oauth2/authorize?';
+        $sParams = 'response_type=token' .
+            '&client_id=' . $this->client_id .
+            '&scope=' . $scope .
+            '&redirect_uri=' . $this->redirect_url;
 
         return $sUrl . $sParams;
     }
 
-    /**
-     * @param int $channelId
-     *
-     * @return TwitchApiService
-     */
     public function setChannelId(int $channelId): self
     {
         $this->channel_id = $channelId;
@@ -196,19 +116,11 @@ class TwitchApiService
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getChannelId(): int
     {
         return $this->channel_id;
     }
 
-    /**
-     * @param string $channelName
-     *
-     * @return TwitchApiService
-     */
     public function setChannelName(string $channelName): self
     {
         $this->channel_name = $channelName;
@@ -216,19 +128,11 @@ class TwitchApiService
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getChannelName(): string
     {
         return $this->channel_name;
     }
 
-    /**
-     * @param int $userId
-     *
-     * @return $this
-     */
     public function setUserId(int $userId): self
     {
         $this->user_id = $userId;
@@ -236,19 +140,11 @@ class TwitchApiService
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getUserId(): int
     {
         return $this->user_id;
     }
 
-    /**
-     * @param int $videoId
-     *
-     * @return $this
-     */
     public function setVideoId(int $videoId): self
     {
         $this->video_id = $videoId;
@@ -256,16 +152,13 @@ class TwitchApiService
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getVideoId(): int
     {
         return $this->video_id;
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
     protected function getData(): array
     {
@@ -274,14 +167,13 @@ class TwitchApiService
 
     /**
      * @param string[] $header [optional]
-     *
      * @return string[]
      */
     private function combineHeader(array $header = []): array
     {
         return array_merge($header, [
-            'Accept'        => $this->header_application,
-            'Client-ID'     => $this->client_id,
+            'Accept' => $this->header_application,
+            'Client-ID' => $this->client_id,
             'Authorization' => 'OAuth ' . $this->oauth,
             'Cache-Control' => 'no-cache',
         ]);
@@ -292,10 +184,8 @@ class TwitchApiService
     // # BASE METHODS #
     // ################
     /**
-     * @param string $url_extension URL endpoint
-     * @param array  $data          [optional] Key => Value
-     * @param array  $header        [optional] Key => Value
-     *
+     * @param array<string, string> $data [optional] Key => Value
+     * @param array<int, string> $header [optional] Value
      * @return TwitchApiService
      * @throws ApiErrorException
      */
@@ -316,6 +206,7 @@ class TwitchApiService
         try {
             $request = new Request('GET', $this->last_url, $options);
             $response = $this->guzzle->send($request);
+            assert($response instanceof Response);
 
             $this->loadHoleBody($response);
         } catch (ClientException $e) {
@@ -334,14 +225,12 @@ class TwitchApiService
     }
 
     /**
-     * @param string $url_extension URL endpoint
-     * @param array  $data          [optional] Key => Value
-     * @param array  $header        [optional] Key => Value
-     *
+     * @param array<string, string> $data [optional] Key => Value
+     * @param array<int, string> $header [optional] Value
      * @return TwitchApiService
      * @throws ApiErrorException
      */
-    protected function put($url_extension, $data = [], $header = []): self
+    protected function put(string $url_extension, array $data = [], array $header = []): self
     {
         $options = array_merge($this->combineHeader($header), ['body' => $data]);
         $this->last_url = $this->base_url . $url_extension . $this->additional_string;
@@ -349,6 +238,7 @@ class TwitchApiService
         try {
             $request = new Request('PUT', $this->last_url, $options);
             $response = $this->guzzle->send($request);
+            assert($response instanceof Response);
 
             $this->loadHoleBody($response);
             $this->response = json_decode($this->_raw_response, true);
@@ -367,7 +257,7 @@ class TwitchApiService
         $this->_raw_response = '';
 
         $check = true;
-        while($check) {
+        while ($check) {
             $tmpRawRespnse = $response->getBody()->read(self::REQUEST_READ_LIMIT);
             $this->_raw_response .= $tmpRawRespnse;
             if (strlen($tmpRawRespnse) < self::REQUEST_READ_LIMIT) {
@@ -401,9 +291,9 @@ class TwitchApiService
         $this->base_url = $_tmpBaseUrl;
 
         $validateData = $this->getData();
-        $user = $this->getUserByName($validateData['login']);
+        $validateData['user'] = $this->getUserByName($validateData['login']);
 
-        return TwitchApiModelHelper::fillValidateModelByJson($validateData, $user);
+        return TwitchValidate::createFromJson($validateData);
     }
 
     // ################
@@ -411,14 +301,10 @@ class TwitchApiService
     // ################
     /**
      * Scope: user_read
-     *
-     * @param string $name
-     *
-     * @return TwitchUser
      * @throws ApiErrorException
      * @throws UserNotExistsException
      */
-    public function getUserByName($name): TwitchUser
+    public function getUserByName(string $name): TwitchUser
     {
         $this->get('users?login=' . $name);
 
@@ -426,41 +312,53 @@ class TwitchApiService
             throw new UserNotExistsException('No userdata exists', 1530903951);
         }
 
-        return TwitchApiModelHelper::fillUserModelByJson($this->getData()['users'][0]);
+        return TwitchUser::createFromJson($this->getData()['users'][0]);
     }
 
     /**
      * Scope: user_read
-     * @return TwitchUser
      * @throws ApiErrorException
      */
     public function getUser(): TwitchUser
     {
         $this->get('user');
 
-        return TwitchApiModelHelper::fillUserModelByJson($this->getData());
+        return TwitchUser::createFromJson($this->getData());
     }
 
     /**
      * Scope: -
-     * @return TwitchUser
      * @throws ApiErrorException
      */
-    public function getUserById(): TwitchUser
+    public function getUserById(int $userId = 0): TwitchUser
     {
-        $this->get('users/' . $this->getUserId());
+        $userId = $userId > 0 ? $userId : $this->getUserId();
+        $this->get('users/' . $userId);
 
-        return TwitchApiModelHelper::fillUserModelByJson($this->getData());
+        return TwitchUser::createFromJson($this->getData());
+    }
+
+    /**
+     * Scope: channel_subscriptions
+     * @throws ApiErrorException
+     */
+    public function getChannelSubscriber(int $channelId = 0): TwitchChannelSubscriptions
+    {
+        $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
+        $this->get('channel/' . $channelId . '/subscriptions');
+
+        return TwitchChannelSubscriptions::createFromJson($this->getData());
     }
 
     /**
      * Scope: user_subscriptions
-     * @return bool
      */
-    public function isUserSubscribingChannel(): bool
+    public function isUserSubscribingChannel(int $userId = 0, int $channelId = 0): bool
     {
+        $userId = $userId > 0 ? $userId : $this->getUserId();
+        $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         try {
-            $this->get('users/' . $this->getUserId() . '/subscriptions/' . $this->getChannelId());
+            $this->get('users/' . $userId . '/subscriptions/' . $channelId);
             $data = $this->getData();
             if (!isset($data['_total']) || $data['_total'] === 0) {
                 return false;
@@ -478,25 +376,26 @@ class TwitchApiService
 
     /**
      * Scope: -
-     * @return TwitchFollower
      */
     public function getUserFollowingChannel(): TwitchFollower
     {
         $this->isUserFollowingChannel();
         $data = $this->getData();
         $data['user'] = $this->getUser();
+        $data['channel'] = $this->getChannel();
 
-        return TwitchApiModelHelper::fillFollowerModelByJson($data);
+        return TwitchFollower::createFromJson($data);
     }
 
     /**
      * Scope: -
-     * @return bool
      */
-    public function isUserFollowingChannel(): bool
+    public function isUserFollowingChannel(int $userId = 0, int $channelId = 0): bool
     {
+        $userId = $userId > 0 ? $userId : $this->getUserId();
+        $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         try {
-            $this->get('users/' . $this->getUserId() . '/follows/channels/' . $this->getChannelId());
+            $this->get('users/' . $userId . '/follows/channels/' . $channelId);
         } catch (ApiErrorException $e) {
             if (strpos($e->getMessage(), 'is not following')
                 || strpos($e->getMessage(), 'Follow not found')) {
@@ -514,13 +413,14 @@ class TwitchApiService
      * @return TwitchFollower[]
      * @throws ApiErrorException
      */
-    public function getChannelFollower(): array
+    public function getChannelFollower(int $userId = 0): array
     {
-        $this->get('users/' . $this->getUserId() . '/follows/channels');
+        $userId = $userId > 0 ? $userId : $this->getUserId();
+        $this->get('users/' . $userId . '/follows/channels');
 
         $followerList = [];
         foreach ($this->getData()['follows'] AS $followerData) {
-            $followerList[] = TwitchApiModelHelper::fillFollowerModelByJson($followerData);
+            $followerList[] = TwitchFollower::createFromJson($followerData);
         }
 
         return $followerList;
@@ -528,14 +428,15 @@ class TwitchApiService
 
     /**
      * Scope: user_follows_edit
-     * @return TwitchChannel
      * @throws ApiErrorException
      */
-    public function setUserFollowingChannel(): TwitchChannel
+    public function setUserFollowingChannel(int $userId = 0, int $channelId = 0): TwitchChannel
     {
-        $this->put('users/' . $this->getUserId() . '/follows/channels/' . $this->getChannelId());
+        $userId = $userId > 0 ? $userId : $this->getUserId();
+        $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
+        $this->put('users/' . $userId . '/follows/channels/' . $channelId);
 
-        return TwitchApiModelHelper::fillChannelModelByJson($this->getData());
+        return TwitchChannel::createFromJson($this->getData());
     }
 
 
@@ -544,26 +445,25 @@ class TwitchApiService
     // ###################
     /**
      * Scope: channel_read
-     * @return TwitchChannel
      * @throws ApiErrorException
      */
     public function getChannel(): TwitchChannel
     {
-        $this->get("channel");
+        $this->get('channel');
 
-        return TwitchApiModelHelper::fillChannelModelByJson($this->getData());
+        return TwitchChannel::createFromJson($this->getData());
     }
 
     /**
      * Scope: -
-     * @return TwitchChannel
      * @throws ApiErrorException
      */
-    public function getChannelById(): TwitchChannel
+    public function getChannelById(int $channelId = 0): TwitchChannel
     {
-        $this->get("channels/" . $this->getChannelId());
+        $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
+        $this->get('channels/' . $channelId);
 
-        return TwitchApiModelHelper::fillChannelModelByJson($this->getData());
+        return TwitchChannel::createFromJson($this->getData());
     }
 
     /**
@@ -571,13 +471,14 @@ class TwitchApiService
      * @return TwitchFollower[]
      * @throws ApiErrorException
      */
-    public function getFollowerList(): array
+    public function getFollowerList(int $channelId = 0): array
     {
-        $this->get('channels/' . $this->getChannelId() . '/follows');
+        $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
+        $this->get('channels/' . $channelId . '/follows');
 
         $followerList = [];
         foreach ($this->getData()['follows'] AS $followerData) {
-            $followerList[] = TwitchApiModelHelper::fillFollowerModelByJson($followerData);
+            $followerList[] = TwitchFollower::createFromJson($followerData);
         }
 
         return $followerList;
@@ -588,13 +489,14 @@ class TwitchApiService
      * @return TwitchTeam[]
      * @throws ApiErrorException
      */
-    public function getTeamList(): array
+    public function getTeamList(int $channelId = 0): array
     {
-        $this->get('channels/' . $this->getChannelId() . '/team');
+        $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
+        $this->get('channels/' . $channelId . '/team');
 
         $teamList = [];
         foreach ($this->getData()['follows'] AS $teamData) {
-            $teamList[] = TwitchApiModelHelper::fillTeamModelByJson($teamData);
+            $teamList[] = TwitchTeam::createFromJson($teamData);
         }
 
         return $teamList;
@@ -602,42 +504,37 @@ class TwitchApiService
 
     /**
      * Scope: channel_editor
-     *
-     * @param string $title
-     *
-     * @return TwitchChannel
      * @throws ApiErrorException
      */
-    public function changeChannelTitle($title): TwitchChannel
+    public function changeChannelTitle(string $title, int $channelId = 0): TwitchChannel
     {
         $data = [
             'channel[status]' => $title,
         ];
-        $this->put('channels/' . $this->getChannelId(), $data);
 
-        return TwitchApiModelHelper::fillChannelModelByJson($this->getData());
+        $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
+        $this->put('channels/' . $channelId, $data);
+
+        return TwitchChannel::createFromJson($this->getData());
     }
 
     /**
      * Scope: channel_editor
-     *
-     * @param string $game
-     *
-     * @return TwitchChannel
      * @throws ApiErrorException
      */
-    public function changeChannelGame($game): TwitchChannel
+    public function changeChannelGame(string $game, int $channelId = 0): TwitchChannel
     {
         $data = [
             'channel[game]' => $game,
         ];
-        $this->put('channels/' . $this->getChannelId(), $data);
 
-        return TwitchApiModelHelper::fillChannelModelByJson($this->getData());
+        $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
+        $this->put('channels/' . $channelId, $data);
+
+        return TwitchChannel::createFromJson($this->getData());
     }
 
     /**
-     * Data get out from API
      * Scope: -
      * @return TwitchHost[]
      * @throws ApiErrorException
@@ -646,28 +543,24 @@ class TwitchApiService
     {
         $_tmpBaseUrl = $this->base_url;
         $this->base_url = 'https://tmi.twitch.tv/';
-        $this->get("hosts?include_logins=1&target=" . $this->getChannelId(), [], ['Cache-Control: no-cache']);
+        $this->get('hosts?include_logins=1&target=' . $this->getChannelId(), [], ['Cache-Control: no-cache']);
         $this->base_url = $_tmpBaseUrl;
 
-        $origChannelId = $this->getChannelId();
         $data = $this->getData();
         $hostList = [];
-        foreach ($data["hosts"] AS $host) {
-            $twitchHost = new TwitchHost();
-
-            $this->setChannelId($host['host_id']);
-            $twitchHost->setChannel($this->getChannelById());
-
-            $this->setChannelId($host['target_id']);
-            $twitchHost->setTarget($this->getChannelById());
+        foreach ($data['hosts'] AS $host) {
+            $itemData = [
+                'channel' => $this->getChannelById($host['host_id']),
+                'target' => $this->getChannelById($host['target_id']),
+                'viewer' => 0,
+            ];
 
             if (isset($host['host_recent_chat_activity_count'])) {
-                $twitchHost->setViewer($host['host_recent_chat_activity_count']);
+                $itemData['viewer']++;
             }
 
-            $hostList[] = $twitchHost;
+            $hostList[] = TwitchHost::createFromJson($itemData);
         }
-        $this->setChannelId($origChannelId);
 
         return $hostList;
     }
@@ -678,16 +571,16 @@ class TwitchApiService
     // ##################
     /**
      * Scope: -
-     * @return TwitchStream|null Return TwitchStream if data return else NULL
      * @throws ApiErrorException
      */
-    public function getStream(): ?TwitchStream
+    public function getStream(int $channelId = 0): ?TwitchStream
     {
-        $this->get('streams/' . $this->getChannelId());
+        $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
+        $this->get('streams/' . $channelId);
         $returnData = $this->getData();
 
         if ($returnData['stream']) {
-            return TwitchApiModelHelper::fillStreamModelByJson($returnData['stream']);
+            return TwitchStream::createFromJson($returnData['stream']);
         }
 
         return null;
@@ -695,7 +588,6 @@ class TwitchApiService
 
     /**
      * Scope: user_read
-     * Return a list of all online and playlist streams
      * @return TwitchStream[]
      * @throws ApiErrorException
      */
@@ -705,7 +597,7 @@ class TwitchApiService
 
         $streamList = [];
         foreach ($this->getData()['streams'] AS $streamData) {
-            $streamList[] = TwitchApiModelHelper::fillStreamModelByJson($streamData);
+            $streamList[] = TwitchStream::createFromJson($streamData);
         }
 
         return $streamList;
@@ -717,18 +609,18 @@ class TwitchApiService
     // ################
     /**
      * Scope: -
-     * @return array
+     * @return mixed[]
      * @throws ApiErrorException
      */
-    public function getBadgeList(): array
+    public function getBadgeList(int $channelId = 0): array
     {
-        $this->get('chat/' . $this->getChannelId() . '/badges');
+        $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
+        $this->get('chat/' . $channelId . '/badges');
 
         return $this->getData();
     }
 
     /**
-     * Data get out from API
      * Scope: -
      * @return string
      * @throws ApiErrorException
@@ -745,9 +637,9 @@ class TwitchApiService
 
     /**
      * Scope: -
-     * @deprecated
      * @return TwitchEmoticon[]
      * @throws ApiErrorException
+     * @deprecated
      */
     public function getEmoticonList(): array
     {
@@ -755,7 +647,7 @@ class TwitchApiService
 
         $emoticonList = [];
         foreach ($this->getData()['emoticons'] AS $emoticonsData) {
-            $emoticon = TwitchApiModelHelper::fillEmoticonModelByJson($emoticonsData);
+            $emoticon = TwitchEmoticon::createFromJson($emoticonsData);
             $emoticonList[] = $emoticon;
         }
 
@@ -764,7 +656,6 @@ class TwitchApiService
 
     /**
      * Scope: -
-     *
      * @return TwitchEmoticonImage[]
      * @throws ApiErrorException
      */
@@ -774,7 +665,7 @@ class TwitchApiService
 
         $emoticonList = [];
         foreach ($this->getData()['emoticons'] AS $emoticonsData) {
-            $emoticon = TwitchApiModelHelper::fillEmoticonImageModelByJson($emoticonsData);
+            $emoticon = TwitchEmoticonImage::createFromJson($emoticonsData);
             $emoticonList[] = $emoticon;
         }
 
@@ -783,13 +674,11 @@ class TwitchApiService
 
     /**
      * Scope: -
-     *
      * @param string $emoticonsets List of emoticonsets with , (comma) seperated
-     *
      * @return TwitchEmoticonImage[]
      * @throws ApiErrorException
      */
-    public function getEmoticonImageListByEmoteiconSets($emoticonsets): array
+    public function getEmoticonImageListByEmoteiconSets(string $emoticonsets): array
     {
         $data = [];
         if (!empty($emoticonsets)) {
@@ -800,9 +689,7 @@ class TwitchApiService
         $emoticonList = [];
         foreach ($this->getData()['emoticon_sets'] AS $id => $emoticonsData) {
             foreach ($emoticonsData AS $data) {
-                $emoticon = TwitchApiModelHelper::fillEmoticonImageModelByJson($data);
-                $emoticon->setEmoticonSet($id);
-                $emoticonList[] = $emoticon;
+                $emoticonList[] = TwitchEmoticonImage::createFromJson($data);
 
             }
         }
@@ -816,13 +703,16 @@ class TwitchApiService
     // #################
     /**
      * Scope: -
-     * @return TwitchVideo
      * @throws ApiErrorException
      */
-    public function getVideoById(): TwitchVideo
+    public function getVideoById(int $videoId = 0): TwitchVideo
     {
-        $this->get('videos/' . $this->getVideoId());
+        $videoId = $videoId > 0 ? $videoId : $this->getVideoId();
+        $this->get('videos/' . $videoId);
 
-        return TwitchApiModelHelper::fillVideoModelByJson($this->getData());
+        $data = $this->getData();
+        $data['channel'] = $this->getChannel();
+
+        return TwitchVideo::createFromJson($data);
     }
 }

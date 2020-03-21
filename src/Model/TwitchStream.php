@@ -4,39 +4,78 @@ namespace Padhie\TwitchApiBundle\Model;
 
 use DateTime;
 
-class TwitchStream extends TwitchModel
+final class TwitchStream implements TwitchModelInterface
 {
-    /** @var integer */
+    /** @var int */
     private $_id;
     /** @var string */
     private $game;
-    /** @var integer */
+    /** @var int */
     private $viewers;
-    /** @var integer */
-    private $video_height;
-    /** @var integer */
-    private $average_fps;
-    /** @var integer */
+    /** @var int */
+    private $videoHeight;
+    /** @var int */
+    private $averageFps;
+    /** @var int */
     private $delay;
-    /** @var DateTime */
-    private $created_at;
     /** @var boolean */
-    private $is_playlist;
+    private $isPlaylist;
     /** @var string[] */
     private $preview;
+    /** @var DateTime */
+    private $createdAt;
     /** @var TwitchChannel */
     private $channel;
+
+    /**
+     * @param string[] $preview
+     */
+    private function __construct(
+        int $_id,
+        string $game,
+        int $viewers,
+        int $videoHeight,
+        int $averageFps,
+        int $delay,
+        bool $isPlaylist,
+        array $preview,
+        DateTime $createdAt,
+        TwitchChannel $channel
+    ) {
+        $this->_id = $_id;
+        $this->game = $game;
+        $this->viewers = $viewers;
+        $this->videoHeight = $videoHeight;
+        $this->averageFps = $averageFps;
+        $this->delay = $delay;
+        $this->isPlaylist = $isPlaylist;
+        $this->preview = $preview;
+        $this->createdAt = $createdAt;
+        $this->channel = $channel;
+    }
+
+    /**
+     * @param array<string, mixed> $json
+     */
+    public static function createFromJson(array $json): TwitchStream
+    {
+        return new self(
+            $json['_id'] ?? 0,
+            $json['game'] ?? 'string',
+            $json['viewers'] ?? 0,
+            $json['video_height'] ?? 0,
+            $json['average_fps'] ?? 0,
+            $json['delay'] ?? 0,
+            $json['is_playlist'] ?? false,
+            $json['preview'] ?? [],
+            new DateTime($json['created_at']),
+            TwitchChannel::createFromJson($json['channel'])
+        );
+    }
 
     public function getId(): int
     {
         return $this->_id;
-    }
-
-    public function setId(int $id): self
-    {
-        $this->_id = $id;
-
-        return $this;
     }
 
     public function getGame(): string
@@ -44,47 +83,19 @@ class TwitchStream extends TwitchModel
         return $this->game;
     }
 
-    public function setGame(string $game): self
-    {
-        $this->game = $game;
-
-        return $this;
-    }
-
     public function getViewers(): int
     {
         return $this->viewers;
     }
 
-    public function setViewers(int $viewers): self
-    {
-        $this->viewers = $viewers;
-
-        return $this;
-    }
-
     public function getVideoHeight(): int
     {
-        return $this->video_height;
-    }
-
-    public function setVideoHeight(int $video_height): self
-    {
-        $this->video_height = $video_height;
-
-        return $this;
+        return $this->videoHeight;
     }
 
     public function getAverageFps(): int
     {
-        return $this->average_fps;
-    }
-
-    public function setAverageFps(int $average_fps): self
-    {
-        $this->average_fps = $average_fps;
-
-        return $this;
+        return $this->averageFps;
     }
 
     public function getDelay(): int
@@ -92,35 +103,14 @@ class TwitchStream extends TwitchModel
         return $this->delay;
     }
 
-    public function setDelay(int $delay): self
-    {
-        $this->delay = $delay;
-
-        return $this;
-    }
-
     public function getCreatedAt(): DateTime
     {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(DateTime $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->createdAt;
     }
 
     public function isPlaylist(): bool
     {
-        return $this->is_playlist;
-    }
-
-    public function setIsPlaylist(bool $is_playlist): self
-    {
-        $this->is_playlist = $is_playlist;
-
-        return $this;
+        return $this->isPlaylist;
     }
 
     /**
@@ -131,25 +121,8 @@ class TwitchStream extends TwitchModel
         return $this->preview;
     }
 
-    /**
-     * @param string[] $preview
-     */
-    public function setPreview(array $preview): self
-    {
-        $this->preview = $preview;
-
-        return $this;
-    }
-
     public function getChannel(): TwitchChannel
     {
         return $this->channel;
-    }
-
-    public function setChannel(TwitchChannel $channel): self
-    {
-        $this->channel = $channel;
-
-        return $this;
     }
 }

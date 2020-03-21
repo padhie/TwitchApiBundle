@@ -4,67 +4,64 @@ namespace Padhie\TwitchApiBundle\Model;
 
 use DateTime;
 
-class TwitchSubscription extends TwitchModel
+final class TwitchSubscription implements TwitchModelInterface
 {
     /** @var string */
     private $_id;
     /** @var DateTime */
-    private $created_at;
+    private $createdAt;
     /** @var string */
-    private $sub_plan;
+    private $subPlan;
     /** @var string */
-    private $sub_plan_name;
-    /** @var TwitchUser */
+    private $subPlanName;
+    /** @var null|TwitchUser */
     private $user;
-    /** @var TwitchChannel */
+    /** @var null|TwitchChannel */
     private $channel;
+
+    private function __construct(string $_id, DateTime $createdAt, string $subPlan, string $subPlanName, ?TwitchUser $user, ?TwitchChannel $channel)
+    {
+        $this->_id = $_id;
+        $this->createdAt = $createdAt;
+        $this->subPlan = $subPlan;
+        $this->subPlanName = $subPlanName;
+        $this->user = $user;
+        $this->channel = $channel;
+    }
+
+    /**
+     * @param array<string, mixed> $json
+     */
+    public static function createFromJson(array $json): TwitchSubscription
+    {
+        return new self(
+            $json['_id'] ?? '',
+            $json['created_at'] ? new DateTime($json['created_at']) : new DateTime(),
+            $json['sub_plan'] ?? '',
+            $json['sub_plan_name'] ?? '',
+            $json['user'] ? TwitchUser::createFromJson($json['user']) : null,
+            $json['channel'] ? TwitchChannel::createFromJson($json['channel']) : null
+        );
+    }
 
     public function getId(): string
     {
         return $this->_id;
     }
 
-    public function setId(string $id): self
-    {
-        $this->_id = $id;
-
-        return $this;
-    }
-
     public function getCreatedAt(): DateTime
     {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(DateTime $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->createdAt;
     }
 
     public function getSubPlan(): string
     {
-        return $this->sub_plan;
-    }
-
-    public function setSubPlan(string $sub_plan): self
-    {
-        $this->sub_plan = $sub_plan;
-
-        return $this;
+        return $this->subPlan;
     }
 
     public function getSubPlanName(): string
     {
-        return $this->sub_plan_name;
-    }
-
-    public function setSubPlanName(string $sub_plan_name): self
-    {
-        $this->sub_plan_name = $sub_plan_name;
-
-        return $this;
+        return $this->subPlanName;
     }
 
     public function getUser(): ?TwitchUser
@@ -72,22 +69,8 @@ class TwitchSubscription extends TwitchModel
         return $this->user;
     }
 
-    public function setUser(TwitchUser $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     public function getChannel(): ?TwitchChannel
     {
         return $this->channel;
-    }
-
-    public function setChannel(TwitchChannel $channel): self
-    {
-        $this->channel = $channel;
-
-        return $this;
     }
 }

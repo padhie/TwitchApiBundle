@@ -4,18 +4,16 @@ namespace Padhie\TwitchApiBundle\Model;
 
 use DateTime;
 
-class TwitchTeam extends TwitchModel
+final class TwitchTeam implements TwitchModelInterface
 {
-    /** @var integer */
+    /** @var int */
     private $_id;
-    /** @var string */
+    /** @var null|string */
     private $background;
     /** @var string */
     private $banner;
-    /** @var DateTime */
-    private $created_at;
     /** @var string */
-    private $display_name;
+    private $displayName;
     /** @var string */
     private $info;
     /** @var string */
@@ -23,18 +21,53 @@ class TwitchTeam extends TwitchModel
     /** @var string */
     private $name;
     /** @var DateTime */
-    private $updated_at;
+    private $createdAt;
+    /** @var null|DateTime */
+    private $updatedAt;
+
+    private function __construct(
+        int $_id,
+        ?string $background,
+        string $banner,
+        string $displayName,
+        string $info,
+        string $logo,
+        string $name,
+        DateTime $createdAt,
+        ?DateTime $updatedAt
+    ) {
+        $this->_id = $_id;
+        $this->background = $background;
+        $this->banner = $banner;
+        $this->displayName = $displayName;
+        $this->info = $info;
+        $this->logo = $logo;
+        $this->name = $name;
+        $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @param array<string, mixed> $json
+     */
+    public static function createFromJson(array $json): TwitchTeam
+    {
+        return new self(
+            $json['_id'] ?? 0,
+            $json['background'] ?? null,
+            $json['banner'] ?? '',
+            $json['display_name'] ?? '',
+            $json['info'] ?? '',
+            $json['logo'] ?? '',
+            $json['name'] ?? '',
+            new DateTime($json['created_at']),
+            $json['updated_at'] ? new DateTime($json['updated_at']) : null
+        );
+    }
 
     public function getId(): int
     {
         return $this->_id;
-    }
-
-    public function setId(int $id): self
-    {
-        $this->_id = $id;
-
-        return $this;
     }
 
     public function getBackground(): ?string
@@ -42,47 +75,19 @@ class TwitchTeam extends TwitchModel
         return $this->background;
     }
 
-    public function setBackground(string $background): self
-    {
-        $this->background = $background;
-
-        return $this;
-    }
-
-    public function getBanner(): string
+    public function getBanner(): ?string
     {
         return $this->banner;
     }
 
-    public function setBanner(string $banner): self
-    {
-        $this->banner = $banner;
-
-        return $this;
-    }
-
     public function getCreatedAt(): DateTime
     {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(DateTime $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->createdAt;
     }
 
     public function getDisplayName(): string
     {
-        return $this->display_name;
-    }
-
-    public function setDisplayName(string $display_name): self
-    {
-        $this->display_name = $display_name;
-
-        return $this;
+        return $this->displayName;
     }
 
     public function getInfo(): string
@@ -90,23 +95,9 @@ class TwitchTeam extends TwitchModel
         return $this->info;
     }
 
-    public function setInfo(string $info): self
-    {
-        $this->info = $info;
-
-        return $this;
-    }
-
     public function getLogo(): string
     {
         return $this->logo;
-    }
-
-    public function setLogo(string $logo): self
-    {
-        $this->logo = $logo;
-
-        return $this;
     }
 
     public function getName(): string
@@ -114,22 +105,8 @@ class TwitchTeam extends TwitchModel
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function getUpdatedAt(): ?DateTime
     {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): DateTime
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(DateTime $updated_at): self
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
+        return $this->updatedAt;
     }
 }

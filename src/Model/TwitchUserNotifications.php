@@ -2,34 +2,37 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-class TwitchUserNotifications extends TwitchModel
+final class TwitchUserNotifications implements TwitchModelInterface
 {
     /** @var bool */
     private $email;
     /** @var bool */
     private $push;
 
+    private function __construct(bool $email, bool $push)
+    {
+        $this->email = $email;
+        $this->push = $push;
+    }
+
+    /**
+     * @param array<string, mixed> $json
+     */
+    public static function createFromJson(array $json): TwitchUserNotifications
+    {
+        return new self(
+            $json['email'] ?? false,
+            $json['push'] ?? false
+        );
+    }
+
     public function isEmail(): bool
     {
         return $this->email;
     }
 
-    public function setEmail(bool $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
     public function isPush(): bool
     {
         return $this->push;
-    }
-
-    public function setPush(bool $push): self
-    {
-        $this->push = $push;
-
-        return $this;
     }
 }

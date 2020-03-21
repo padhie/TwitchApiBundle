@@ -3,34 +3,37 @@
 namespace Padhie\TwitchApiBundle\Model;
 
 
-class TwitchVideoThumbnail
+final class TwitchVideoThumbnail implements TwitchModelInterface
 {
     /** @var string */
     private $type;
     /** @var string */
     private $url;
 
+    private function __construct(string $type, string $url)
+    {
+        $this->type = $type;
+        $this->url = $url;
+    }
+
+    /**
+     * @param array<string, mixed> $json
+     */
+    public static function createFromJson(array $json): TwitchVideoThumbnail
+    {
+        return new self(
+            $json['type'] ?? '',
+            $json['url'] ?? ''
+        );
+    }
+
     public function getType(): string
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getUrl(): string
     {
         return $this->url;
-    }
-
-    public function setUrl(string $url): self
-    {
-        $this->url = $url;
-
-        return $this;
     }
 }

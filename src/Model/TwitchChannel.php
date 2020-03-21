@@ -4,55 +4,131 @@ namespace Padhie\TwitchApiBundle\Model;
 
 use DateTime;
 
-class TwitchChannel extends TwitchModel
+final class TwitchChannel implements TwitchModelInterface
 {
-    /** @var boolean */
+    /** @var bool */
     private $mature;
     /** @var string */
     private $status;
     /** @var string */
-    private $broadcaster_language;
+    private $broadcasterLanguage;
     /** @var string */
-    private $display_name;
+    private $displayName;
     /** @var string */
     private $game;
     /** @var string */
     private $language;
-    /** @var integer */
+    /** @var string */
     private $_id;
     /** @var string */
     private $name;
     /** @var DateTime */
-    private $created_at;
+    private $createdAt;
     /** @var DateTime */
-    private $updated_at;
-    /** @var boolean */
+    private $updatedAt;
+    /** @var bool */
     private $partner;
     /** @var string */
     private $logo;
     /** @var string|null */
-    private $video_banner;
+    private $videoBanner;
     /** @var string|null */
-    private $profile_banner;
+    private $profileBanner;
     /** @var string|null */
-    private $profile_banner_background_color;
+    private $profileBannerBackgroundColor;
     /** @var string */
     private $url;
-    /** @var integer */
+    /** @var int */
     private $views;
-    /** @var integer */
+    /** @var int */
     private $followers;
+    /** @var string */
+    private $broadcasterType;
+    /** @var string */
+    private $stream_key;
+    /** @var string */
+    private $email;
+
+    private function __construct(
+        bool $mature,
+        string $status,
+        string $broadcasterLanguage,
+        string $displayName,
+        string $game,
+        string $language,
+        string $_id,
+        string $name,
+        DateTime $createdAt,
+        DateTime $updatedAt,
+        bool $partner,
+        string $logo,
+        ?string $videoBanner,
+        ?string $profileBanner,
+        ?string $profileBannerBackgroundColor,
+        string $url,
+        int $views,
+        int $followers,
+        string $broadcasterType,
+        string $stream_key,
+        string $email
+    )
+    {
+        $this->mature = $mature;
+        $this->status = $status;
+        $this->broadcasterLanguage = $broadcasterLanguage;
+        $this->displayName = $displayName;
+        $this->game = $game;
+        $this->language = $language;
+        $this->_id = $_id;
+        $this->name = $name;
+        $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
+        $this->partner = $partner;
+        $this->logo = $logo;
+        $this->videoBanner = $videoBanner;
+        $this->profileBanner = $profileBanner;
+        $this->profileBannerBackgroundColor = $profileBannerBackgroundColor;
+        $this->url = $url;
+        $this->views = $views;
+        $this->followers = $followers;
+        $this->broadcasterType = $broadcasterType;
+        $this->stream_key = $stream_key;
+        $this->email = $email;
+    }
+
+    /**
+     * @param array<string, mixed> $json
+     */
+    public static function createFromJson(array $json): TwitchChannel
+    {
+        return new self(
+            $json['mature'] ?? false,
+            $json['status'] ?? '',
+            $json['broadcaster_language'] ?? '',
+            $json['display_name'] ?? '',
+            $json['game'] ?? '',
+            $json['language'] ?? '',
+            $json['_id'] ?? '',
+            $json['name'] ?? '',
+            $json['created_at'] ? new DateTime($json['created_at']) : new DateTime(),
+            $json['updated_at'] ? new DateTime($json['updated_at']) : new DateTime(),
+            $json['partner'] ?? false,
+            $json['logo'] ?? '',
+            $json['video_banner'] ?? null,
+            $json['profile_banner'] ?? null,
+            $json['profile_banner_background_color'] ?? null,
+            $json['url'] ?? '',
+            $json['views'] ?? 0,
+            $json['followers'] ?? 0,
+            $json['broadcaster_type'] ?? '',
+            $json['stream_key'] ?? '',
+            $json['email'] ?? ''
+        );
+    }
 
     public function isMature(): bool
     {
         return $this->mature;
-    }
-
-    public function setMature(bool $mature): self
-    {
-        $this->mature = $mature;
-
-        return $this;
     }
 
     public function getStatus(): string
@@ -60,35 +136,14 @@ class TwitchChannel extends TwitchModel
         return $this->status;
     }
 
-    public function setStatus(string $status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
     public function getBroadcasterLanguage(): string
     {
-        return $this->broadcaster_language;
-    }
-
-    public function setBroadcasterLanguage(string $broadcaster_language): self
-    {
-        $this->broadcaster_language = $broadcaster_language;
-
-        return $this;
+        return $this->broadcasterLanguage;
     }
 
     public function getDisplayName(): string
     {
-        return $this->display_name;
-    }
-
-    public function setDisplayName(string $display_name): self
-    {
-        $this->display_name = $display_name;
-
-        return $this;
+        return $this->displayName;
     }
 
     public function getGame(): string
@@ -96,35 +151,14 @@ class TwitchChannel extends TwitchModel
         return $this->game;
     }
 
-    public function setGame(string $game): self
-    {
-        $this->game = $game;
-
-        return $this;
-    }
-
     public function getLanguage(): string
     {
         return $this->language;
     }
 
-    public function setLanguage(string $language): self
-    {
-        $this->language = $language;
-
-        return $this;
-    }
-
-    public function getId(): int
+    public function getId(): string
     {
         return $this->_id;
-    }
-
-    public function setId(int $_id): self
-    {
-        $this->_id = $_id;
-
-        return $this;
     }
 
     public function getName(): string
@@ -132,35 +166,14 @@ class TwitchChannel extends TwitchModel
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function getCreatedAt(): DateTime
     {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(DateTime $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->createdAt;
     }
 
     public function getUpdatedAt(): DateTime
     {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(DateTime $updated_at): self
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
+        return $this->updatedAt;
     }
 
     public function isPartner(): bool
@@ -168,59 +181,24 @@ class TwitchChannel extends TwitchModel
         return $this->partner;
     }
 
-    public function setPartner(bool $partner): self
-    {
-        $this->partner = $partner;
-
-        return $this;
-    }
-
     public function getLogo(): string
     {
         return $this->logo;
     }
 
-    public function setLogo(string $logo): self
-    {
-        $this->logo = $logo;
-
-        return $this;
-    }
-
     public function getVideoBanner(): ?string
     {
-        return $this->video_banner;
-    }
-
-    public function setVideoBanner(?string $video_banner): self
-    {
-        $this->video_banner = $video_banner;
-
-        return $this;
+        return $this->videoBanner;
     }
 
     public function getProfileBanner(): ?string
     {
-        return $this->profile_banner;
-    }
-
-    public function setProfileBanner(?string $profile_banner): self
-    {
-        $this->profile_banner = $profile_banner;
-
-        return $this;
+        return $this->profileBanner;
     }
 
     public function getProfileBannerBackgroundColor(): ?string
     {
-        return $this->profile_banner_background_color;
-    }
-
-    public function setProfileBannerBackgroundColor(?string $profile_banner_background_color): self
-    {
-        $this->profile_banner_background_color = $profile_banner_background_color;
-
-        return $this;
+        return $this->profileBannerBackgroundColor;
     }
 
     public function getUrl(): string
@@ -228,23 +206,9 @@ class TwitchChannel extends TwitchModel
         return $this->url;
     }
 
-    public function setUrl(string $url): self
-    {
-        $this->url = $url;
-
-        return $this;
-    }
-
     public function getViews(): int
     {
         return $this->views;
-    }
-
-    public function setViews(int $views): self
-    {
-        $this->views = $views;
-
-        return $this;
     }
 
     public function getFollowers(): int
@@ -252,10 +216,19 @@ class TwitchChannel extends TwitchModel
         return $this->followers;
     }
 
-    public function setFollowers(int $followers): self
+    public function getBroadcasterType(): string
     {
-        $this->followers = $followers;
-
-        return $this;
+        return $this->broadcasterType;
     }
+
+    public function getStreamKey(): string
+    {
+        return $this->stream_key;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
 }
