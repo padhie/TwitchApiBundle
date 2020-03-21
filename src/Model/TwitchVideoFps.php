@@ -38,6 +38,11 @@ final class TwitchVideoFps implements TwitchModelInterface
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     public function getChunked(): float
     {
         return $this->chunked;

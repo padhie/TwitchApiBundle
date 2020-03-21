@@ -26,6 +26,11 @@ final class TwitchUserNotifications implements TwitchModelInterface
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     public function isEmail(): bool
     {
         return $this->email;

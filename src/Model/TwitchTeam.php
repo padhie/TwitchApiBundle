@@ -61,8 +61,13 @@ final class TwitchTeam implements TwitchModelInterface
             $json['logo'] ?? '',
             $json['name'] ?? '',
             new DateTime($json['created_at']),
-            $json['updated_at'] ? new DateTime($json['updated_at']) : null
+            isset($json['updated_at']) ? new DateTime($json['updated_at']) : null
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 
     public function getId(): int

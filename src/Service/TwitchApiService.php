@@ -345,7 +345,14 @@ class TwitchApiService
     public function getChannelSubscriber(int $channelId = 0): TwitchChannelSubscriptions
     {
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
-        $this->get('channel/' . $channelId . '/subscriptions');
+        $this->get('channels/' . $channelId . '/subscriptions');
+
+        $channel = $this->getChannelById($channelId);
+
+        $data = $this->getData();
+        foreach ($data['subscriptions'] ?? [] as $index => $item) {
+            $data['subscriptions'][$index]['channel'] = $channel;
+        }
 
         return TwitchChannelSubscriptions::createFromJson($this->getData());
     }

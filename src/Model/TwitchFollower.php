@@ -33,11 +33,16 @@ final class TwitchFollower implements TwitchModelInterface
     public static function createFromJson(array $json): TwitchFollower
     {
         return new self(
-            $json['created_at'] ? new DateTime($json['created_at']): new DateTime(),
+            isset($json['created_at']) ? new DateTime($json['created_at']): new DateTime(),
             $json['notifications'] ?? false,
-            $json['user'] ? TwitchUser::createFromJson($json['user']) : null,
-            $json['channel'] ? TwitchChannel::createFromJson($json['channel']) : null
+            isset($json['user']) ? TwitchUser::createFromJson($json['user']) : null,
+            isset($json['channel']) ? TwitchChannel::createFromJson($json['channel']) : null
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 
     public function getCreatedAt(): DateTime

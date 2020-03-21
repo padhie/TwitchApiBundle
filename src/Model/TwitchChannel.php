@@ -110,8 +110,8 @@ final class TwitchChannel implements TwitchModelInterface
             $json['language'] ?? '',
             $json['_id'] ?? '',
             $json['name'] ?? '',
-            $json['created_at'] ? new DateTime($json['created_at']) : new DateTime(),
-            $json['updated_at'] ? new DateTime($json['updated_at']) : new DateTime(),
+            isset($json['created_at']) ? new DateTime($json['created_at']) : new DateTime(),
+            isset($json['updated_at']) ? new DateTime($json['updated_at']) : new DateTime(),
             $json['partner'] ?? false,
             $json['logo'] ?? '',
             $json['video_banner'] ?? null,
@@ -124,6 +124,11 @@ final class TwitchChannel implements TwitchModelInterface
             $json['stream_key'] ?? '',
             $json['email'] ?? ''
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 
     public function isMature(): bool
@@ -230,5 +235,4 @@ final class TwitchChannel implements TwitchModelInterface
     {
         return $this->email;
     }
-
 }

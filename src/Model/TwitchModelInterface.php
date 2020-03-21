@@ -2,7 +2,7 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-interface TwitchModelInterface
+interface TwitchModelInterface extends \JsonSerializable
 {
     public const DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
     public const DATETIME_FORMAT_DETAILED = 'Y-m-d\TH:i:s.u\Z';

@@ -129,18 +129,23 @@ final class TwitchVideo implements TwitchModelInterface
             $json['language'] ?? '',
             $json['length'] ?? 0,
             $mutedSegments,
-            $json['preview'] ? TwitchVideoPreview::createFromJson($json['preview']) : null,
+            isset($json['preview']) ? TwitchVideoPreview::createFromJson($json['preview']) : null,
             new DateTime($json['published_at']),
-            $json['resolutions'] ? TwitchVideoResolutions::createFromJson($json['resolutions']) : null,
+            isset($json['resolutions']) ? TwitchVideoResolutions::createFromJson($json['resolutions']) : null,
             $json['status'] ?? '',
             $json['tag_list'] ?? '',
             TwitchVideoThumbnails::createFromJson($json['thumbnails']),
             $json['title'] ?? '',
             $json['url'] ?? '',
             $json['viewable'] ?? '',
-            $json['viewable_at'] ? new DateTime($json['viewable_at']) : null,
+            isset($json['viewable_at']) ? new DateTime($json['viewable_at']) : null,
             $json['views'] ?? 0
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 
     public function getId(): string

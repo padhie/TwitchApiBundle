@@ -75,14 +75,19 @@ final class TwitchUser implements TwitchModelInterface
             $json['logo'] ?? '',
             $json['name'] ?? '',
             $json['type'] ?? '',
-            $json['created_at'] ? new DateTime($json['created_at']) : new $json['created_at'],
-            $json['updated_at'] ? new DateTime($json['updated_at']) : new $json['updated_at'],
-            $json['notifications'] ? TwitchUserNotifications::createFromJson($json['notifications']) : null,
+            isset($json['created_at']) ? new DateTime($json['created_at']) : new $json['created_at'],
+            isset($json['updated_at']) ? new DateTime($json['updated_at']) : new $json['updated_at'],
+            isset($json['notifications']) ? TwitchUserNotifications::createFromJson($json['notifications']) : null,
             $json['email'] ?? '',
             $json['email_verified'] ?? false,
             $json['partnered'] ?? false,
             $json['twitter_connected'] ?? false
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 
     public function getId(): int

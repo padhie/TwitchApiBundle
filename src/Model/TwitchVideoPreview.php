@@ -34,6 +34,11 @@ final class TwitchVideoPreview implements TwitchModelInterface
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     public function getLarge(): string
     {
         return $this->large;
