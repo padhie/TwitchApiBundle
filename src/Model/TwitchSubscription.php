@@ -36,11 +36,11 @@ final class TwitchSubscription implements TwitchModelInterface
     {
         return new self(
             $json['_id'] ?? '',
-            $json['created_at'] ? new DateTime($json['created_at']) : new DateTime(),
+            isset($json['created_at']) ? new DateTime($json['created_at']) : new DateTime(),
             $json['sub_plan'] ?? '',
             $json['sub_plan_name'] ?? '',
-            $json['user'] ? TwitchUser::createFromJson($json['user']) : null,
-            $json['channel'] ? TwitchChannel::createFromJson($json['channel']) : null
+            isset($json['user']) ? TwitchUser::createFromJson($json['user']) : null,
+            isset($json['channel']) ? TwitchChannel::createFromJson($json['channel']) : null
         );
     }
 
