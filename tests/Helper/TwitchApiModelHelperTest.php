@@ -217,4 +217,14 @@ class TwitchApiModelHelperTest extends TestCase
         self::assertEquals($validateFixture['user_id'], $validateModel->getUserId());
         self::assertEquals($userModel, $validateModel->getUser());
     }
+
+    public function testFillChannelSubscriptionsModelByJson(): void
+    {
+        $channelSubscriptionsFixture = $this->loadFixture('channel_subscriptions');
+
+        $channelSubscriptions = $this->modelHelper->fillChannelSubscriptionsModelByJson($channelSubscriptionsFixture);
+
+        self::assertSame(4, $channelSubscriptions->getTotal());
+        self::assertCount(1, $channelSubscriptions->getSubscriptions());
+    }
 }

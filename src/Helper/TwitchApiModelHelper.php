@@ -2,7 +2,9 @@
 
 namespace Padhie\TwitchApiBundle\Helper;
 
+use DateTime;
 use Padhie\TwitchApiBundle\Model\TwitchChannel;
+use Padhie\TwitchApiBundle\Model\TwitchChannelSubscriptions;
 use Padhie\TwitchApiBundle\Model\TwitchEmoticon;
 use Padhie\TwitchApiBundle\Model\TwitchEmoticonImage;
 use Padhie\TwitchApiBundle\Model\TwitchFollower;
@@ -29,7 +31,7 @@ class TwitchApiModelHelper
 
             if ($value instanceof TwitchModel) {
                 $value = self::convertToArray($value);
-            } elseif ($value instanceof \DateTime) {
+            } elseif ($value instanceof DateTime) {
                 $value = $value->format('Y-m-d H:i:s');
             }
 
@@ -84,10 +86,10 @@ class TwitchApiModelHelper
             $channel->setLanguage($json['language']);
         }
         if (isset($json['created_at'])) {
-            $channel->setCreatedAt(new \DateTime($json['created_at']));
+            $channel->setCreatedAt(new DateTime($json['created_at']));
         }
         if (isset($json['updated_at'])) {
-            $channel->setUpdatedAt(new \DateTime($json['updated_at']));
+            $channel->setUpdatedAt(new DateTime($json['updated_at']));
         }
         if (isset($json['partner'])) {
             $channel->setPartner($json['partner']);
@@ -167,7 +169,7 @@ class TwitchApiModelHelper
             $follower = new TwitchFollower();
         }
 
-        $follower->setCreatedAt(new \DateTime($json['created_at']));
+        $follower->setCreatedAt(new DateTime($json['created_at']));
         $follower->setNotifications($json['notifications']);
 
         if (isset($json['user'])) {
@@ -199,8 +201,8 @@ class TwitchApiModelHelper
         $user->setId($json['_id']);
         $user->setName($json['name']);
         $user->setType($json['type']);
-        $user->setCreatedAt(new \DateTime($json['created_at']));
-        $user->setUpdatedAt(new \DateTime($json['updated_at']));
+        $user->setCreatedAt(new DateTime($json['created_at']));
+        $user->setUpdatedAt(new DateTime($json['updated_at']));
 
         if (isset($json['bio'])) {
             $user->setBio($json['bio']);
@@ -220,6 +222,23 @@ class TwitchApiModelHelper
         return $user;
     }
 
+    public static function fillChannelSubscriptionsModelByJson(array $json, ?TwitchChannelSubscriptions $twitchChannelSubscriptions = null): TwitchChannelSubscriptions
+    {
+        if (!($twitchChannelSubscriptions instanceof TwitchChannelSubscriptions)) {
+            $twitchChannelSubscriptions = new TwitchChannelSubscriptions();
+        }
+
+        $twitchChannelSubscriptions->setTotal($json['_total']);
+
+        $subscriptions = [];
+        foreach ($json['subscriptions'] as $subscription) {
+            $subscriptions[] = self::fillSubscriptionModelByJson($subscription);
+        }
+        $twitchChannelSubscriptions->setSubscriptions($subscriptions);
+
+        return $twitchChannelSubscriptions;
+    }
+
     public static function fillSubscriptionModelByJson(array $json, ?TwitchSubscription $subscription = null): TwitchSubscription
     {
         if (!($subscription instanceof TwitchSubscription)) {
@@ -227,7 +246,7 @@ class TwitchApiModelHelper
         }
 
         $subscription->setId($json['_id']);
-        $subscription->setCreatedAt(new \DateTime($json['created_at']));
+        $subscription->setCreatedAt(new DateTime($json['created_at']));
         $subscription->setSubPlan($json['sub_plan']);
         $subscription->setSubPlanName($json['sub_plan_name']);
 
@@ -251,7 +270,7 @@ class TwitchApiModelHelper
         $video->setId($json['_id']);
         $video->setBroadcastId($json['broadcast_id']);
         $video->setBroadcastType($json['broadcast_type']);
-        $video->setCreatedAt(new \DateTime($json['created_at']));
+        $video->setCreatedAt(new DateTime($json['created_at']));
         $video->setDescription($json['description']);
         $video->setDescriptionHtml($json['description_html']);
         $video->setFps($json['fps']);
@@ -259,13 +278,13 @@ class TwitchApiModelHelper
         $video->setLanguage($json['language']);
         $video->setLength($json['length']);
         $video->setPreview($json['preview']);
-        $video->setPublishedAt(new \DateTime($json['published_at']));
+        $video->setPublishedAt(new DateTime($json['published_at']));
         $video->setStatus($json['status']);
         $video->setTagList($json['tag_list']);
         $video->setTitle($json['title']);
         $video->setUrl($json['url']);
         $video->setViewable($json['viewable']);
-        $video->setViewableAt(new \DateTime($json['viewable_at']));
+        $video->setViewableAt(new DateTime($json['viewable_at']));
         $video->setViews($json['views']);
         $video->setChannel(self::fillChannelModelByJson($json['channel']));
 
@@ -329,7 +348,7 @@ class TwitchApiModelHelper
         $stream->setVideoHeight($json['video_height']);
         $stream->setAverageFps($json['average_fps']);
         $stream->setDelay($json['delay']);
-        $stream->setCreatedAt(new \DateTime($json['created_at']));
+        $stream->setCreatedAt(new DateTime($json['created_at']));
         $stream->setIsPlaylist($json['is_playlist']);
         $stream->setPreview($json['preview']);
         $stream->setChannel(self::fillChannelModelByJson($json['channel']));
@@ -345,12 +364,12 @@ class TwitchApiModelHelper
 
         $team->setId($json['_id']);
         $team->setBanner($json['banner']);
-        $team->setCreatedAt(new \DateTime($json['created_at']));
+        $team->setCreatedAt(new DateTime($json['created_at']));
         $team->setDisplayName($json['display_name']);
         $team->setInfo($json['info']);
         $team->setLogo($json['logo']);
         $team->setName($json['name']);
-        $team->setUpdatedAt(new \DateTime($json['updated_at']));
+        $team->setUpdatedAt(new DateTime($json['updated_at']));
 
         if (isset($json['background'])) {
             $team->setBackground($json['background']);

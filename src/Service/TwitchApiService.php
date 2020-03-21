@@ -11,6 +11,7 @@ use Padhie\TwitchApiBundle\Exception\ApiErrorException;
 use Padhie\TwitchApiBundle\Exception\UserNotExistsException;
 use Padhie\TwitchApiBundle\Helper\TwitchApiModelHelper;
 use Padhie\TwitchApiBundle\Model\TwitchChannel;
+use Padhie\TwitchApiBundle\Model\TwitchChannelSubscriptions;
 use Padhie\TwitchApiBundle\Model\TwitchEmoticon;
 use Padhie\TwitchApiBundle\Model\TwitchEmoticonImage;
 use Padhie\TwitchApiBundle\Model\TwitchFollower;
@@ -451,6 +452,18 @@ class TwitchApiService
         $this->get('users/' . $this->getUserId());
 
         return TwitchApiModelHelper::fillUserModelByJson($this->getData());
+    }
+
+    /**
+     * Scope: channel_subscriptions
+     * @return TwitchChannelSubscriptions
+     * @throws ApiErrorException
+     */
+    public function getChannelSubscriber(): TwitchChannelSubscriptions
+    {
+        $this->get('channel/' . $this->getChannelId() . '/subscriptions');
+
+        return TwitchApiModelHelper::fillChannelSubscriptionsModelByJson($this->getData());
     }
 
     /**
