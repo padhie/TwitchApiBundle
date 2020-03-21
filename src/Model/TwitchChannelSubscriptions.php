@@ -34,6 +34,11 @@ final class TwitchChannelSubscriptions implements TwitchModelInterface
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     public function getTotal(): int
     {
         return $this->_total;

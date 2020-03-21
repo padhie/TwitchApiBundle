@@ -26,6 +26,11 @@ final class TwitchVideoMutedSegment implements TwitchModelInterface
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     public function getDuration(): int
     {
         return $this->duration;

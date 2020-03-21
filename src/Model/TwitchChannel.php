@@ -126,6 +126,11 @@ final class TwitchChannel implements TwitchModelInterface
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     public function isMature(): bool
     {
         return $this->mature;
@@ -230,5 +235,4 @@ final class TwitchChannel implements TwitchModelInterface
     {
         return $this->email;
     }
-
 }

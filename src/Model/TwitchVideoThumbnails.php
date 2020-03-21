@@ -28,6 +28,11 @@ final class TwitchVideoThumbnails implements TwitchModelInterface
         $this->template = $template;
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     /**
      * @param array<string, mixed> $json
      */

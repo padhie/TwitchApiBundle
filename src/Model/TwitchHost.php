@@ -30,6 +30,11 @@ final class TwitchHost implements TwitchModelInterface
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     public function getChannel(): TwitchChannel
     {
         return $this->channel;

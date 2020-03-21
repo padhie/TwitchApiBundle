@@ -27,6 +27,11 @@ final class TwitchVideoThumbnail implements TwitchModelInterface
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     public function getType(): string
     {
         return $this->type;

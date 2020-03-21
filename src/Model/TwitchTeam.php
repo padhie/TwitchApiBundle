@@ -65,6 +65,11 @@ final class TwitchTeam implements TwitchModelInterface
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     public function getId(): int
     {
         return $this->_id;

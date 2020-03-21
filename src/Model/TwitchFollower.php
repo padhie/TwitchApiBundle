@@ -40,6 +40,11 @@ final class TwitchFollower implements TwitchModelInterface
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;

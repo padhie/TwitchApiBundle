@@ -143,6 +143,11 @@ final class TwitchVideo implements TwitchModelInterface
         );
     }
 
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
     public function getId(): string
     {
         return $this->_id;
