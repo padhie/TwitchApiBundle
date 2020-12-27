@@ -35,6 +35,13 @@ class TwitchApiService
         'channel_check_subscription',
         'channel_commercial',
     ];
+    public const SCOPE_PUBSUB = [
+        'channel_editor',
+        'bits:read',
+        'channel:read:redemptions',
+        'channel_subscriptions',
+        'channel:moderate',
+    ];
     private const REQUEST_READ_LIMIT = 8192;
 
     /** @var Client */
