@@ -7,6 +7,8 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Model\TwitchRedemption;
+use Model\TwitchReward;
 use Padhie\TwitchApiBundle\Exception\ApiErrorException;
 use Padhie\TwitchApiBundle\Exception\UserNotExistsException;
 use Padhie\TwitchApiBundle\Model\TwitchChannel;
@@ -42,7 +44,11 @@ class TwitchApiService
         'channel_subscriptions',
         'channel:moderate',
     ];
+
     private const REQUEST_READ_LIMIT = 8192;
+    private const KRAKEN_API = 'https://api.twitch.tv/kraken/';
+    private const HELIX_API = 'https://api.twitch.tv/helix/entitlements/code';
+    private const TMI_API = 'https://tmi.twitch.tv/';
 
     /** @var Client */
     private $guzzle;
@@ -53,7 +59,7 @@ class TwitchApiService
     /** @var string */
     private $redirect_url;
     /** @var string */
-    private $base_url = 'https://api.twitch.tv/kraken/';
+    private $base_url = self::KRAKEN_API;
     /** @var string */
     private $header_application = 'application/vnd.twitchtv.v5+json';
     /** @var string */
@@ -186,6 +192,27 @@ class TwitchApiService
         ]);
     }
 
+    private function useKraken(): self
+    {
+        $this->base_url = self::KRAKEN_API;
+
+        return $this;
+    }
+
+    private function useHelix(): self
+    {
+        $this->base_url = self::HELIX_API;
+
+        return $this;
+    }
+
+    private function useTmi(): self
+    {
+        $this->base_url = self::TMI_API;
+
+        return $this;
+    }
+
 
     // ################
     // # BASE METHODS #
@@ -212,6 +239,47 @@ class TwitchApiService
 
         try {
             $request = new Request('GET', $this->last_url, $options);
+            $response = $this->guzzle->send($request);
+            assert($response instanceof Response);
+
+            $this->loadHoleBody($response);
+        } catch (ClientException $e) {
+            $this->_raw_response =
+                $e->getResponse() !== null
+                    ? $e->getResponse()->getBody()->read(self::REQUEST_READ_LIMIT)
+                    : var_export($e, true);
+        } catch (GuzzleException $e) {
+            throw new ApiErrorException('Can\'t connect', 1530908311);
+        } finally {
+            $this->response = json_decode($this->_raw_response, true);
+            $this->errorCheck();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array<string, string> $data [optional] Key => Value
+     * @param array<int, string> $header [optional] Value
+     * @return TwitchApiService
+     * @throws ApiErrorException
+     */
+    protected function post(string $url_extension, array $data = [], array $header = []): self
+    {
+        $additional_string = $this->additional_string;
+        if (is_array($data) && !empty($data)) {
+            $dataList = [];
+            foreach ($data AS $key => $value) {
+                $dataList[] = $key . '=' . $value;
+            }
+            $additional_string .= '?' . implode("&", $dataList);
+        }
+
+        $options = $this->combineHeader($header);
+        $this->last_url = $this->base_url . $url_extension . $additional_string;
+
+        try {
+            $request = new Request('POST', $this->last_url, $options);
             $response = $this->guzzle->send($request);
             assert($response instanceof Response);
 
@@ -313,6 +381,8 @@ class TwitchApiService
      */
     public function getUserByName(string $name): TwitchUser
     {
+        $this->useKraken();
+
         $this->get('users?login=' . $name);
 
         if (!isset($this->getData()['users'][0])) {
@@ -328,6 +398,8 @@ class TwitchApiService
      */
     public function getUser(): TwitchUser
     {
+        $this->useKraken();
+
         $this->get('user');
 
         return TwitchUser::createFromJson($this->getData());
@@ -339,6 +411,8 @@ class TwitchApiService
      */
     public function getUserById(int $userId = 0): TwitchUser
     {
+        $this->useKraken();
+
         $userId = $userId > 0 ? $userId : $this->getUserId();
         $this->get('users/' . $userId);
 
@@ -351,6 +425,8 @@ class TwitchApiService
      */
     public function getChannelSubscriber(int $channelId = 0): TwitchChannelSubscriptions
     {
+        $this->useKraken();
+
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         $this->get('channels/' . $channelId . '/subscriptions');
 
@@ -369,6 +445,8 @@ class TwitchApiService
      */
     public function isUserSubscribingChannel(int $userId = 0, int $channelId = 0): bool
     {
+        $this->useKraken();
+
         $userId = $userId > 0 ? $userId : $this->getUserId();
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         try {
@@ -393,6 +471,8 @@ class TwitchApiService
      */
     public function getUserFollowingChannel(): TwitchFollower
     {
+        $this->useKraken();
+
         $this->isUserFollowingChannel();
         $data = $this->getData();
         $data['user'] = $this->getUser();
@@ -406,6 +486,8 @@ class TwitchApiService
      */
     public function isUserFollowingChannel(int $userId = 0, int $channelId = 0): bool
     {
+        $this->useKraken();
+
         $userId = $userId > 0 ? $userId : $this->getUserId();
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         try {
@@ -429,6 +511,8 @@ class TwitchApiService
      */
     public function getChannelFollower(int $userId = 0): array
     {
+        $this->useKraken();
+
         $userId = $userId > 0 ? $userId : $this->getUserId();
         $this->get('users/' . $userId . '/follows/channels');
 
@@ -446,6 +530,8 @@ class TwitchApiService
      */
     public function setUserFollowingChannel(int $userId = 0, int $channelId = 0): TwitchChannel
     {
+        $this->useKraken();
+
         $userId = $userId > 0 ? $userId : $this->getUserId();
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         $this->put('users/' . $userId . '/follows/channels/' . $channelId);
@@ -463,6 +549,8 @@ class TwitchApiService
      */
     public function getChannel(): TwitchChannel
     {
+        $this->useKraken();
+
         $this->get('channel');
 
         return TwitchChannel::createFromJson($this->getData());
@@ -474,6 +562,8 @@ class TwitchApiService
      */
     public function getChannelById(int $channelId = 0): TwitchChannel
     {
+        $this->useKraken();
+
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         $this->get('channels/' . $channelId);
 
@@ -487,6 +577,8 @@ class TwitchApiService
      */
     public function getFollowerList(int $channelId = 0): array
     {
+        $this->useKraken();
+
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         $this->get('channels/' . $channelId . '/follows');
 
@@ -505,6 +597,8 @@ class TwitchApiService
      */
     public function getTeamList(int $channelId = 0): array
     {
+        $this->useKraken();
+
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         $this->get('channels/' . $channelId . '/team');
 
@@ -522,6 +616,8 @@ class TwitchApiService
      */
     public function changeChannelTitle(string $title, int $channelId = 0): TwitchChannel
     {
+        $this->useKraken();
+
         $data = [
             'channel[status]' => $title,
         ];
@@ -538,6 +634,8 @@ class TwitchApiService
      */
     public function changeChannelGame(string $game, int $channelId = 0): TwitchChannel
     {
+        $this->useKraken();
+
         $data = [
             'channel[game]' => $game,
         ];
@@ -555,10 +653,9 @@ class TwitchApiService
      */
     public function getHosts(): array
     {
-        $_tmpBaseUrl = $this->base_url;
-        $this->base_url = 'https://tmi.twitch.tv/';
+        $this->useTmi();
+
         $this->get('hosts?include_logins=1&target=' . $this->getChannelId(), [], ['Cache-Control: no-cache']);
-        $this->base_url = $_tmpBaseUrl;
 
         $data = $this->getData();
         $hostList = [];
@@ -589,6 +686,8 @@ class TwitchApiService
      */
     public function getStream(int $channelId = 0): ?TwitchStream
     {
+        $this->useKraken();
+
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         $this->get('streams/' . $channelId);
         $returnData = $this->getData();
@@ -607,6 +706,8 @@ class TwitchApiService
      */
     public function getFollowingStreamList(): array
     {
+        $this->useKraken();
+
         $this->get('streams/followed', ['stream_type' => 'all']);
 
         $streamList = [];
@@ -618,6 +719,94 @@ class TwitchApiService
     }
 
 
+    // ##################
+    // # REWARD METHODS #
+    // ##################
+    /**
+     * Scope: channel:manage:redemptions
+     * @param mixed[] $data [Optional] Optional parameter for reward
+     * @return TwitchReward[]
+     * @throws ApiErrorException
+     */
+    public function createCustomReward(int $broadcasterId, string $title, int $cost, array $data = []): array
+    {
+        $this->useHelix();
+
+        $body = array_filter([
+            // require parameter
+            'title' => $title,
+            'cost'  => $cost,
+            // optional parameter
+            'prompt' => $data['prompt'],
+            'is_enabled' => $data['is_enabled'],
+            'background_color' => $data['background_color'],
+            'is_user_input_required' => $data['is_user_input_required'],
+            'is_max_per_stream_enabled' => $data['is_max_per_stream_enabled'],
+            'max_per_stream' => $data['max_per_stream'],
+            'is_max_per_user_per_stream_enabled' => $data['is_max_per_user_per_stream_enabled'],
+            'max_per_user_per_stream' => $data['max_per_user_per_stream'],
+            'is_global_cooldown_enabled' => $data['is_global_cooldown_enabled'],
+            'global_cooldown_seconds' => $data['global_cooldown_seconds'],
+            'should_redemptions_skip_request_queue' => $data['should_redemptions_skip_request_queue'],
+        ]);
+
+        $this->post('channel_points/custom_rewards?broadcaster_id='.$broadcasterId, $body);
+
+        $result = [];
+        foreach ($this->getData()['data'] ?? [] as $responseData) {
+            $result[] = TwitchReward::createFromJson($responseData);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Scope: channel:read:redemptions
+     * @return TwitchReward[]
+     * @throws ApiErrorException
+     */
+    public function getCustomReward(int $broadcasterId, bool $onlyManageableRewards=false): array
+    {
+        $this->useHelix();
+
+        $param = [
+            'broadcaster_id' => $broadcasterId,
+            'only_manageable_rewards' => $onlyManageableRewards,
+        ];
+
+        $this->get('channel_points/custom_rewards', $param);
+
+        $result = [];
+        foreach ($this->getData()['data'] ?? [] as $responseData) {
+            $result[] = TwitchReward::createFromJson($responseData);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Scope: channel:read:redemptions
+     * @return TwitchRedemption[]
+     * @throws ApiErrorException
+     */
+    public function getCustomRewardRedemption(int $broadcasterId): array
+    {
+        $this->useHelix();
+
+        $param = [
+            'broadcaster_id' => $broadcasterId,
+        ];
+
+        $this->get('channel_points/custom_rewards/redemptions', $param);
+
+        $result = [];
+        foreach ($this->getData()['data'] ?? [] as $responseData) {
+            $result[] = TwitchRedemption::createFromJson($responseData);
+        }
+
+        return $result;
+    }
+
     // ################
     // # CHAT METHODS #
     // ################
@@ -628,6 +817,8 @@ class TwitchApiService
      */
     public function getBadgeList(int $channelId = 0): array
     {
+        $this->useKraken();
+
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
         $this->get('chat/' . $channelId . '/badges');
 
@@ -641,10 +832,9 @@ class TwitchApiService
      */
     public function getUserList(): string
     {
-        $_tmpBaseUrl = $this->base_url;
-        $this->base_url = 'https://tmi.twitch.tv/';
+        $this->useTmi();
+
         $this->get('group/user/' . $this->getChannelName() . '/chatters', [], ['Cache-Control: no-cache']);
-        $this->base_url = $_tmpBaseUrl;
 
         return $this->_raw_response;
     }
@@ -657,6 +847,8 @@ class TwitchApiService
      */
     public function getEmoticonList(): array
     {
+        $this->useKraken();
+
         $this->get('chat/emoticons');
 
         $emoticonList = [];
@@ -675,6 +867,8 @@ class TwitchApiService
      */
     public function getEmoticonImageList(): array
     {
+        $this->useKraken();
+
         $this->get('chat/emoticon_images');
 
         $emoticonList = [];
@@ -694,6 +888,8 @@ class TwitchApiService
      */
     public function getEmoticonImageListByEmoteiconSets(string $emoticonsets): array
     {
+        $this->useKraken();
+
         $data = [];
         if (!empty($emoticonsets)) {
             $data['emotesets'] = $emoticonsets;
@@ -721,6 +917,8 @@ class TwitchApiService
      */
     public function getVideoById(int $videoId = 0): TwitchVideo
     {
+        $this->useKraken();
+
         $videoId = $videoId > 0 ? $videoId : $this->getVideoId();
         $this->get('videos/' . $videoId);
 
