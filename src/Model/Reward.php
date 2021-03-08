@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Model;
 
-class Reward
+use Padhie\TwitchApiBundle\Model\TwitchModelInterface;
+
+class Reward implements TwitchModelInterface
 {
     /** @var string  */
     private $id;
@@ -34,6 +36,11 @@ class Reward
             $json['promt'] ?? '',
             $json['cost'] ?? 0
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 
     public function getId(): string

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Model;
 
-class MaxPerStreamSetting
+use Padhie\TwitchApiBundle\Model\TwitchModelInterface;
+
+class MaxPerStreamSetting implements TwitchModelInterface
 {
     /** @var bool */
     private $isEnable;
@@ -26,6 +28,11 @@ class MaxPerStreamSetting
             $json['is_enabled'] ?? false,
             $json['max_per_stream'] ?? 0
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 
     public function isEnable(): bool

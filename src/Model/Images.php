@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Model;
 
-class Images
+use Padhie\TwitchApiBundle\Model\TwitchModelInterface;
+
+class Images implements TwitchModelInterface
 {
     /** @var string */
     private $url1x;
@@ -30,6 +32,11 @@ class Images
             $json['url_2x'] ?? '',
             $json['url_4x'] ?? ''
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 
     public function getUrl1x(): string

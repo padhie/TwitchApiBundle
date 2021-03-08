@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Model;
 
-class GlobalCooldownSetting
+use Padhie\TwitchApiBundle\Model\TwitchModelInterface;
+
+class GlobalCooldownSetting implements TwitchModelInterface
 {
     /** @var bool */
     private $isEnable;
@@ -26,6 +28,11 @@ class GlobalCooldownSetting
             $json['is_enabled'] ?? false,
             $json['global_cooldown_seconds'] ?? 0
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 
     public function isEnable(): bool

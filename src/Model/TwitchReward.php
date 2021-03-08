@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Model;
 
-class TwitchReward
+use Padhie\TwitchApiBundle\Model\TwitchModelInterface;
+
+class TwitchReward implements TwitchModelInterface
 {
     /** @var string  */
     private $id;
@@ -118,6 +120,11 @@ class TwitchReward
             $json['global_cooldown_setting'] ? GlobalCooldownSetting::createFromJson($json['global_cooldown_setting']) : null,
             $json['default_image'] ? Images::createFromJson($json['default_image']) : null
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 
     public function getId(): string
