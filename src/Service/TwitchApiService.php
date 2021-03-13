@@ -376,20 +376,46 @@ class TwitchApiService
     // ################
     /**
      * Scope: user_read
+     * @param string[] $names
+     * @return TwitchUser[]
+     * @throws ApiErrorException
+     * @throws UserNotExistsException
+     */
+    public function getUsersByName(array $names): array
+    {
+        $this->useKraken();
+
+        $parameter = array_map(
+            static function (string $name): string {
+                return 'login=' . $name;
+            },
+            $names
+        );
+
+        $this->get('users?' . implode('&', $parameter));
+
+        return array_map(
+            static function(array $data): TwitchUser {
+                return TwitchUser::createFromJson($data);
+            },
+            $this->getData()['users'] ?? []
+        );
+    }
+
+    /**
+     * Scope: user_read
      * @throws ApiErrorException
      * @throws UserNotExistsException
      */
     public function getUserByName(string $name): TwitchUser
     {
-        $this->useKraken();
+        $users = $this->getUsersByName([$name]);
 
-        $this->get('users?login=' . $name);
-
-        if (!isset($this->getData()['users'][0])) {
+        if (count($users) === 0) {
             throw new UserNotExistsException('No userdata exists', 1530903951);
         }
 
-        return TwitchUser::createFromJson($this->getData()['users'][0]);
+        return reset($users);
     }
 
     /**
