@@ -307,18 +307,28 @@ class TwitchApiService
      */
     protected function put(string $url_extension, array $data = [], array $header = []): self
     {
-        $options = array_merge($this->combineHeader($header), ['body' => $data]);
         $this->last_url = $this->base_url . $url_extension . $this->additional_string;
 
         try {
-            $request = new Request('PUT', $this->last_url, $options);
-            $response = $this->guzzle->send($request);
-            assert($response instanceof Response);
+            $json = json_encode($data);
+            $header['Content-Length'] = strlen($json);
+            $header = $this->combineHeader($header);
 
-            $this->loadHoleBody($response);
-            $this->response = json_decode($this->_raw_response, true);
-        } catch (GuzzleException $e) {
-            throw new ApiErrorException('Can\'t connect', 1530908311);
+            $fullHeader = [];
+            foreach ($header as $key => $value) {
+                $fullHeader[] = sprintf('%s: %s', $key, $value);
+            }
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $this->last_url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $fullHeader);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $this->_raw_response = curl_exec($ch);
+            curl_close($ch);
+        } catch (\Exception $exception) {
+            throw new ApiErrorException($exception->getMessage(), $exception->getCode(), $exception);
         } finally {
             $this->response = json_decode($this->_raw_response, true);
             $this->errorCheck();
@@ -642,10 +652,10 @@ class TwitchApiService
      */
     public function changeChannelTitle(string $title, int $channelId = 0): TwitchChannel
     {
-        $this->useKraken();
-
         $data = [
-            'channel[status]' => $title,
+            'channel' => [
+                'status' => $title,
+            ],
         ];
 
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
@@ -660,10 +670,10 @@ class TwitchApiService
      */
     public function changeChannelGame(string $game, int $channelId = 0): TwitchChannel
     {
-        $this->useKraken();
-
         $data = [
-            'channel[game]' => $game,
+            'channel' => [
+                'game' => $game,
+            ],
         ];
 
         $channelId = $channelId > 0 ? $channelId : $this->getChannelId();
