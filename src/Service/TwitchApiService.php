@@ -395,20 +395,18 @@ class TwitchApiService
     {
         $this->useKraken();
 
-        $parameter = array_map(
-            static function (string $name): string {
-                return 'login=' . $name;
-            },
-            $names
-        );
+        $results = [];
+        foreach ($names as $name) {
+            $this->get('users?login=' . $name);
 
-        $this->get('users?' . implode('&', $parameter));
+            $results[$name] = $this->getData()['users'][0] ?? null;
+        }
 
         return array_map(
             static function(array $data): TwitchUser {
                 return TwitchUser::createFromJson($data);
             },
-            $this->getData()['users'] ?? []
+            array_filter($results)
         );
     }
 
