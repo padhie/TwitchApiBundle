@@ -184,12 +184,16 @@ class TwitchApiService
      */
     private function combineHeader(array $header = []): array
     {
-        return array_merge($header, [
-            'Accept' => $this->header_application,
-            'Client-ID' => $this->client_id,
-            'Authorization' => 'OAuth ' . $this->oauth,
-            'Cache-Control' => 'no-cache',
-        ]);
+        return array_merge(
+            [
+                'Accept' => $this->header_application,
+                'Client-ID' => $this->client_id,
+                'Authorization' => 'OAuth ' . $this->oauth,
+                'Cache-Control' => 'no-cache',
+                'Content-Type' => 'application/json',
+            ],
+            $header
+        );
     }
 
     private function useKraken(): self
@@ -220,18 +224,13 @@ class TwitchApiService
     /**
      * @param array<string, string> $data [optional] Key => Value
      * @param array<int, string> $header [optional] Value
-     * @return TwitchApiService
      * @throws ApiErrorException
      */
     protected function get(string $url_extension, array $data = [], array $header = []): self
     {
         $additional_string = $this->additional_string;
         if (is_array($data) && !empty($data)) {
-            $dataList = [];
-            foreach ($data AS $key => $value) {
-                $dataList[] = $key . '=' . $value;
-            }
-            $additional_string .= '?' . implode("&", $dataList);
+            $additional_string .= '?' . http_build_query($data);
         }
 
         $options = $this->combineHeader($header);
@@ -244,10 +243,9 @@ class TwitchApiService
 
             $this->loadHoleBody($response);
         } catch (ClientException $e) {
-            $this->_raw_response =
-                $e->getResponse() !== null
-                    ? $e->getResponse()->getBody()->read(self::REQUEST_READ_LIMIT)
-                    : var_export($e, true);
+            $this->_raw_response = $e->getResponse() !== null
+                ? $e->getResponse()->getBody()->read(self::REQUEST_READ_LIMIT)
+                : var_export($e, true);
         } catch (GuzzleException $e) {
             throw new ApiErrorException('Can\'t connect', 1530908311);
         } finally {
@@ -259,36 +257,26 @@ class TwitchApiService
     }
 
     /**
-     * @param array<string, string> $data [optional] Key => Value
+     * @param mixed[] $data [optional] Key => Value
      * @param array<int, string> $header [optional] Value
-     * @return TwitchApiService
      * @throws ApiErrorException
      */
     protected function post(string $url_extension, array $data = [], array $header = []): self
     {
-        $additional_string = $this->additional_string;
-        if (is_array($data) && !empty($data)) {
-            $dataList = [];
-            foreach ($data AS $key => $value) {
-                $dataList[] = $key . '=' . $value;
-            }
-            $additional_string .= '?' . implode("&", $dataList);
-        }
-
         $options = $this->combineHeader($header);
-        $this->last_url = $this->base_url . $url_extension . $additional_string;
+        $this->last_url = $this->base_url . $url_extension . $this->additional_string;
+        $body = json_encode($data);
 
         try {
-            $request = new Request('POST', $this->last_url, $options);
+            $request = new Request('POST', $this->last_url, $options, $body);
             $response = $this->guzzle->send($request);
             assert($response instanceof Response);
 
             $this->loadHoleBody($response);
         } catch (ClientException $e) {
-            $this->_raw_response =
-                $e->getResponse() !== null
-                    ? $e->getResponse()->getBody()->read(self::REQUEST_READ_LIMIT)
-                    : var_export($e, true);
+            $this->_raw_response = $e->getResponse() !== null
+                ? $e->getResponse()->getBody()->read(self::REQUEST_READ_LIMIT)
+                : var_export($e, true);
         } catch (GuzzleException $e) {
             throw new ApiErrorException('Can\'t connect', 1530908311);
         } finally {
@@ -300,35 +288,28 @@ class TwitchApiService
     }
 
     /**
-     * @param array<string, string> $data [optional] Key => Value
+     * @param mixed[] $data [optional] Key => Value
      * @param array<int, string> $header [optional] Value
-     * @return TwitchApiService
      * @throws ApiErrorException
      */
     protected function put(string $url_extension, array $data = [], array $header = []): self
     {
+        $options = $this->combineHeader($header);
         $this->last_url = $this->base_url . $url_extension . $this->additional_string;
+        $body = json_encode($data);
 
         try {
-            $json = json_encode($data);
-            $header['Content-Length'] = strlen($json);
-            $header = $this->combineHeader($header);
+            $request = new Request('PUT', $this->last_url, $options, $body);
+            $response = $this->guzzle->send($request);
+            assert($response instanceof Response);
 
-            $fullHeader = [];
-            foreach ($header as $key => $value) {
-                $fullHeader[] = sprintf('%s: %s', $key, $value);
-            }
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $this->last_url);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $fullHeader);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $this->_raw_response = curl_exec($ch);
-            curl_close($ch);
-        } catch (\Exception $exception) {
-            throw new ApiErrorException($exception->getMessage(), $exception->getCode(), $exception);
+            $this->loadHoleBody($response);
+        } catch (ClientException $e) {
+            $this->_raw_response = $e->getResponse() !== null
+                ? $e->getResponse()->getBody()->read(self::REQUEST_READ_LIMIT)
+                : var_export($e, true);
+        } catch (GuzzleException $e) {
+            throw new ApiErrorException('Can\'t connect', 1530908311);
         } finally {
             $this->response = json_decode($this->_raw_response, true);
             $this->errorCheck();
@@ -343,9 +324,9 @@ class TwitchApiService
 
         $check = true;
         while ($check) {
-            $tmpRawRespnse = $response->getBody()->read(self::REQUEST_READ_LIMIT);
-            $this->_raw_response .= $tmpRawRespnse;
-            if (strlen($tmpRawRespnse) < self::REQUEST_READ_LIMIT) {
+            $tmpRawResponse = $response->getBody()->read(self::REQUEST_READ_LIMIT);
+            $this->_raw_response .= $tmpRawResponse;
+            if (strlen($tmpRawResponse) < self::REQUEST_READ_LIMIT) {
                 $check = false;
             }
         }
@@ -361,6 +342,7 @@ class TwitchApiService
             if (empty($message)) {
                 $message = $this->response['error'];
             }
+
             throw new ApiErrorException($this->last_url . ' - ' . $message, $this->response['status']);
         }
     }
