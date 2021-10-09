@@ -51,7 +51,7 @@ class TwitchApiService
 
     private const REQUEST_READ_LIMIT = 8192;
     private const KRAKEN_API = 'https://api.twitch.tv/kraken/';
-    private const HELIX_API = 'https://api.twitch.tv/helix/entitlements/code';
+    private const HELIX_API = 'https://api.twitch.tv/helix/';
     private const TMI_API = 'https://tmi.twitch.tv/';
 
     /** @var Client */
@@ -188,11 +188,15 @@ class TwitchApiService
      */
     private function combineHeader(array $header = []): array
     {
+        $authType = $this->base_url === self::HELIX_API
+            ? 'Bearer'
+            : 'OAuth';
+
         return array_merge(
             [
                 'Accept' => $this->header_application,
                 'Client-ID' => $this->client_id,
-                'Authorization' => 'OAuth ' . $this->oauth,
+                'Authorization' => $authType . ' ' . $this->oauth,
                 'Cache-Control' => 'no-cache',
                 'Content-Type' => 'application/json',
             ],
