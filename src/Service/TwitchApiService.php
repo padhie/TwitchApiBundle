@@ -11,6 +11,7 @@ use Model\TwitchRedemption;
 use Model\TwitchReward;
 use Padhie\TwitchApiBundle\Exception\ApiErrorException;
 use Padhie\TwitchApiBundle\Exception\UserNotExistsException;
+use Padhie\TwitchApiBundle\Model\TwitchBanedUser;
 use Padhie\TwitchApiBundle\Model\TwitchChannel;
 use Padhie\TwitchApiBundle\Model\TwitchChannelSubscriptions;
 use Padhie\TwitchApiBundle\Model\TwitchEmoticon;
@@ -37,6 +38,9 @@ class TwitchApiService
         'channel_check_subscription',
         'channel_commercial',
     ];
+    public const SCOPE_MODERATOR = [
+        'moderation:read',
+    ];
     public const SCOPE_PUBSUB = [
         'channel_editor',
         'bits:read',
@@ -47,7 +51,7 @@ class TwitchApiService
 
     private const REQUEST_READ_LIMIT = 8192;
     private const KRAKEN_API = 'https://api.twitch.tv/kraken/';
-    private const HELIX_API = 'https://api.twitch.tv/helix/entitlements/code';
+    private const HELIX_API = 'https://api.twitch.tv/helix/';
     private const TMI_API = 'https://tmi.twitch.tv/';
 
     /** @var Client */
@@ -184,11 +188,15 @@ class TwitchApiService
      */
     private function combineHeader(array $header = []): array
     {
+        $authType = $this->base_url === self::HELIX_API
+            ? 'Bearer'
+            : 'OAuth';
+
         return array_merge(
             [
                 'Accept' => $this->header_application,
                 'Client-ID' => $this->client_id,
-                'Authorization' => 'OAuth ' . $this->oauth,
+                'Authorization' => $authType . ' ' . $this->oauth,
                 'Cache-Control' => 'no-cache',
                 'Content-Type' => 'application/json',
             ],
@@ -942,5 +950,46 @@ class TwitchApiService
         $data['channel'] = $this->getChannel();
 
         return TwitchVideo::createFromJson($data);
+    }
+
+    // #####################
+    // # MODERATOR METHODS #
+    // #####################
+    /**
+     * Scope: moderation:read
+     * @return TwitchBanedUser[]
+     * @throws ApiErrorException
+     */
+    public function getBannedUser(): array
+    {
+        $this->useHelix();
+
+        $bannedUser = [];
+        $pagCursor = null;
+
+        while (true) {
+            $this->get(
+                'moderation/banned',
+                array_filter([
+                    'broadcaster_id' => $this->channel_id,
+                    'first' => 100,
+                    'after' => $pagCursor,
+                ])
+            );
+
+            $responseData = $this->getData();
+            $pagCursor = $responseData['pagination']['cursor'] ?? null;
+            $data = $responseData['data'];
+
+            foreach ($data as $userItem) {
+                $bannedUser[] = TwitchBanedUser::createFromJson($userItem);
+            }
+
+            if (count($data) === 0 || $pagCursor === null) {
+                break;
+            }
+        }
+
+        return $bannedUser;
     }
 }
