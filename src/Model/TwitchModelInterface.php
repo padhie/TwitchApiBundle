@@ -12,4 +12,9 @@ interface TwitchModelInterface extends \JsonSerializable
      * @return TwitchModelInterface
      */
     public static function createFromJson(array $json);
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array;
 }

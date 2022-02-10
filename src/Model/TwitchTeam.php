@@ -2,49 +2,25 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-use DateTime;
+use DateTimeImmutable;
 
 final class TwitchTeam implements TwitchModelInterface
 {
-    /** @var int */
-    private $_id;
-    /** @var null|string */
-    private $background;
-    /** @var string */
-    private $banner;
-    /** @var string */
-    private $displayName;
-    /** @var string */
-    private $info;
-    /** @var string */
-    private $logo;
-    /** @var string */
-    private $name;
-    /** @var DateTime */
-    private $createdAt;
-    /** @var null|DateTime */
-    private $updatedAt;
+    private string $broadcasterId;
+    private string $broadcasterName;
+    private string $broadcasterLogin;
+    private ?string $backgroundImageUrl;
+    private ?string $banner;
+    private DateTimeImmutable $createdAt;
+    private DateTimeImmutable $updatedAt;
+    private string $info;
+    private string $thumbnailUrl;
+    private string $teamName;
+    private string $teamDisplayName;
+    private string $id;
 
-    private function __construct(
-        int $_id,
-        ?string $background,
-        string $banner,
-        string $displayName,
-        string $info,
-        string $logo,
-        string $name,
-        DateTime $createdAt,
-        ?DateTime $updatedAt
-    ) {
-        $this->_id = $_id;
-        $this->background = $background;
-        $this->banner = $banner;
-        $this->displayName = $displayName;
-        $this->info = $info;
-        $this->logo = $logo;
-        $this->name = $name;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
+    private function __construct()
+    {
     }
 
     /**
@@ -52,17 +28,22 @@ final class TwitchTeam implements TwitchModelInterface
      */
     public static function createFromJson(array $json): TwitchTeam
     {
-        return new self(
-            $json['_id'] ?? 0,
-            $json['background'] ?? null,
-            $json['banner'] ?? '',
-            $json['display_name'] ?? '',
-            $json['info'] ?? '',
-            $json['logo'] ?? '',
-            $json['name'] ?? '',
-            new DateTime($json['created_at']),
-            isset($json['updated_at']) ? new DateTime($json['updated_at']) : null
-        );
+        $self = new self();
+
+        $self->broadcasterId = $json['broadcaster_id'];
+        $self->broadcasterName = $json['broadcaster_name'];
+        $self->broadcasterLogin = $json['broadcaster_login'];
+        $self->backgroundImageUrl = $json['background_image_url'] ?? null;
+        $self->banner = $json['banner'] ?? null;
+        $self->createdAt = new DateTimeImmutable($json['created_at']);
+        $self->updatedAt = new DateTimeImmutable($json['updated_at']);
+        $self->info = $json['info'];
+        $self->thumbnailUrl = $json['thumbnail_url'];
+        $self->teamName = $json['team_name'];
+        $self->teamDisplayName = $json['team_display_name'];
+        $self->id = $json['id'];
+
+        return $self;
     }
 
     public function jsonSerialize(): array
@@ -70,14 +51,24 @@ final class TwitchTeam implements TwitchModelInterface
         return get_object_vars($this);
     }
 
-    public function getId(): int
+    public function getBroadcasterId(): string
     {
-        return $this->_id;
+        return $this->broadcasterId;
     }
 
-    public function getBackground(): ?string
+    public function getBroadcasterName(): string
     {
-        return $this->background;
+        return $this->broadcasterName;
+    }
+
+    public function getBroadcasterLogin(): string
+    {
+        return $this->broadcasterLogin;
+    }
+
+    public function getBackgroundImageUrl(): ?string
+    {
+        return $this->backgroundImageUrl;
     }
 
     public function getBanner(): ?string
@@ -85,14 +76,14 @@ final class TwitchTeam implements TwitchModelInterface
         return $this->banner;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getDisplayName(): string
+    public function getUpdatedAt(): DateTimeImmutable
     {
-        return $this->displayName;
+        return $this->updatedAt;
     }
 
     public function getInfo(): string
@@ -100,18 +91,23 @@ final class TwitchTeam implements TwitchModelInterface
         return $this->info;
     }
 
-    public function getLogo(): string
+    public function getThumbnailUrl(): string
     {
-        return $this->logo;
+        return $this->thumbnailUrl;
     }
 
-    public function getName(): string
+    public function getTeamName(): string
     {
-        return $this->name;
+        return $this->teamName;
     }
 
-    public function getUpdatedAt(): ?DateTime
+    public function getTeamDisplayName(): string
     {
-        return $this->updatedAt;
+        return $this->teamDisplayName;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 }

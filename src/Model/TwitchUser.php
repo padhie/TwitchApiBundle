@@ -2,87 +2,45 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-use DateTime;
+use DateTimeImmutable;
 
 final class TwitchUser implements TwitchModelInterface
 {
-    /** @var int */
-    private $_id;
-    /** @var string */
-    private $displayName;
-    /** @var string */
-    private $name;
-    /** @var string */
-    private $type;
-    /** @var string|null */
-    private $bio;
-    /** @var DateTime */
-    private $createdAt;
-    /** @var DateTime */
-    private $updatedAt;
-    /** @var null|string */
-    private $logo;
-    /** @var null|TwitchUserNotifications */
-    private $notifications;
-    /** @var string */
-    private $email;
-    /** @var bool */
-    private $email_verified;
-    /** @var bool */
-    private $partnered;
-    /** @var bool */
-    private $twitter_connected;
+    private string $id;
+    private string $login;
+    private string $displayName;
+    private string $type;
+    private string $broadcasterType;
+    private string $description;
+    private string $profileImageUrl;
+    private string $offlineImageUrl;
+    private int $viewCount;
+    private string $email;
+    private DateTimeImmutable $createdAt;
 
-    private function __construct(
-        int $_id,
-        ?string $bio,
-        string $displayName,
-        ?string $logo,
-        string $name,
-        string $type,
-        DateTime $createdAt,
-        DateTime $updatedAt,
-        ?TwitchUserNotifications $notifications,
-        string $email,
-        bool $email_verified,
-        bool $partnered,
-        bool $twitter_connected
-    ){
-        $this->_id = $_id;
-        $this->bio = $bio;
-        $this->displayName = $displayName;
-        $this->logo = $logo;
-        $this->name = $name;
-        $this->type = $type;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
-        $this->notifications = $notifications;
-        $this->email = $email;
-        $this->email_verified = $email_verified;
-        $this->partnered = $partnered;
-        $this->twitter_connected = $twitter_connected;
-    }
+    private function __construct()
+    {}
 
     /**
      * @param array<string, mixed> $json
      */
     public static function createFromJson(array $json): TwitchUser
     {
-        return new self(
-            $json['_id'] ?? 0,
-            $json['bio'] ?? '',
-            $json['display_name'] ?? '',
-            $json['logo'] ?? '',
-            $json['name'] ?? '',
-            $json['type'] ?? '',
-            isset($json['created_at']) ? new DateTime($json['created_at']) : new $json['created_at'],
-            isset($json['updated_at']) ? new DateTime($json['updated_at']) : new $json['updated_at'],
-            isset($json['notifications']) ? TwitchUserNotifications::createFromJson($json['notifications']) : null,
-            $json['email'] ?? '',
-            $json['email_verified'] ?? false,
-            $json['partnered'] ?? false,
-            $json['twitter_connected'] ?? false
-        );
+        $self = new self();
+
+        $self->id = $json['id'];
+        $self->login = $json['login'];
+        $self->displayName = $json['display_name'];
+        $self->type = $json['type'];
+        $self->broadcasterType = $json['broadcaster_type'];
+        $self->description = $json['description'];
+        $self->profileImageUrl = $json['profile_image_url'];
+        $self->offlineImageUrl = $json['offline_image_url'];
+        $self->viewCount = $json['view_count'];
+        $self->email = $json['email'];
+        $self->createdAt = new DateTimeImmutable($json['created_at']);
+
+        return $self;
     }
 
     public function jsonSerialize(): array
@@ -90,9 +48,14 @@ final class TwitchUser implements TwitchModelInterface
         return get_object_vars($this);
     }
 
-    public function getId(): int
+    public function getId(): string
     {
-        return $this->_id;
+        return $this->id;
+    }
+
+    public function getLogin(): string
+    {
+        return $this->login;
     }
 
     public function getDisplayName(): string
@@ -100,39 +63,34 @@ final class TwitchUser implements TwitchModelInterface
         return $this->displayName;
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
     public function getType(): string
     {
         return $this->type;
     }
 
-    public function getBio(): ?string
+    public function getBroadcasterType(): string
     {
-        return $this->bio;
+        return $this->broadcasterType;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getDescription(): string
     {
-        return $this->createdAt;
+        return $this->description;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getProfileImageUrl(): string
     {
-        return $this->updatedAt;
+        return $this->profileImageUrl;
     }
 
-    public function getLogo(): ?string
+    public function getOfflineImageUrl(): string
     {
-        return $this->logo;
+        return $this->offlineImageUrl;
     }
 
-    public function getNotifications(): ?TwitchUserNotifications
+    public function getViewCount(): int
     {
-        return $this->notifications;
+        return $this->viewCount;
     }
 
     public function getEmail(): string
@@ -140,18 +98,8 @@ final class TwitchUser implements TwitchModelInterface
         return $this->email;
     }
 
-    public function isEmailVerified(): bool
+    public function getCreatedAt(): DateTimeImmutable
     {
-        return $this->email_verified;
-    }
-
-    public function isPartnered(): bool
-    {
-        return $this->partnered;
-    }
-
-    public function isTwitterConnected(): bool
-    {
-        return $this->twitter_connected;
+        return $this->createdAt;
     }
 }

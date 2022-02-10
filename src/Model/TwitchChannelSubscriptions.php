@@ -4,34 +4,29 @@ namespace Padhie\TwitchApiBundle\Model;
 
 final class TwitchChannelSubscriptions implements TwitchModelInterface
 {
-    /** @var int */
-    private $_total;
+    private int $total;
+    private int $points;
     /** @var array<int, TwitchSubscription> */
-    private $subscriptions;
+    private array $subscriptions = [];
 
-    /**
-     * @param array<int, TwitchSubscription> $subscriptions
-     */
-    private function __construct(int $_total, array $subscriptions)
-    {
-        $this->_total = $_total;
-        $this->subscriptions = $subscriptions;
-    }
+    private function __construct()
+    {}
 
     /**
      * @param array<string, mixed> $json
      */
     public static function createFromJson(array $json): TwitchChannelSubscriptions
     {
-        $subscriptions = [];
+        $self = new self();
+
+        $self->total = $json['total'] ?? 0;
+        $self->points = $json['points'] ?? 0;
+
         foreach ($json['subscriptions'] ?? [] as $subscription) {
-            $subscriptions[] = TwitchSubscription::createFromJson($subscription);
+            $self->subscriptions[] = TwitchSubscription::createFromJson($subscription);
         }
 
-        return new self(
-            $json['_total'] ?? 0,
-            $subscriptions
-        );
+        return $self;
     }
 
     public function jsonSerialize(): array
@@ -41,11 +36,16 @@ final class TwitchChannelSubscriptions implements TwitchModelInterface
 
     public function getTotal(): int
     {
-        return $this->_total;
+        return $this->total;
+    }
+
+    public function getPoints(): int
+    {
+        return $this->points;
     }
 
     /**
-     * @return array<int, TwitchSubscription> $subscriptions
+     * @return array<int, TwitchSubscription>
      */
     public function getSubscriptions(): array
     {

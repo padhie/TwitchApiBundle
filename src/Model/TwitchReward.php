@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Model;
+namespace Padhie\TwitchApiBundle\Model;
 
 use Padhie\TwitchApiBundle\Model\TwitchModelInterface;
 
@@ -16,7 +16,7 @@ class TwitchReward implements TwitchModelInterface
     private $broadcasterLogin;
     /** @var string  */
     private $broadcasterId;
-    /** @var Images|null  */
+    /** @var Image|null  */
     private $image;
     /** @var string  */
     private $backgroundColor;
@@ -46,7 +46,7 @@ class TwitchReward implements TwitchModelInterface
     private $maxPerUserPerStreamSetting;
     /** @var GlobalCooldownSetting|null  */
     private $globalCooldownSetting;
-    /** @var Images|null  */
+    /** @var Image|null  */
     private $defaultImage;
 
     private function __construct(
@@ -54,22 +54,22 @@ class TwitchReward implements TwitchModelInterface
         string $broadcasterName,
         string $broadcasterLogin,
         string $broadcasterId,
-        ?Images $image,
+        ?Image $image,
         string $backgroundColor,
-        bool $is_enabled,
-        int $cost,
+        bool   $is_enabled,
+        int    $cost,
         string $title,
         string $prompt,
-        bool $isUserInputRequired,
-        bool $isPaused,
-        bool $isInStock,
-        bool $shouldRedemptionsSkipRequestQueue,
-        int $redemptionsRedeemedCurrentStream,
+        bool   $isUserInputRequired,
+        bool   $isPaused,
+        bool   $isInStock,
+        bool   $shouldRedemptionsSkipRequestQueue,
+        int    $redemptionsRedeemedCurrentStream,
         string $cooldownExpiresAt,
         ?MaxPerUserPerStreamSetting $maxPerStreamSetting,
         ?MaxPerUserPerStreamSetting $maxPerUserPerStreamSetting,
         ?GlobalCooldownSetting $globalCooldownSetting,
-        ?Images $defaultImage
+        ?Image $defaultImage
     ) {
         $this->id = $id;
         $this->broadcasterName = $broadcasterName;
@@ -103,7 +103,7 @@ class TwitchReward implements TwitchModelInterface
             $json['broadcaster_name'] ?? '',
             $json['broadcaster_login'] ?? '',
             $json['broadcaster_id'] ?? '',
-            $json['image'] ? Images::createFromJson($json['image']) : null,
+            $json['image'] ? Image::createFromJson($json['image']) : null,
             $json['background_color'] ?? '',
             $json['is_enabled'] ?? false,
             $json['cost'] ?? 0,
@@ -118,7 +118,7 @@ class TwitchReward implements TwitchModelInterface
             $json['max_per_stream_setting'] ? MaxPerUserPerStreamSetting::createFromJson($json['max_per_stream_setting']) : null,
             $json['max_per_user_per_stream_setting'] ? MaxPerUserPerStreamSetting::createFromJson($json['max_per_user_per_stream_setting']) : null,
             $json['global_cooldown_setting'] ? GlobalCooldownSetting::createFromJson($json['global_cooldown_setting']) : null,
-            $json['default_image'] ? Images::createFromJson($json['default_image']) : null
+            $json['default_image'] ? Image::createFromJson($json['default_image']) : null
         );
     }
 
@@ -147,7 +147,7 @@ class TwitchReward implements TwitchModelInterface
         return $this->broadcasterId;
     }
 
-    public function getImage(): ?Images
+    public function getImage(): ?Image
     {
         return $this->image;
     }
@@ -222,7 +222,7 @@ class TwitchReward implements TwitchModelInterface
         return $this->globalCooldownSetting;
     }
 
-    public function getDefaultImage(): ?Images
+    public function getDefaultImage(): ?Image
     {
         return $this->defaultImage;
     }

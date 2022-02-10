@@ -4,26 +4,23 @@ namespace Padhie\TwitchApiBundle\Model;
 
 final class TwitchVideoMutedSegment implements TwitchModelInterface
 {
-    /** @var int */
-    private $duration;
-    /** @var int */
-    private $offset;
+    private int $duration;
+    private int $offset;
 
-    private function __construct(int $duration, int $offset)
-    {
-        $this->duration = $duration;
-        $this->offset = $offset;
-    }
+    private function __construct()
+    {}
 
     /**
      * @param array<string, mixed> $json
      */
     public static function createFromJson(array $json): TwitchVideoMutedSegment
     {
-        return new self(
-            $json['duration'] ?? 0,
-            $json['offset'] ?? 0
-        );
+        $self = new self();
+
+        $self->duration = $json['duration'];
+        $self->offset = $json['offset'];
+
+        return $self;
     }
 
     public function jsonSerialize(): array
