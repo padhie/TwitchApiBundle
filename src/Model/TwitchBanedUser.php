@@ -12,9 +12,9 @@ class TwitchBanedUser implements TwitchModelInterface
     private $user_login;
     /** @var string */
     private $user_name;
-    /** @var string */
+    /** @var null|string */
     private $expires_at;
-    /** @var string */
+    /** @var null|string */
     private $reason;
     /** @var string */
     private $moderator_id;
@@ -27,8 +27,8 @@ class TwitchBanedUser implements TwitchModelInterface
         string $user_id,
         string $user_login,
         string $user_name,
-        string $expires_at,
-        string $reason,
+        ?string $expires_at,
+        ?string $reason,
         string $moderator_id,
         string $moderator_login,
         string $moderator_name
@@ -49,8 +49,8 @@ class TwitchBanedUser implements TwitchModelInterface
             $json['user_id'],
             $json['user_login'],
             $json['user_name'],
-            $json['expires_at'],
-            $json['reason'],
+            $json['expires_at'] !== '' ? $json['expires_at'] : null,
+            $json['reason'] !== '' ? $json['reason'] : null,
             $json['moderator_id'],
             $json['moderator_login'],
             $json['moderator_name']
@@ -77,12 +77,12 @@ class TwitchBanedUser implements TwitchModelInterface
         return $this->user_name;
     }
 
-    public function getExpiresAt(): string
+    public function getExpiresAt(): ?string
     {
         return $this->expires_at;
     }
 
-    public function getReason(): string
+    public function getReason(): ?string
     {
         return $this->reason;
     }

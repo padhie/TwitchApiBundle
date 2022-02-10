@@ -2,46 +2,42 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-use DateTime;
-
 final class TwitchSubscription implements TwitchModelInterface
 {
-    /** @var string */
-    private $_id;
-    /** @var DateTime */
-    private $createdAt;
-    /** @var string */
-    private $subPlan;
-    /** @var string */
-    private $subPlanName;
-    /** @var null|TwitchUser */
-    private $user;
-    /** @var null|TwitchChannel */
-    private $channel;
+    private string $broadcasterId;
+    private string $broadcasterLogin;
+    private string $broadcasterName;
+    private string $gifterId;
+    private string $gifterLogin;
+    private string $gifterName;
+    private bool $isGift;
+    private string $tier;
+    private string $planName;
+    private string $userId;
+    private string $userName;
+    private string $userLogin;
 
-    private function __construct(string $_id, DateTime $createdAt, string $subPlan, string $subPlanName, ?TwitchUser $user, ?TwitchChannel $channel)
-    {
-        $this->_id = $_id;
-        $this->createdAt = $createdAt;
-        $this->subPlan = $subPlan;
-        $this->subPlanName = $subPlanName;
-        $this->user = $user;
-        $this->channel = $channel;
-    }
+    private function __construct()
+    {}
 
-    /**
-     * @param array<string, mixed> $json
-     */
-    public static function createFromJson(array $json): TwitchSubscription
+    public static function createFromJson(array $json): self
     {
-        return new self(
-            $json['_id'] ?? '',
-            isset($json['created_at']) ? new DateTime($json['created_at']) : new DateTime(),
-            $json['sub_plan'] ?? '',
-            $json['sub_plan_name'] ?? '',
-            isset($json['user']) ? TwitchUser::createFromJson($json['user']) : null,
-            isset($json['channel']) ? TwitchChannel::createFromJson($json['channel']) : null
-        );
+        $self = new self();
+
+        $self->broadcasterId = $json["broadcaster_id"];
+        $self->broadcasterLogin = $json["broadcaster_login"];
+        $self->broadcasterName = $json["broadcaster_name"];
+        $self->gifterId = $json["gifter_id"];
+        $self->gifterLogin = $json["gifter_login"];
+        $self->gifterName = $json["gifter_name"];
+        $self->isGift = $json["is_gift"];
+        $self->tier = $json["tier"];
+        $self->planName = $json["plan_name"];
+        $self->userId = $json["user_id"];
+        $self->userName = $json["user_name"];
+        $self->userLogin = $json["user_login"];
+
+        return $self;
     }
 
     public function jsonSerialize(): array
@@ -49,33 +45,63 @@ final class TwitchSubscription implements TwitchModelInterface
         return get_object_vars($this);
     }
 
-    public function getId(): string
+    public function getBroadcasterId(): string
     {
-        return $this->_id;
+        return $this->broadcasterId;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getBroadcasterLogin(): string
     {
-        return $this->createdAt;
+        return $this->broadcasterLogin;
     }
 
-    public function getSubPlan(): string
+    public function getBroadcasterName(): string
     {
-        return $this->subPlan;
+        return $this->broadcasterName;
     }
 
-    public function getSubPlanName(): string
+    public function getGifterId(): string
     {
-        return $this->subPlanName;
+        return $this->gifterId;
     }
 
-    public function getUser(): ?TwitchUser
+    public function getGifterLogin(): string
     {
-        return $this->user;
+        return $this->gifterLogin;
     }
 
-    public function getChannel(): ?TwitchChannel
+    public function getGifterName(): string
     {
-        return $this->channel;
+        return $this->gifterName;
+    }
+
+    public function isGift(): bool
+    {
+        return $this->isGift;
+    }
+
+    public function getTier(): string
+    {
+        return $this->tier;
+    }
+
+    public function getPlanName(): string
+    {
+        return $this->planName;
+    }
+
+    public function getUserId(): string
+    {
+        return $this->userId;
+    }
+
+    public function getUserName(): string
+    {
+        return $this->userName;
+    }
+
+    public function getUserLogin(): string
+    {
+        return $this->userLogin;
     }
 }

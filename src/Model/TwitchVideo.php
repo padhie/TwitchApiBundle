@@ -2,145 +2,61 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-use DateTime;
+use DateTimeImmutable;
 
 final class TwitchVideo implements TwitchModelInterface
 {
-    /** @var string */
-    private $_id;
-    /** @var int */
-    private $broadcastId;
-    /** @var string */
-    private $broadcastType;
-    /** @var TwitchChannel */
-    private $channel;
-    /** @var DateTime */
-    private $createdAt;
-    /** @var string */
-    private $description;
-    /** @var string */
-    private $descriptionHtml;
-    /** @var TwitchVideoFps */
-    private $fps;
-    /** @var string */
-    private $game;
-    /** @var string */
-    private $language;
-    /** @var int */
-    private $length;
+    private string $id;
+    private ?string $streamId;
+    private string $userId;
+    private string $userLogin;
+    private string $userName;
+    private string $title;
+    private string $description;
+    private DateTimeImmutable $createdAt;
+    private DateTimeImmutable $publishedAt;
+    private string $url;
+    private string $thumbnailUrl;
+    private string $viewable;
+    private int $viewCount;
+    private string $language;
+    private string $type;
+    private string $duration;
     /** @var array<int, TwitchVideoMutedSegment> */
-    private $mutedSegments;
-    /** @var TwitchVideoPreview|null */
-    private $preview;
-    /** @var DateTime */
-    private $publishedAt;
-    /** @var TwitchVideoResolutions|null */
-    private $resolutions;
-    /** @var string */
-    private $status;
-    /** @var string */
-    private $tagList;
-    /** @var TwitchVideoThumbnails */
-    private $thumbnails;
-    /** @var string */
-    private $title;
-    /** @var string */
-    private $url;
-    /** @var string */
-    private $viewable;
-    /** @var DateTime|null */
-    private $viewableAt;
-    /** @var int */
-    private $views;
+    private array $mutedSegments = [];
 
-    /**
-     * @param array<int, TwitchVideoMutedSegment> $mutedSegments
-     */
-    private function __construct(
-        string $_id,
-        int $broadcastId,
-        string $broadcastType,
-        TwitchChannel $channel,
-        DateTime $createdAt,
-        string $description,
-        string $descriptionHtml,
-        TwitchVideoFps $fps,
-        string $game,
-        string $language,
-        int $length,
-        array $mutedSegments,
-        ?TwitchVideoPreview $preview,
-        DateTime $publishedAt,
-        ?TwitchVideoResolutions $resolutions,
-        string $status,
-        string $tagList,
-        TwitchVideoThumbnails $thumbnails,
-        string $title,
-        string $url,
-        string $viewable,
-        ?DateTime $viewableAt,
-        int $views
-    ) {
-        $this->_id = $_id;
-        $this->broadcastId = $broadcastId;
-        $this->broadcastType = $broadcastType;
-        $this->channel = $channel;
-        $this->createdAt = $createdAt;
-        $this->description = $description;
-        $this->descriptionHtml = $descriptionHtml;
-        $this->fps = $fps;
-        $this->game = $game;
-        $this->language = $language;
-        $this->length = $length;
-        $this->mutedSegments = $mutedSegments;
-        $this->preview = $preview;
-        $this->publishedAt = $publishedAt;
-        $this->resolutions = $resolutions;
-        $this->status = $status;
-        $this->tagList = $tagList;
-        $this->thumbnails = $thumbnails;
-        $this->title = $title;
-        $this->url = $url;
-        $this->viewable = $viewable;
-        $this->viewableAt = $viewableAt;
-        $this->views = $views;
-    }
+    private function __construct()
+    {}
 
     /**
      * @param array<string, mixed> $json
      */
     public static function createFromJson(array $json): TwitchVideo
     {
-        $mutedSegments = [];
-        foreach ($json['muted_segments'] ?? [] as $mutedSegment) {
-            $mutedSegments[] = TwitchVideoMutedSegment::createFromJson($mutedSegment);
+        $self = new self();
+
+        $self->id = $json['id'];
+        $self->streamId = $json['stream_id'] ?? null;
+        $self->userId = $json['user_id'];
+        $self->userLogin = $json['user_login'];
+        $self->userName = $json['user_name'];
+        $self->title = $json['title'];
+        $self->description = $json['description'];
+        $self->createdAt = new DateTimeImmutable($json['created_at']);
+        $self->publishedAt = new DateTimeImmutable($json['published_at']);
+        $self->url = $json['url'];
+        $self->thumbnailUrl = $json['thumbnail_url'];
+        $self->viewable = $json['viewable'];
+        $self->viewCount = $json['view_count'];
+        $self->language = $json['language'];
+        $self->type = $json['type'];
+        $self->duration = $json['duration'];
+
+        foreach ($json['muted_segments'] as $mutedSegment) {
+            $self->mutedSegments[] = TwitchVideoMutedSegment::createFromJson($mutedSegment);
         }
 
-        return new self(
-            $json['_id'] ?? '',
-            $json['broadcast_id'] ?? 0,
-            $json['broadcast_type'] ?? '',
-            TwitchChannel::createFromJson($json['channel']),
-            new DateTime($json['created_at']),
-            $json['description'] ?? '',
-            $json['description_html'] ?? '',
-            TwitchVideoFps::createFromJson($json['fps']),
-            $json['game'] ?? '',
-            $json['language'] ?? '',
-            $json['length'] ?? 0,
-            $mutedSegments,
-            isset($json['preview']) ? TwitchVideoPreview::createFromJson($json['preview']) : null,
-            new DateTime($json['published_at']),
-            isset($json['resolutions']) ? TwitchVideoResolutions::createFromJson($json['resolutions']) : null,
-            $json['status'] ?? '',
-            $json['tag_list'] ?? '',
-            TwitchVideoThumbnails::createFromJson($json['thumbnails']),
-            $json['title'] ?? '',
-            $json['url'] ?? '',
-            $json['viewable'] ?? '',
-            isset($json['viewable_at']) ? new DateTime($json['viewable_at']) : null,
-            $json['views'] ?? 0
-        );
+        return $self;
     }
 
     public function jsonSerialize(): array
@@ -150,27 +66,32 @@ final class TwitchVideo implements TwitchModelInterface
 
     public function getId(): string
     {
-        return $this->_id;
+        return $this->id;
     }
 
-    public function getBroadcastId(): int
+    public function getStreamId(): ?string
     {
-        return $this->broadcastId;
+        return $this->streamId;
     }
 
-    public function getBroadcastType(): string
+    public function getUserId(): string
     {
-        return $this->broadcastType;
+        return $this->userId;
     }
 
-    public function getChannel(): TwitchChannel
+    public function getUserLogin(): string
     {
-        return $this->channel;
+        return $this->userLogin;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getUserName(): string
     {
-        return $this->createdAt;
+        return $this->userName;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
     }
 
     public function getDescription(): string
@@ -178,19 +99,34 @@ final class TwitchVideo implements TwitchModelInterface
         return $this->description;
     }
 
-    public function getDescriptionHtml(): string
+    public function getCreatedAt(): DateTimeImmutable
     {
-        return $this->descriptionHtml;
+        return $this->createdAt;
     }
 
-    public function getFps(): TwitchVideoFps
+    public function getPublishedAt(): DateTimeImmutable
     {
-        return $this->fps;
+        return $this->publishedAt;
     }
 
-    public function getGame(): string
+    public function getUrl(): string
     {
-        return $this->game;
+        return $this->url;
+    }
+
+    public function getThumbnailUrl(): string
+    {
+        return $this->thumbnailUrl;
+    }
+
+    public function getViewable(): string
+    {
+        return $this->viewable;
+    }
+
+    public function getViewCount(): int
+    {
+        return $this->viewCount;
     }
 
     public function getLanguage(): string
@@ -198,9 +134,14 @@ final class TwitchVideo implements TwitchModelInterface
         return $this->language;
     }
 
-    public function getLength(): int
+    public function getType(): string
     {
-        return $this->length;
+        return $this->type;
+    }
+
+    public function getDuration(): string
+    {
+        return $this->duration;
     }
 
     /**
@@ -209,60 +150,5 @@ final class TwitchVideo implements TwitchModelInterface
     public function getMutedSegments(): array
     {
         return $this->mutedSegments;
-    }
-
-    public function getPreview(): ?TwitchVideoPreview
-    {
-        return $this->preview;
-    }
-
-    public function getPublishedAt(): DateTime
-    {
-        return $this->publishedAt;
-    }
-
-    public function getResolutions(): ?TwitchVideoResolutions
-    {
-        return $this->resolutions;
-    }
-
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    public function getTagList(): string
-    {
-        return $this->tagList;
-    }
-
-    public function getThumbnails(): TwitchVideoThumbnails
-    {
-        return $this->thumbnails;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getUrl(): string
-    {
-        return $this->url;
-    }
-
-    public function getViewable(): string
-    {
-        return $this->viewable;
-    }
-
-    public function getViewableAt(): ?DateTime
-    {
-        return $this->viewableAt;
-    }
-
-    public function getViews(): int
-    {
-        return $this->views;
     }
 }

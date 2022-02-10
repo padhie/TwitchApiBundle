@@ -2,75 +2,52 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-use DateTime;
+use DateTimeImmutable;
 
 final class TwitchStream implements TwitchModelInterface
 {
-    /** @var int */
-    private $_id;
-    /** @var string */
-    private $game;
-    /** @var int */
-    private $viewers;
-    /** @var int */
-    private $videoHeight;
-    /** @var int */
-    private $averageFps;
-    /** @var int */
-    private $delay;
-    /** @var boolean */
-    private $isPlaylist;
-    /** @var string[] */
-    private $preview;
-    /** @var DateTime */
-    private $createdAt;
-    /** @var TwitchChannel */
-    private $channel;
+    private string $id;
+    private string $userId;
+    private string $userLogin;
+    private string $userName;
+    private string $gameId;
+    private string $gameName;
+    private string $type;
+    private string $title;
+    private int $viewerCount;
+    private DateTimeImmutable $startedAt;
+    private string $language;
+    private string $thumbnailUrl;
+    /** @var array<int, string> */
+    private array $tagIds = [];
+    private bool $isMature;
 
-    /**
-     * @param string[] $preview
-     */
-    private function __construct(
-        int $_id,
-        string $game,
-        int $viewers,
-        int $videoHeight,
-        int $averageFps,
-        int $delay,
-        bool $isPlaylist,
-        array $preview,
-        DateTime $createdAt,
-        TwitchChannel $channel
-    ) {
-        $this->_id = $_id;
-        $this->game = $game;
-        $this->viewers = $viewers;
-        $this->videoHeight = $videoHeight;
-        $this->averageFps = $averageFps;
-        $this->delay = $delay;
-        $this->isPlaylist = $isPlaylist;
-        $this->preview = $preview;
-        $this->createdAt = $createdAt;
-        $this->channel = $channel;
-    }
+    private function __construct()
+    {}
 
     /**
      * @param array<string, mixed> $json
      */
     public static function createFromJson(array $json): TwitchStream
     {
-        return new self(
-            $json['_id'] ?? 0,
-            $json['game'] ?? 'string',
-            $json['viewers'] ?? 0,
-            $json['video_height'] ?? 0,
-            $json['average_fps'] ?? 0,
-            $json['delay'] ?? 0,
-            $json['is_playlist'] ?? false,
-            $json['preview'] ?? [],
-            new DateTime($json['created_at']),
-            TwitchChannel::createFromJson($json['channel'])
-        );
+        $self = new self();
+
+        $self->id = $json['id'];
+        $self->userId = $json['user_id'];
+        $self->userLogin = $json['user_login'];
+        $self->userName = $json['user_name'];
+        $self->gameId = $json['game_id'];
+        $self->gameName = $json['game_name'];
+        $self->type = $json['type'];
+        $self->title = $json['title'];
+        $self->viewerCount = $json['viewer_count'];
+        $self->startedAt = new DateTimeImmutable($json['started_at']);
+        $self->language = $json['language'];
+        $self->thumbnailUrl = $json['thumbnail_url'];
+        $self->tagIds = $json['tag_ids'];
+        $self->isMature = $json['is_mature'];
+
+        return $self;
     }
 
     public function jsonSerialize(): array
@@ -78,56 +55,76 @@ final class TwitchStream implements TwitchModelInterface
         return get_object_vars($this);
     }
 
-    public function getId(): int
+    public function getId(): string
     {
-        return $this->_id;
+        return $this->id;
     }
 
-    public function getGame(): string
+    public function getUserId(): string
     {
-        return $this->game;
+        return $this->userId;
     }
 
-    public function getViewers(): int
+    public function getUserLogin(): string
     {
-        return $this->viewers;
+        return $this->userLogin;
     }
 
-    public function getVideoHeight(): int
+    public function getUserName(): string
     {
-        return $this->videoHeight;
+        return $this->userName;
     }
 
-    public function getAverageFps(): int
+    public function getGameId(): string
     {
-        return $this->averageFps;
+        return $this->gameId;
     }
 
-    public function getDelay(): int
+    public function getGameName(): string
     {
-        return $this->delay;
+        return $this->gameName;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getType(): string
     {
-        return $this->createdAt;
+        return $this->type;
     }
 
-    public function isPlaylist(): bool
+    public function getTitle(): string
     {
-        return $this->isPlaylist;
+        return $this->title;
+    }
+
+    public function getViewerCount(): int
+    {
+        return $this->viewerCount;
+    }
+
+    public function getStartedAt(): DateTimeImmutable
+    {
+        return $this->startedAt;
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    public function getThumbnailUrl(): string
+    {
+        return $this->thumbnailUrl;
     }
 
     /**
-     * @return string[]
+     * @return array<int, string>
      */
-    public function getPreview(): array
+    public function getTagIds(): array
     {
-        return $this->preview;
+        return $this->tagIds;
     }
 
-    public function getChannel(): TwitchChannel
+    public function isMature(): bool
     {
-        return $this->channel;
+        return $this->isMature;
     }
 }

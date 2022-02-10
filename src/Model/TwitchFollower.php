@@ -2,42 +2,50 @@
 
 namespace Padhie\TwitchApiBundle\Model;
 
-use DateTime;
+use DateTimeImmutable;
 
 final class TwitchFollower implements TwitchModelInterface
 {
-    /** @var DateTime */
-    private $createdAt;
-    /** @var boolean */
-    private $notifications;
-    /** @var null|TwitchUser */
-    private $user;
-    /** @var null|TwitchChannel */
-    private $channel;
+    private string $id;
+    private string $userId;
+    private string $userLogin;
+    private string $userName;
+    private string $gameId;
+    private string $gameName;
+    private string $type;
+    private string $title;
+    private int $viewerCount;
+    private DateTimeImmutable $startedAt;
+    private string $language;
+    private string $thumbnailUrl;
+    /** @var array<int, string> */
+    private array $tagIds = [];
 
-    private function __construct(
-        DateTime $createdAt,
-        bool $notifications,
-        ?TwitchUser $user,
-        ?TwitchChannel $channel
-    ) {
-        $this->createdAt = $createdAt;
-        $this->notifications = $notifications;
-        $this->user = $user;
-        $this->channel = $channel;
-    }
+    private function __construct()
+    {}
 
     /**
      * @param array<string, mixed> $json
      */
     public static function createFromJson(array $json): TwitchFollower
     {
-        return new self(
-            isset($json['created_at']) ? new DateTime($json['created_at']): new DateTime(),
-            $json['notifications'] ?? false,
-            isset($json['user']) ? TwitchUser::createFromJson($json['user']) : null,
-            isset($json['channel']) ? TwitchChannel::createFromJson($json['channel']) : null
-        );
+        $self = new self();
+
+        $self->id = $json['id'];
+        $self->userId = $json['user_id'];
+        $self->userLogin = $json['user_login'];
+        $self->userName = $json['user_name'];
+        $self->gameId = $json['game_id'];
+        $self->gameName = $json['game_name'];
+        $self->type = $json['type'];
+        $self->title = $json['title'];
+        $self->viewerCount = $json['viewer_count'];
+        $self->startedAt = new DateTimeImmutable($json['started_at']);
+        $self->language = $json['language'];
+        $self->thumbnailUrl = $json['thumbnail_url'];
+        $self->tagIds = $json['tag_ids'];
+
+        return $self;
     }
 
     public function jsonSerialize(): array
@@ -45,24 +53,71 @@ final class TwitchFollower implements TwitchModelInterface
         return get_object_vars($this);
     }
 
-    public function getCreatedAt(): DateTime
+    public function getId(): string
     {
-        return $this->createdAt;
+        return $this->id;
     }
 
-    public function isNotifications(): bool
+    public function getUserId(): string
     {
-        return $this->notifications;
+        return $this->userId;
     }
 
-    public function getUser(): ?TwitchUser
+    public function getUserLogin(): string
     {
-        return $this->user;
+        return $this->userLogin;
     }
 
-    public function getChannel(): ?TwitchChannel
+    public function getUserName(): string
     {
-        return $this->channel;
+        return $this->userName;
     }
-    
+
+    public function getGameId(): string
+    {
+        return $this->gameId;
+    }
+
+    public function getGameName(): string
+    {
+        return $this->gameName;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getViewerCount(): int
+    {
+        return $this->viewerCount;
+    }
+
+    public function getStartedAt(): DateTimeImmutable
+    {
+        return $this->startedAt;
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    public function getThumbnailUrl(): string
+    {
+        return $this->thumbnailUrl;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getTagIds(): array
+    {
+        return $this->tagIds;
+    }
 }

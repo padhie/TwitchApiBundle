@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Model;
+namespace Padhie\TwitchApiBundle\Model;
 
-use Padhie\TwitchApiBundle\Model\TwitchModelInterface;
-
-class Images implements TwitchModelInterface
+class Image implements TwitchModelInterface
 {
     /** @var string */
     private $url1x;
