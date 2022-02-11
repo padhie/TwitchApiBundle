@@ -1,0 +1,6 @@
+.idea
+.git
+vendor
+TwitchApi.iml
+test.php
+Dockerfile
