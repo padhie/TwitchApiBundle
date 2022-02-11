@@ -1,5 +1,5 @@
 # TwitchApi
-A little collection to work with the Twitch-Api https://dev.twitch.tv/docs/v5/
+A little collection to work with the Twitch-Api https://dev.twitch.tv/docs/api/reference
 
 ## How to use
 ```php
@@ -19,4 +19,26 @@ $user = $twitchApiService->getUser();
 
 // get own channel data
 $channel = $twitchApiService->getChannel();
+```
+
+--------------------
+
+```php
+<?php
+
+// see https://dev.twitch.tv/docs/authentication/getting-tokens-oauth
+$clientId = 'CLIENT_ID';
+$authorization = 'AUTHORIZATION';
+
+$client = new \Padhie\TwitchApiBundle\TwitchClient(
+    new \GuzzleHttp\Client(),
+    new \Padhie\TwitchApiBundle\Request\RequestGenerator($clientId, $authorization)
+);
+
+$request = new \Padhie\TwitchApiBundle\Request\Channel\GetChannelRequest($broadcasterId);
+
+$response = $client->send($request);
+assert($response instanceof \Padhie\TwitchApiBundle\Request\Channel\GetChannelResponse);
+
+$title = $response->getTitle();
 ```
