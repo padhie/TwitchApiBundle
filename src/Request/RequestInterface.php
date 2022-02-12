@@ -43,8 +43,6 @@ interface RequestInterface
      */
     public function getBody(): array;
 
-    public function hasPagination(): bool;
-
     /**
      * Class must be implement ResponseInterface
      */

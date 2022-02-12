@@ -7,6 +7,8 @@ namespace Padhie\TwitchApiBundle;
 use GuzzleHttp\ClientInterface;
 use JsonException;
 use Padhie\TwitchApiBundle\Exception\InvalidRequestException;
+use Padhie\TwitchApiBundle\Exception\InvalidResponseException;
+use Padhie\TwitchApiBundle\Request\PaginationRequestInterface;
 use Padhie\TwitchApiBundle\Request\RequestGenerator;
 use Padhie\TwitchApiBundle\Request\RequestInterface;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
@@ -40,6 +42,41 @@ final class TwitchClient
         return call_user_func(
             [$request->getResponseClass(), 'createFromArray'],
             json_decode($responseString, true, 512, JSON_THROW_ON_ERROR)
+        );
+    }
+
+    public function sendWithPagination(PaginationRequestInterface $request): ResponseInterface
+    {
+        $paginationCursor = null;
+        $dataCollection = [];
+
+        do {
+            if ($paginationCursor !== null) {
+                $request = $request->withAfter($paginationCursor);
+            }
+
+            $clientRequest = $this->requestGenerator->generate($request);
+            $responseString = $this->executeRequest($clientRequest);
+            $jsonResponse = json_decode($responseString, true, 512, JSON_THROW_ON_ERROR);
+
+            $dataCollection = array_merge($dataCollection, $jsonResponse['data'] ?? []);
+            $paginationCursor = $jsonResponse['pagination']['cursor'] ?? null;
+
+            if ($paginationCursor === null || count($jsonResponse['data']) === 0) {
+                break;
+            }
+
+        } while(true);
+
+        if (!is_array($jsonResponse)) {
+            throw new InvalidResponseException('There is no valid pagination response.');
+        }
+
+        $jsonResponse['data'] = $dataCollection;
+
+        return call_user_func(
+            [$request->getResponseClass(), 'createFromArray'],
+            $jsonResponse
         );
     }
 

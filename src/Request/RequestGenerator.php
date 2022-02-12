@@ -85,20 +85,13 @@ final class RequestGenerator
     private function generateUri(RequestInterface $request): string
     {
         $uri = sprintf(
-            '%s%s%s',
+            '%s%s?%s',
             self::HOSTS[$request->getHost()],
             $request->getUrl(),
-            $this->generateParameter($request)
+            http_build_query($request->getParameter())
         );
 
         return str_replace('//', '/', $uri);
-    }
-
-    private function generateParameter(RequestInterface $request): string
-    {
-        return count($request->getParameter()) > 0
-            ? '?' . http_build_query($request->getParameter())
-            : '';
     }
 
     /**
