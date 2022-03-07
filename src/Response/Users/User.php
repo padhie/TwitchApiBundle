@@ -44,7 +44,7 @@ final class User implements ResponseInterface
             'fromName' => $this->fromName,
             'toId' => $this->toId,
             'toName' => $this->toName,
-            'followedAt' => $this->followedAt->format('Y-m-d\TH:i:s\ZT'),
+            'followedAt' => $this->followedAt->format('Y-m-d\TH:i:s\Z'),
         ];
     }
 

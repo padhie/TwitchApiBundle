@@ -42,6 +42,11 @@
         }
     },
     "scripts": {
+        "test": [
+            "@phpunit",
+            "@phpstan",
+            "@require-checker"
+        ],
         "phpunit": ["vendor/bin/phpunit tests"],
         "phpstan": ["vendor/bin/phpstan analyse -c phpstan.neon --ansi"],
         "phpcs": "vendor/bin/php-cs-fixer",
