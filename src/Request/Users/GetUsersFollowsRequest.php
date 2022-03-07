@@ -11,7 +11,6 @@ use Padhie\TwitchApiBundle\Response\Users\GetUsersFollowsResponse;
 
 final class GetUsersFollowsRequest implements PaginationRequestInterface
 {
-    private int $first = 1;
     private ?string $after = null;
     private ?string $fromId;
     private ?string $toId;
@@ -57,7 +56,7 @@ final class GetUsersFollowsRequest implements PaginationRequestInterface
     public function getParameter(): array
     {
         return array_filter([
-            'first' => $this->first,
+            'first' => 100,
             'after' => $this->after,
             'from_id' => $this->fromId,
             'to_id' => $this->toId,
