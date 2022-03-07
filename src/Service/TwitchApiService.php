@@ -52,14 +52,14 @@ class TwitchApiService
     ];
 
     private const REQUEST_READ_LIMIT = 8192;
-    private const KRAKEN_API = 'https://api.twitch.tv/kraken/';
     private const HELIX_API = 'https://api.twitch.tv/helix/';
     private const TMI_API = 'https://tmi.twitch.tv/';
 
     private Client $guzzle;
     private string $clientId;
     private string $redirectUrl;
-    private string $baseUrl = self::KRAKEN_API;
+
+    private string $baseUrl = self::HELIX_API;
     private string $headerApplication = 'application/vnd.twitchtv.v5+json';
     private string $oauth;
     private ?string $additionalString;
@@ -221,9 +221,12 @@ class TwitchApiService
         return '?' . $additionalString;
     }
 
+    /**
+     * @deprecated
+     */
     private function useKraken(): void
     {
-        $this->baseUrl = self::KRAKEN_API;
+        throw new \RuntimeException('Twitch-Kraken API not longer supported.');
     }
 
     private function useHelix(): void
