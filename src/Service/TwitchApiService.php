@@ -52,25 +52,25 @@ class TwitchApiService
     ];
 
     private const REQUEST_READ_LIMIT = 8192;
-    private const KRAKEN_API = 'https://api.twitch.tv/kraken/';
     private const HELIX_API = 'https://api.twitch.tv/helix/';
     private const TMI_API = 'https://tmi.twitch.tv/';
 
     private Client $guzzle;
     private string $clientId;
     private string $redirectUrl;
-    private string $baseUrl = self::KRAKEN_API;
+
+    private string $baseUrl = self::HELIX_API;
     private string $headerApplication = 'application/vnd.twitchtv.v5+json';
-    private string $oauth;
-    private ?string $additionalString;
-    private string $_raw_response;
+    private string $oauth = '';
+    private ?string $additionalString = null;
+    private string $_raw_response = '';
     /** @var array<mixed> */
     private array $response = [];
-    private string $lastUrl;
-    private int $channelId;
-    private string $channelName;
-    private int $userId;
-    private int $videoId;
+    private string $lastUrl = '';
+    private int $channelId = 0;
+    private string $channelName = '';
+    private int $userId = 0;
+    private int $videoId = 0;
 
     /**
      * @param string $clientSecret deprecated
@@ -107,15 +107,13 @@ class TwitchApiService
      */
     public function getAccessTokenUrl(array $scopeList = []): string
     {
-        $scope = implode('+', $scopeList);
-
-        $sUrl = $this->baseUrl . 'oauth2/authorize?';
-        $sParams = 'response_type=token' .
-            '&client_id=' . $this->clientId .
-            '&scope=' . $scope .
-            '&redirect_uri=' . $this->redirectUrl;
-
-        return $sUrl . $sParams;
+        return sprintf(
+            '%soauth2/authorize?response_type=token&client_id=%s&scope=%s&redirect_uri=%s',
+            $this->baseUrl,
+            $this->clientId,
+            implode('+', $scopeList),
+            $this->redirectUrl
+        );
     }
 
     public function setChannelId(int $channelId): self
@@ -201,7 +199,7 @@ class TwitchApiService
      */
     private function combineGetUrlParameter(array $data): string
     {
-        if (!is_array($data) || empty($data)) {
+        if ($data === []) {
             return '';
         }
 
@@ -221,9 +219,12 @@ class TwitchApiService
         return '?' . $additionalString;
     }
 
+    /**
+     * @deprecated
+     */
     private function useKraken(): void
     {
-        $this->baseUrl = self::KRAKEN_API;
+        throw new \RuntimeException('Twitch-Kraken API not longer supported.');
     }
 
     private function useHelix(): void
