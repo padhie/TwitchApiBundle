@@ -104,8 +104,7 @@ class TwitchApiService
     public function getAccessTokenUrl(array $scopeList = []): string
     {
         return sprintf(
-            '%soauth2/authorize?response_type=token&client_id=%s&scope=%s&redirect_uri=%s',
-            $this->baseUrl,
+            'https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=%s&scope=%s&redirect_uri=%s',
             $this->clientId,
             implode('+', $scopeList),
             $this->redirectUrl
