@@ -67,10 +67,6 @@ class TwitchApiService
     /** @var array<mixed> */
     private array $response = [];
     private string $lastUrl = '';
-    private int $channelId = 0;
-    private string $channelName = '';
-    private int $userId = 0;
-    private int $videoId = 0;
 
     /**
      * @param string $clientSecret deprecated
@@ -114,54 +110,6 @@ class TwitchApiService
             implode('+', $scopeList),
             $this->redirectUrl
         );
-    }
-
-    public function setChannelId(int $channelId): self
-    {
-        $this->channelId = $channelId;
-
-        return $this;
-    }
-
-    public function getChannelId(): int
-    {
-        return $this->channelId;
-    }
-
-    public function setChannelName(string $channelName): self
-    {
-        $this->channelName = $channelName;
-
-        return $this;
-    }
-
-    public function getChannelName(): string
-    {
-        return $this->channelName;
-    }
-
-    public function setUserId(int $userId): self
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    public function getUserId(): int
-    {
-        return $this->userId;
-    }
-
-    public function setVideoId(int $videoId): self
-    {
-        $this->videoId = $videoId;
-
-        return $this;
-    }
-
-    public function getVideoId(): int
-    {
-        return $this->videoId;
     }
 
     /**
@@ -439,9 +387,9 @@ class TwitchApiService
      * @deprecated use getUserById
      * Scope: user_read
      */
-    public function getUser(): ?TwitchUser
+    public function getUser(int $userId): ?TwitchUser
     {
-        return $this->getUserById($this->userId);
+        return $this->getUserById($userId);
     }
 
     /**
@@ -616,9 +564,9 @@ class TwitchApiService
      * @deprecated use getChannelById
      * Scope: channel_read
      */
-    public function getChannel(): TwitchChannel
+    public function getChannel(int $channelId): TwitchChannel
     {
-        return $this->getChannelById($this->channelId);
+        return $this->getChannelById($channelId);
     }
 
     /**
@@ -929,11 +877,11 @@ class TwitchApiService
      * @return string
      * @throws ApiErrorException
      */
-    public function getUserList(): string
+    public function getUserList(string $channelName): string
     {
         $this->useTmi();
 
-        $this->get('group/user/' . $this->getChannelName() . '/chatters', [], ['Cache-Control: no-cache']);
+        $this->get('group/user/' . $channelName . '/chatters', [], ['Cache-Control: no-cache']);
 
         return $this->_raw_response;
     }
@@ -945,9 +893,9 @@ class TwitchApiService
      * Scope: -
      * @deprecated
      */
-    public function getEmoticonList(): array
+    public function getEmoticonList(int $channelId): array
     {
-        return $this->getEmotes($this->channelId);
+        return $this->getEmotes($channelId);
     }
 
     /**
@@ -956,9 +904,9 @@ class TwitchApiService
      * @deprecated use getEmotes
      * Scope: -
      */
-    public function getEmoticonImageList(): array
+    public function getEmoticonImageList(int $channelId): array
     {
-        return $this->getEmotes($this->channelId);
+        return $this->getEmotes($channelId);
     }
 
     /**
@@ -1023,14 +971,14 @@ class TwitchApiService
      * Scope: -
      * @throws ApiErrorException
      */
-    public function getVideoById(int $videoId): TwitchVideo
+    public function getVideoById(int $videoId, int $channelId): TwitchVideo
     {
         $this->useHelix();
 
         $this->get('videos/', ['id' => $videoId]);
 
         $data = $this->getData();
-        $data['channel'] = $this->getChannelById($this->channelId);
+        $data['channel'] = $this->getChannelById($channelId);
 
         return TwitchVideo::createFromJson($data);
     }
@@ -1043,7 +991,7 @@ class TwitchApiService
      * @return TwitchBanedUser[]
      * @throws ApiErrorException
      */
-    public function getBannedUser(): array
+    public function getBannedUser(int $channelId): array
     {
         $this->useHelix();
 
@@ -1054,7 +1002,7 @@ class TwitchApiService
             $this->get(
                 'moderation/banned',
                 array_filter([
-                    'broadcaster_id' => $this->channelId,
+                    'broadcaster_id' => $channelId,
                     'first' => 100,
                     'after' => $pagCursor,
                 ])
