@@ -15,7 +15,7 @@ final class TwitchUser implements TwitchModelInterface
     private string $profileImageUrl;
     private string $offlineImageUrl;
     private int $viewCount;
-    private string $email;
+    private ?string $email;
     private DateTimeImmutable $createdAt;
 
     private function __construct()
@@ -37,7 +37,7 @@ final class TwitchUser implements TwitchModelInterface
         $self->profileImageUrl = $json['profile_image_url'];
         $self->offlineImageUrl = $json['offline_image_url'];
         $self->viewCount = $json['view_count'];
-        $self->email = $json['email'];
+        $self->email = $json['email'] ?? null;
         $self->createdAt = new DateTimeImmutable($json['created_at']);
 
         return $self;
@@ -93,7 +93,7 @@ final class TwitchUser implements TwitchModelInterface
         return $this->viewCount;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
