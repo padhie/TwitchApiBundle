@@ -29,9 +29,6 @@ final class GetBitsLeaderboardResponse implements ResponseInterface
         return $self;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function jsonSerialize(): array
     {
         return [

@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace Padhie\TwitchApiBundle\Request\Channels;
 
 use Padhie\TwitchApiBundle\Request\RequestInterface;
-use Padhie\TwitchApiBundle\Response\Channels\GetChannelResponse;
+use Padhie\TwitchApiBundle\Response\Channels\GetChannelEditorsResponse;
 
-final class GetChannelRequest implements RequestInterface
+/**
+ * Scope: channel:read:editors
+ */
+final class GetChannelEditorsRequest implements RequestInterface
 {
-    private int $broadcasterId;
+    private string $broadcasterId;
 
-    public function __construct(int $broadcasterId)
+    public function __construct(string $broadcasterId)
     {
         $this->broadcasterId = $broadcasterId;
     }
@@ -21,14 +24,9 @@ final class GetChannelRequest implements RequestInterface
         return RequestInterface::METHOD_GET;
     }
 
-    public function getHost(): string
-    {
-        return RequestInterface::HOST_HELIX;
-    }
-
     public function getUrl(): string
     {
-        return '/channels';
+        return 'https://api.twitch.tv/helix/channels/editors';
     }
 
     public function getHeader(): array
@@ -50,6 +48,6 @@ final class GetChannelRequest implements RequestInterface
 
     public function getResponseClass(): string
     {
-        return GetChannelResponse::class;
+        return GetChannelEditorsResponse::class;
     }
 }

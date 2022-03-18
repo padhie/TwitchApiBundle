@@ -14,9 +14,6 @@ final class LeaderboardItem implements ResponseInterface
     private string $userLogin;
     private string $userName;
 
-    /**
-     * @var array<string, mixed> $data
-     */
     public static function createFromArray(array $data): ResponseInterface
     {
         $self = new self();
@@ -30,9 +27,6 @@ final class LeaderboardItem implements ResponseInterface
         return $self;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function jsonSerialize(): array
     {
         return [

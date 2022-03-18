@@ -11,9 +11,6 @@ final class GetExtensionAnalyticsResponse implements ResponseInterface
     /** @var array<int, Extension> */
     private array $extensions = [];
 
-    /**
-     * @var array<string, array<string, mixed>> $data
-     */
     public static function createFromArray(array $data): self
     {
         $self = new self();
@@ -25,9 +22,6 @@ final class GetExtensionAnalyticsResponse implements ResponseInterface
         return $self;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function jsonSerialize(): array
     {
         return [

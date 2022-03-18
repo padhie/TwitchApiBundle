@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Response\Channels;
 
+use Padhie\TwitchApiBundle\Response\Bits\ExtensionTransaction;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
-final class GetChannelResponse implements ResponseInterface
+final class GetChannelInformationResponse implements ResponseInterface
 {
     /** @var array<int, Channel> */
     private array $channels = [];
 
+    /**
+     * @var array<string, array<string, mixed>> $data
+     */
     public static function createFromArray(array $data): ResponseInterface
     {
         $self = new self();
@@ -22,6 +26,9 @@ final class GetChannelResponse implements ResponseInterface
         return $self;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function jsonSerialize(): array
     {
         return [
@@ -29,6 +36,9 @@ final class GetChannelResponse implements ResponseInterface
         ];
     }
 
+    /**
+     * @return array<int, ExtensionTransaction>
+     */
     public function getChannels(): array
     {
         return $this->channels;
