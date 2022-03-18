@@ -63,10 +63,6 @@ final class RequestGenerator
      */
     private function validate(RequestInterface $request): void
     {
-        if (!array_key_exists($request->getHost(), self::HOSTS)) {
-            throw new InvalidRequestException('Host is not allowed');
-        }
-
         if (!in_array($request->getMethod(), self::ALLOWED_METHODS, true)) {
             throw new InvalidRequestException('Method is not allowed');
         }
@@ -85,8 +81,7 @@ final class RequestGenerator
     private function generateUri(RequestInterface $request): string
     {
         $uri = sprintf(
-            '%s%s?%s',
-            self::HOSTS[$request->getHost()],
+            '%s?%s',
             $request->getUrl(),
             http_build_query($request->getParameter())
         );

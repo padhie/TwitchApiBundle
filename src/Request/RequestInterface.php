@@ -12,9 +12,6 @@ interface RequestInterface
     public const METHOD_DELETE = 'DELETE';
     public const METHOD_PATCH = 'PATCH';
 
-    public const HOST_HELIX = 'helix';
-    public const HOST_TMI = 'tmi';
-
     /**
      * @see RequestInterface::METHOD_GET
      * @see RequestInterface::METHOD_POST
@@ -23,12 +20,6 @@ interface RequestInterface
      * @see RequestInterface::METHOD_PATCH
      */
     public function getMethod(): string;
-
-    /**
-     * @see RequestInterface::HOST_HELIX
-     * @see RequestInterface::HOST_TMI
-     */
-    public function getHost(): string;
 
     public function getUrl(): string;
 

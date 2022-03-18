@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Response\Analytics;
 
-use Padhie\TwitchApiBundle\Response\Common\DateRange;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
 final class Extension implements ResponseInterface

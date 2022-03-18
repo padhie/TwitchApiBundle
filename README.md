@@ -39,7 +39,7 @@ $users = $response->getUsers();
 ## Todo
 * [x] implement namespace Ads
 * [x] implement namespace Analytics
-* [ ] implement namespace Bits
+* [x] implement namespace Bits
 * [ ] implement namespace ChannelPoints
 * [ ] implement namespace Channels
 * [ ] implement namespace Chat
