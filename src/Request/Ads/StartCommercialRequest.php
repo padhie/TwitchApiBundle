@@ -26,11 +26,6 @@ final class StartCommercialRequest implements RequestInterface
         return RequestInterface::METHOD_POST;
     }
 
-    public function getHost(): string
-    {
-        return RequestInterface::HOST_HELIX;
-    }
-
     public function getUrl(): string
     {
         return '/channels/commercial';
