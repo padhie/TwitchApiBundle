@@ -19,9 +19,6 @@ final class ExtensionTransaction implements ResponseInterface
     private string $productType;
     private ProductData $productData;
 
-    /**
-     * @var array<string, array<string, mixed>> $data
-     */
     public static function createFromArray(array $data): self
     {
         $self = new self();
@@ -40,9 +37,6 @@ final class ExtensionTransaction implements ResponseInterface
         return $self;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function jsonSerialize(): array
     {
         return [

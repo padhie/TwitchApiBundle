@@ -28,7 +28,7 @@ final class Channel implements ResponseInterface
         $self->gameId = $data['game_id'];
         $self->gameName = $data['game_name'];
         $self->title = $data['title'];
-        $self->delay = $data['delay'];
+        $self->delay = (int) $data['delay'];
 
         return $self;
     }

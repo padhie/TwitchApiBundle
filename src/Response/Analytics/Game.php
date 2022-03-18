@@ -13,9 +13,6 @@ final class Game implements ResponseInterface
     private string $type;
     private DateRange $dateRange;
 
-    /**
-     * @var array<string, array<string, mixed>> $data
-     */
     public static function createFromArray(array $data): self
     {
         $self = new self();
@@ -28,9 +25,6 @@ final class Game implements ResponseInterface
         return $self;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function jsonSerialize(): array
     {
         return [

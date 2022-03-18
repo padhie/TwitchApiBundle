@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Padhie\TwitchApiBundle\Response\Analytics;
+namespace Padhie\TwitchApiBundle\Response\Games;
 
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
-final class GetGameAnalyticsResponse implements ResponseInterface
+final class GetGamesResponse implements ResponseInterface
 {
     /** @var array<int, Game> */
     private array $games = [];
@@ -25,7 +25,7 @@ final class GetGameAnalyticsResponse implements ResponseInterface
     public function jsonSerialize(): array
     {
         return [
-            'games' => $this->games
+            'games' => $this->games,
         ];
     }
 

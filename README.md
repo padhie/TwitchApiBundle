@@ -37,28 +37,31 @@ $users = $response->getUsers();
 
 
 ## Todo
-* [x] implement namespace Ads
-* [x] implement namespace Analytics
-* [x] implement namespace Bits
-* [ ] implement namespace ChannelPoints
-* [ ] implement namespace Channels
-* [ ] implement namespace Chat
-* [ ] implement namespace Clips
-* [ ] implement namespace Entitlements
-* [ ] implement namespace EventSub
-* [ ] implement namespace Extensions
-* [ ] implement namespace Games
-* [ ] implement namespace Goals
-* [ ] implement namespace HypeTrain
-* [ ] implement namespace Moderation
-* [ ] implement namespace Music
-* [ ] implement namespace Polls
-* [ ] implement namespace Predictions
-* [ ] implement namespace Schedule
-* [ ] implement namespace Search
-* [ ] implement namespace Streams
-* [ ] implement namespace Subscriptions
-* [ ] implement namespace Tags
-* [ ] implement namespace Teams
-* [ ] implement namespace Users
-* [ ] implement namespace Videos
+* [ ] implement namespaces
+  * [x] Ads
+  * [x] Analytics
+  * [x] Bits
+  * [ ] ChannelPoints
+  * [x] Channels
+  * [ ] Chat
+  * [ ] Clips
+  * [ ] Entitlements
+  * [ ] EventSub
+  * [ ] Extensions
+  * [x] Games
+  * [ ] Goals
+  * [ ] HypeTrain
+  * [ ] Moderation
+  * [ ] Music
+  * [ ] Polls
+  * [ ] Predictions
+  * [ ] Schedule
+  * [ ] Search
+  * [ ] Streams
+  * [ ] Subscriptions
+  * [ ] Tags
+  * [ ] Teams
+  * [ ] Users
+  * [ ] Videos
+* [ ] tests with response examples (from Documentation)
+* [ ] implement Async / Parallel request

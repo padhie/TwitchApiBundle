@@ -11,9 +11,6 @@ final class Images implements ResponseInterface
     private ImageColor $dark;
     private ImageColor $light;
 
-    /**
-     * @var array<string, array<string, mixed>> $data
-     */
     public static function createFromArray(array $data): self
     {
         $self = new self();
@@ -24,9 +21,6 @@ final class Images implements ResponseInterface
         return $self;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function jsonSerialize(): array
     {
         return [

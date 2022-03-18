@@ -16,10 +16,6 @@ final class ProductData implements ResponseInterface
     private string $expiration;
     private string $broadcast;
 
-
-    /**
-     * @var array<string, array<string, mixed>> $data
-     */
     public static function createFromArray(array $data): self
     {
         $self = new self();
@@ -35,9 +31,6 @@ final class ProductData implements ResponseInterface
         return $self;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function jsonSerialize(): array
     {
         return [
