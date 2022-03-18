@@ -6,10 +6,10 @@ namespace Padhie\TwitchApiBundle\Response\Analytics;
 
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
-final class GetExtensionAnalyticsResponse implements ResponseInterface
+final class DateRange implements ResponseInterface
 {
-    /** @var array<int, Extension> */
-    private array $extensions = [];
+    private string $statedAt;
+    private string $endedAt;
 
     /**
      * @var array<string, array<string, mixed>> $data
@@ -18,9 +18,8 @@ final class GetExtensionAnalyticsResponse implements ResponseInterface
     {
         $self = new self();
 
-        foreach($data['data'] as $item) {
-            $self->extensions[] = Extension::createFromArray($item);
-        }
+        $self->statedAt = $data['startedAt'];
+        $self->endedAt = $data['endedAt'];
 
         return $self;
     }
@@ -31,12 +30,18 @@ final class GetExtensionAnalyticsResponse implements ResponseInterface
     public function jsonSerialize(): array
     {
         return [
-            'extensions' => $this->extensions,
+            'startedAt' => $this->statedAt,
+            'endedAt' => $this->endedAt,
         ];
     }
 
-    public function getExtensions(): array
+    public function getStatedAt(): string
     {
-        return $this->extensions;
+        return $this->statedAt;
+    }
+
+    public function getEndedAt(): string
+    {
+        return $this->endedAt;
     }
 }

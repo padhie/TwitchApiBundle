@@ -6,10 +6,10 @@ namespace Padhie\TwitchApiBundle\Response\Analytics;
 
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
-final class GetExtensionAnalyticsResponse implements ResponseInterface
+final class GetGameAnalyticsResponse implements ResponseInterface
 {
-    /** @var array<int, Extension> */
-    private array $extensions = [];
+    /** @var array<int, Game> */
+    private array $games = [];
 
     /**
      * @var array<string, array<string, mixed>> $data
@@ -18,8 +18,8 @@ final class GetExtensionAnalyticsResponse implements ResponseInterface
     {
         $self = new self();
 
-        foreach($data['data'] as $item) {
-            $self->extensions[] = Extension::createFromArray($item);
+        foreach ($data['data'] as $item) {
+            $self->games[] = Game::createFromArray($item);
         }
 
         return $self;
@@ -31,12 +31,15 @@ final class GetExtensionAnalyticsResponse implements ResponseInterface
     public function jsonSerialize(): array
     {
         return [
-            'extensions' => $this->extensions,
+            'games' => $this->games
         ];
     }
 
-    public function getExtensions(): array
+    /**
+     * @return array<int, Game>
+     */
+    public function getGames(): array
     {
-        return $this->extensions;
+        return $this->games;
     }
 }
