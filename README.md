@@ -34,3 +34,31 @@ assert($response instanceof \Padhie\TwitchApiBundle\Request\Users\GetUsersFollow
 
 $users = $response->getUsers();
 ```
+
+
+## Todo
+* [x] implement namespace Ads
+* [x] implement namespace Analytics
+* [ ] implement namespace Bits
+* [ ] implement namespace ChannelPoints
+* [ ] implement namespace Channels
+* [ ] implement namespace Chat
+* [ ] implement namespace Clips
+* [ ] implement namespace Entitlements
+* [ ] implement namespace EventSub
+* [ ] implement namespace Extensions
+* [ ] implement namespace Games
+* [ ] implement namespace Goals
+* [ ] implement namespace HypeTrain
+* [ ] implement namespace Moderation
+* [ ] implement namespace Music
+* [ ] implement namespace Polls
+* [ ] implement namespace Predictions
+* [ ] implement namespace Schedule
+* [ ] implement namespace Search
+* [ ] implement namespace Streams
+* [ ] implement namespace Subscriptions
+* [ ] implement namespace Tags
+* [ ] implement namespace Teams
+* [ ] implement namespace Users
+* [ ] implement namespace Videos
