@@ -83,8 +83,11 @@ final class TwitchClient
     private function executeRequest(PsrRequestInterface $request): string
     {
         $response = $this->client->send($request);
+        $responseString = $this->loadBody($response);
 
-        return $this->loadBody($response);
+        return $responseString === ''
+            ? '{}'
+            : $responseString;
     }
 
     private function loadBody(PsrResponseInterface $response): string

@@ -17,10 +17,10 @@ $client = new \Padhie\TwitchApiBundle\TwitchClient(
 
 ### send Single Request
 ```php
-$request = new \Padhie\TwitchApiBundle\Request\Channel\GetChannelRequest($broadcasterId);
+$request = new \Padhie\TwitchApiBundle\Request\Channels\GetChannelRequest($broadcasterId);
 
 $response = $client->send($request);
-assert($response instanceof \Padhie\TwitchApiBundle\Request\Channel\GetChannelResponse);
+assert($response instanceof \Padhie\TwitchApiBundle\Request\Channels\GetChannelResponse);
 
 $title = $response->getTitle();
 ```

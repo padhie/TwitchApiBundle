@@ -18,7 +18,7 @@ final class ModifyChannelInformationRequest implements RequestInterface
     private ?string $title;
     private ?int $delay;
 
-    public function __construct(string $broadcasterId, ?string $gameId, ?string $broadcasterLanguage, ?string $title, ?int $delay)
+    public function __construct(string $broadcasterId, ?string $gameId = null, ?string $broadcasterLanguage = null, ?string $title = null, ?int $delay = null)
     {
         $this->broadcasterId = $broadcasterId;
         $this->gameId = $gameId;
