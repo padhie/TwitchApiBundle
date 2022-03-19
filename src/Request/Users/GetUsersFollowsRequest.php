@@ -38,11 +38,6 @@ final class GetUsersFollowsRequest implements PaginationRequestInterface
         return RequestInterface::METHOD_GET;
     }
 
-    public function getHost(): string
-    {
-        return RequestInterface::HOST_HELIX;
-    }
-
     public function getUrl(): string
     {
         return '/users/follows';

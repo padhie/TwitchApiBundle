@@ -20,17 +20,12 @@ use function trim;
 
 final class RequestGenerator
 {
-    private const HELIX_API = 'https://api.twitch.tv/helix/';
-    private const TMI_API = 'https://tmi.twitch.tv/';
-    private const HOSTS = [
-        RequestInterface::HOST_HELIX => self::HELIX_API,
-        RequestInterface::HOST_TMI => self::TMI_API,
-    ];
-
     private const ALLOWED_METHODS = [
         RequestInterface::METHOD_GET,
         RequestInterface::METHOD_POST,
-        RequestInterface::METHOD_PUT
+        RequestInterface::METHOD_PUT,
+        RequestInterface::METHOD_DELETE,
+        RequestInterface::METHOD_PATCH,
     ];
 
     private string $clientId;
