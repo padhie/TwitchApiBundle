@@ -16,7 +16,10 @@ use Padhie\TwitchApiBundle\Response\ResponseGenerator;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
-use function call_user_func;
+
+use function array_merge;
+use function count;
+use function json_decode;
 use function strlen;
 
 final class TwitchClient
@@ -87,18 +90,19 @@ final class TwitchClient
      */
     public function sendAsync(array $requests): array
     {
-        $promises = $response = [];
+        $promises = $responses = [];
 
         foreach ($requests as $key => $request) {
             $prsRequest = $this->requestGenerator->generate($request);
 
             $promise = $this->client->sendAsync($prsRequest);
             $promise->then(
-                function($response) use ($request, $key): void {
-                    $response[$key] = $this->responseGenerator->generateFromString($request, $response);
+                function($response) use ($request, $key, &$responses): void {
+                    $responseString = $this->loadBody($response);
+                    $responses[$key] = $this->responseGenerator->generateFromString($request, $responseString);
                 },
-                function($response) use ($key): void {
-                    $response[$key] = null;
+                function($response) use ($key,  &$responses): void {
+                    $responses[$key] = null;
                 }
             );
 
@@ -107,7 +111,7 @@ final class TwitchClient
 
         Utils::unwrap($promises);
 
-        return $response;
+        return $responses;
     }
 
     private function executeRequest(PsrRequestInterface $request): string
