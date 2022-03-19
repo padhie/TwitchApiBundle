@@ -9,8 +9,8 @@ use Padhie\TwitchApiBundle\Response\ResponseInterface;
 final class GetUsersFollowsResponse implements ResponseInterface
 {
     private int $total;
-    /** @var array<int, User> */
-    private array $users = [];
+    /** @var array<int, FollowerUser> */
+    private array $followerUsers = [];
 
     /**
      * @inheritDoc
@@ -22,7 +22,7 @@ final class GetUsersFollowsResponse implements ResponseInterface
         $self->total = $data['total'];
 
         foreach ($data['data'] as $item) {
-            $self->users[] = User::createFromArray($item);
+            $self->followerUsers[] = FollowerUser::createFromArray($item);
         }
 
         return $self;
@@ -35,7 +35,7 @@ final class GetUsersFollowsResponse implements ResponseInterface
     {
         return [
             'total' => $this->total,
-            'users' => $this->users,
+            'followerUsers' => $this->followerUsers,
         ];
     }
 
@@ -45,10 +45,10 @@ final class GetUsersFollowsResponse implements ResponseInterface
     }
 
     /**
-     * @return array<int, User>
+     * @return array<int, FollowerUser>
      */
-    public function getUsers(): array
+    public function getFollowerUsers(): array
     {
-        return $this->users;
+        return $this->followerUsers;
     }
 }

@@ -4,77 +4,110 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Response\Users;
 
-use DateTimeImmutable;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
 final class User implements ResponseInterface
 {
-    private string $fromId;
-    private string $fromLogin;
-    private string $fromName;
-    private string $toId;
-    private string $toName;
-    private DateTimeImmutable $followedAt;
+    private string $broadcasterType;
+    private string $description;
+    private string $displayName;
+    private string $id;
+    private string $login;
+    private string $offlineImageUrl;
+    private string $profileImageUrl;
+    private string $type;
+    private int $viewCount;
+    private string $createdAt;
+    private ?string $email = null;
 
-    /**
-     * @inheritDoc
-     */
-    public static function createFromArray(array $data): ResponseInterface
+    public static function createFromArray(array $data): self
     {
         $self = new self();
 
-        $self->fromId = $data['from_id'];
-        $self->fromLogin = $data['from_login'];
-        $self->fromName = $data['from_name'];
-        $self->toId = $data['to_id'];
-        $self->toName = $data['to_name'];
-        $self->followedAt = new DateTimeImmutable($data['followed_at']);
+        $self->broadcasterType = $data['broadcaster_type'];
+        $self->description = $data['description'];
+        $self->displayName = $data['display_name'];
+        $self->id = $data['id'];
+        $self->login = $data['login'];
+        $self->offlineImageUrl = $data['offline_image_url'];
+        $self->profileImageUrl = $data['profile_image_url'];
+        $self->type = $data['type'];
+        $self->viewCount = $data['view_count'];
+        $self->createdAt = $data['created_at'];
+        $self->email = $data['email'] ?? null;
 
         return $self;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function jsonSerialize(): array
     {
         return [
-            'fromId' => $this->fromId,
-            'fromLogin' => $this->fromLogin,
-            'fromName' => $this->fromName,
-            'toId' => $this->toId,
-            'toName' => $this->toName,
-            'followedAt' => $this->followedAt->format('Y-m-d\TH:i:s\Z'),
+            'broadcasterType' => $this->broadcasterType,
+            'description' => $this->description,
+            'displayName' => $this->displayName,
+            'id' => $this->id,
+            'login' => $this->login,
+            'offlineImageUrl' => $this->offlineImageUrl,
+            'profileImageUrl' => $this->profileImageUrl,
+            'type' => $this->type,
+            'viewCount' => $this->viewCount,
+            'createdAt' => $this->createdAt,
+            'email' => $this->email,
         ];
     }
 
-    public function getFromId(): string
+    public function getBroadcasterType(): string
     {
-        return $this->fromId;
+        return $this->broadcasterType;
     }
 
-    public function getFromLogin(): string
+    public function getDescription(): string
     {
-        return $this->fromLogin;
+        return $this->description;
     }
 
-    public function getFromName(): string
+    public function getDisplayName(): string
     {
-        return $this->fromName;
+        return $this->displayName;
     }
 
-    public function getToId(): string
+    public function getId(): string
     {
-        return $this->toId;
+        return $this->id;
     }
 
-    public function getToName(): string
+    public function getLogin(): string
     {
-        return $this->toName;
+        return $this->login;
     }
 
-    public function getFollowedAt(): DateTimeImmutable
+    public function getOfflineImageUrl(): string
     {
-        return $this->followedAt;
+        return $this->offlineImageUrl;
+    }
+
+    public function getProfileImageUrl(): string
+    {
+        return $this->profileImageUrl;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function getViewCount(): int
+    {
+        return $this->viewCount;
+    }
+
+    public function getCreatedAt(): string
+    {
+        return $this->createdAt;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
     }
 }
