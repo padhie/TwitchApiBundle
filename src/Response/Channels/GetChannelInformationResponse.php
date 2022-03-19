@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Response\Channels;
 
-use Padhie\TwitchApiBundle\Response\Bits\ExtensionTransaction;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
 final class GetChannelInformationResponse implements ResponseInterface
@@ -37,7 +36,7 @@ final class GetChannelInformationResponse implements ResponseInterface
     }
 
     /**
-     * @return array<int, ExtensionTransaction>
+     * @return array<int, Channel>
      */
     public function getChannels(): array
     {
