@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Padhie\TwitchApiBundle;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Promise\Utils;
 use JsonException;
 use Padhie\TwitchApiBundle\Exception\InvalidRequestException;
 use Padhie\TwitchApiBundle\Exception\InvalidResponseException;
 use Padhie\TwitchApiBundle\Request\PaginationRequestInterface;
 use Padhie\TwitchApiBundle\Request\RequestGenerator;
 use Padhie\TwitchApiBundle\Request\RequestInterface;
+use Padhie\TwitchApiBundle\Response\ResponseGenerator;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
@@ -23,11 +25,13 @@ final class TwitchClient
 
     private ClientInterface $client;
     private RequestGenerator $requestGenerator;
+    private ResponseGenerator $responseGenerator;
 
-    public function __construct(ClientInterface $client, RequestGenerator $requestGenerator)
+    public function __construct(ClientInterface $client, RequestGenerator $requestGenerator, ResponseGenerator $responseGenerator)
     {
         $this->client = $client;
         $this->requestGenerator = $requestGenerator;
+        $this->responseGenerator = $responseGenerator;
     }
 
     /**
@@ -36,13 +40,10 @@ final class TwitchClient
      */
     public function send(RequestInterface $request): ResponseInterface
     {
-        $clientRequest = $this->requestGenerator->generate($request);
-        $responseString = $this->executeRequest($clientRequest);
+        $prsRequest = $this->requestGenerator->generate($request);
+        $response = $this->executeRequest($prsRequest);
 
-        return call_user_func(
-            [$request->getResponseClass(), 'createFromArray'],
-            json_decode($responseString, true, 512, JSON_THROW_ON_ERROR)
-        );
+        return $this->responseGenerator->generateFromString($request, $response);
     }
 
     public function sendWithPagination(PaginationRequestInterface $request): ResponseInterface
@@ -55,8 +56,8 @@ final class TwitchClient
                 $request = $request->withAfter($paginationCursor);
             }
 
-            $clientRequest = $this->requestGenerator->generate($request);
-            $responseString = $this->executeRequest($clientRequest);
+            $prsRequest = $this->requestGenerator->generate($request);
+            $responseString = $this->executeRequest($prsRequest);
             $jsonResponse = json_decode($responseString, true, 512, JSON_THROW_ON_ERROR);
 
             $dataCollection = array_merge($dataCollection, $jsonResponse['data'] ?? []);
@@ -74,10 +75,39 @@ final class TwitchClient
 
         $jsonResponse['data'] = $dataCollection;
 
-        return call_user_func(
-            [$request->getResponseClass(), 'createFromArray'],
-            $jsonResponse
-        );
+        return $this->responseGenerator->generateFromArray($request, $jsonResponse);
+    }
+
+    /**
+     * @param array<int|string, RequestInterface> $requests
+     * @return array<int|string, ResponseInterface|null> key is related to request
+     *
+     * @throws InvalidRequestException
+     * @throws JsonException
+     */
+    public function sendAsync(array $requests): array
+    {
+        $promises = $response = [];
+
+        foreach ($requests as $key => $request) {
+            $prsRequest = $this->requestGenerator->generate($request);
+
+            $promise = $this->client->sendAsync($prsRequest);
+            $promise->then(
+                function($response) use ($request, $key): void {
+                    $response[$key] = $this->responseGenerator->generateFromString($request, $response);
+                },
+                function($response) use ($key): void {
+                    $response[$key] = null;
+                }
+            );
+
+            $promises[$key] = $promise;
+        }
+
+        Utils::unwrap($promises);
+
+        return $response;
     }
 
     private function executeRequest(PsrRequestInterface $request): string
