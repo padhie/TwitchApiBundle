@@ -6,6 +6,9 @@ namespace Padhie\TwitchApiBundle\Response;
 
 use Padhie\TwitchApiBundle\Request\RequestInterface;
 
+use function call_user_func;
+use function json_decode;
+
 final class ResponseGenerator
 {
     public function generateFromString(RequestInterface $request, string $response): ResponseInterface

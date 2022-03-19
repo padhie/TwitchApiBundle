@@ -75,13 +75,11 @@ final class RequestGenerator
 
     private function generateUri(RequestInterface $request): string
     {
-        $uri = sprintf(
+        return sprintf(
             '%s?%s',
             $request->getUrl(),
             http_build_query($request->getParameter())
         );
-
-        return str_replace('//', '/', $uri);
     }
 
     /**

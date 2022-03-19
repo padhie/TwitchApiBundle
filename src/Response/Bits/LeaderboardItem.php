@@ -14,7 +14,7 @@ final class LeaderboardItem implements ResponseInterface
     private string $userLogin;
     private string $userName;
 
-    public static function createFromArray(array $data): ResponseInterface
+    public static function createFromArray(array $data): self
     {
         $self = new self();
 
