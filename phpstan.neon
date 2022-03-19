@@ -2,5 +2,3 @@ parameters:
 	level: 8
 	paths:
 		- src
-	ignoreErrors:
-		- '#Constructor of class Padhie\\TwitchApiBundle\\Service\\TwitchApiService has an unused parameter \$clientSecret.#'

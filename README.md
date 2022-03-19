@@ -1,5 +1,5 @@
 # TwitchApi
-A little collection to work with the Twitch-Api https://dev.twitch.tv/docs/api/reference
+Simple Client for Twitch-Api https://dev.twitch.tv/docs/api/reference
 
 ## How to use
 ### Create Client
@@ -37,7 +37,7 @@ $users = $response->getUsers();
 
 
 ## Todo
-* [ ] implement namespaces
+* [ ] implement Namespaces
   * [x] Ads
   * [x] Analytics
   * [x] Bits
@@ -63,5 +63,6 @@ $users = $response->getUsers();
   * [ ] Teams
   * [ ] Users
   * [ ] Videos
-* [ ] tests with response examples (from Documentation)
-* [ ] implement Async / Parallel request
+* [ ] tests with Response Examples (from Documentation)
+* [x] implement Parallel Request
+* [ ] implement Async Request

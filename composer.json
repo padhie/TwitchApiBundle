@@ -10,7 +10,7 @@
         "api"
     ],
     "license": "MIT",
-    "description": "A little collection to work with the Twitch-Api https://dev.twitch.tv/docs/v5/",
+    "description": "Simple Client for Twitch-Api https://dev.twitch.tv/docs/api/reference",
     "authors": [
         {
             "name": "padhie",
@@ -47,8 +47,8 @@
             "@phpstan",
             "@require-checker"
         ],
-        "phpunit": ["vendor/bin/phpunit tests"],
-        "phpstan": ["vendor/bin/phpstan analyse -c phpstan.neon --ansi"],
+        "phpunit": "vendor/bin/phpunit tests",
+        "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --ansi",
         "phpcs": "vendor/bin/php-cs-fixer",
         "require-checker": "composer-require-checker check"
     }
