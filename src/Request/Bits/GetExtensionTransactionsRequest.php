@@ -14,9 +14,9 @@ use Padhie\TwitchApiBundle\Response\Bits\GetExtensionTransactionsResponse;
 final class GetExtensionTransactionsRequest implements PaginationRequestInterface
 {
     private string $extensionId;
-    private string $id;
-    private string $after;
-    private string $first;
+    private ?string $id = null;
+    private ?string $after = null;
+    private ?string $first = null;
 
     public function __construct(string $extensionId)
     {

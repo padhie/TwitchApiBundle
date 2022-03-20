@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Response\Bits;
 
+use DateTimeImmutable;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
 final class GetCheermotesResponse implements ResponseInterface
@@ -64,8 +65,8 @@ final class GetCheermotesResponse implements ResponseInterface
         return $this->order;
     }
 
-    public function getLastUpdated(): string
+    public function getLastUpdated(): DateTimeImmutable
     {
-        return $this->lastUpdated;
+        return new DateTimeImmutable($this->lastUpdated);
     }
 }

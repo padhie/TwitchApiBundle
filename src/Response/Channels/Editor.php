@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Response\Channels;
 
+use DateTimeImmutable;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
 final class Editor implements ResponseInterface
@@ -42,8 +43,8 @@ final class Editor implements ResponseInterface
         return $this->userName;
     }
 
-    public function getCreatedAt(): string
+    public function getCreatedAt(): DateTimeImmutable
     {
-        return $this->createdAt;
+        return new DateTimeImmutable($this->createdAt);
     }
 }

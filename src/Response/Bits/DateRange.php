@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Response\Bits;
 
+use DateTimeImmutable;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
 final class DateRange implements ResponseInterface
@@ -29,9 +30,9 @@ final class DateRange implements ResponseInterface
         ];
     }
 
-    public function getStatedAt(): string
+    public function getStatedAt(): DateTimeImmutable
     {
-        return $this->statedAt;
+        return new DateTimeImmutable($this->statedAt);
     }
 
     public function getEndedAt(): string

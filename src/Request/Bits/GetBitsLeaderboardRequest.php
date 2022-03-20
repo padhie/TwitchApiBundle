@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Request\Bits;
 
+use DateTimeImmutable;
 use Padhie\TwitchApiBundle\Request\RequestInterface;
 use Padhie\TwitchApiBundle\Response\Bits\GetBitsLeaderboardResponse;
 
@@ -68,10 +69,10 @@ final class GetBitsLeaderboardRequest implements RequestInterface
         return $self;
     }
 
-    public function withStartedAt(string $startedAt): self
+    public function withStartedAt(DateTimeImmutable $startedAt): self
     {
         $self = clone $this;
-        $self->startedAt = $startedAt;
+        $self->startedAt = $startedAt->format('Y-m-d\TH:i:s\Z');
 
         return $self;
     }

@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Response\Streams;
 
+use DateTimeImmutable;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
 final class Stream implements ResponseInterface
 {
+    public const TYPE_LIVE = 'live';
+
     private string $id;
     private string $userId;
     private string $userLogin;
@@ -20,7 +23,7 @@ final class Stream implements ResponseInterface
     private string $language;
     private string $thumbnailUrl;
     /** @var array<int, string> */
-    private array $tagIds;
+    private array $tagIds = [];
     private bool $isMature;
 
     public static function createFromArray(array $data): self
@@ -103,9 +106,9 @@ final class Stream implements ResponseInterface
         return $this->viewerCount;
     }
 
-    public function getStartedAt(): string
+    public function getStartedAt(): DateTimeImmutable
     {
-        return $this->startedAt;
+        return new DateTimeImmutable($this->startedAt);
     }
 
     public function getLanguage(): string
@@ -129,5 +132,10 @@ final class Stream implements ResponseInterface
     public function getIsMature(): bool
     {
         return $this->isMature;
+    }
+
+    public function isLive(): bool
+    {
+        return $this->type === self::TYPE_LIVE;
     }
 }

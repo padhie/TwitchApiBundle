@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Response\Users;
 
+use DateTimeImmutable;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
 final class User implements ResponseInterface
@@ -101,9 +102,9 @@ final class User implements ResponseInterface
         return $this->viewCount;
     }
 
-    public function getCreatedAt(): string
+    public function getCreatedAt(): DateTimeImmutable
     {
-        return $this->createdAt;
+        return new DateTimeImmutable($this->createdAt);
     }
 
     public function getEmail(): ?string

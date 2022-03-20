@@ -14,7 +14,7 @@ final class FollowerUser implements ResponseInterface
     private string $fromName;
     private string $toId;
     private string $toName;
-    private DateTimeImmutable $followedAt;
+    private string $followedAt;
 
     /**
      * @inheritDoc
@@ -28,7 +28,7 @@ final class FollowerUser implements ResponseInterface
         $self->fromName = $data['from_name'];
         $self->toId = $data['to_id'];
         $self->toName = $data['to_name'];
-        $self->followedAt = new DateTimeImmutable($data['followed_at']);
+        $self->followedAt = $data['followed_at'];
 
         return $self;
     }
@@ -44,7 +44,7 @@ final class FollowerUser implements ResponseInterface
             'fromName' => $this->fromName,
             'toId' => $this->toId,
             'toName' => $this->toName,
-            'followedAt' => $this->followedAt->format('Y-m-d\TH:i:s\Z'),
+            'followedAt' => $this->followedAt,
         ];
     }
 
@@ -75,6 +75,6 @@ final class FollowerUser implements ResponseInterface
 
     public function getFollowedAt(): DateTimeImmutable
     {
-        return $this->followedAt;
+        return new DateTimeImmutable($this->followedAt);
     }
 }

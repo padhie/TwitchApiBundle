@@ -15,7 +15,7 @@ final class GetUsersFollowsRequest implements PaginationRequestInterface
     private ?string $fromId;
     private ?string $toId;
 
-    public function __construct(?string $fromId=null, ?string $toId=null)
+    public function __construct(?string $fromId = null, ?string $toId = null)
     {
         if ($fromId === null && $toId === null) {
             throw new InvalidRequestException('This request need \'from_id\' OR \'to_id\'.');

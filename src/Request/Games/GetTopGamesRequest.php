@@ -13,9 +13,9 @@ use Padhie\TwitchApiBundle\Response\Games\GetTopGamesResponse;
  */
 final class GetTopGamesRequest implements PaginationRequestInterface
 {
-    private string $after;
-    private string $before;
-    private string $first;
+    private ?string $after = null;
+    private ?string $before = null;
+    private ?string $first = null;
 
     public function getMethod(): string
     {

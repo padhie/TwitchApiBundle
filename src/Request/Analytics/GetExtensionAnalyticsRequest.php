@@ -19,8 +19,8 @@ final class GetExtensionAnalyticsRequest implements PaginationRequestInterface
     private ?string $after = null;
     private ?string $extensionId = null;
     private ?string $type = null;
-    private ?DateTimeImmutable $startedAt = null;
-    private ?DateTimeImmutable $endedAt = null;
+    private ?string $startedAt = null;
+    private ?string $endedAt = null;
 
     public function withAfter(string $after): PaginationRequestInterface
     {
@@ -49,7 +49,7 @@ final class GetExtensionAnalyticsRequest implements PaginationRequestInterface
     public function withStartedAt(DateTimeImmutable $startedAt): PaginationRequestInterface
     {
         $self = clone $this;
-        $self->startedAt = $startedAt;
+        $self->startedAt = $startedAt->format('Y-m-d\TH:i:s\Z');
 
         return $self;
     }
@@ -57,7 +57,7 @@ final class GetExtensionAnalyticsRequest implements PaginationRequestInterface
     public function withEndedAt(DateTimeImmutable $endedAt): PaginationRequestInterface
     {
         $self = clone $this;
-        $self->endedAt = $endedAt;
+        $self->endedAt = $endedAt->format('Y-m-d\TH:i:s\Z');
 
         return $self;
     }
@@ -88,8 +88,8 @@ final class GetExtensionAnalyticsRequest implements PaginationRequestInterface
             'first' => 100,
             'after' => $this->after,
             'extension_id' => $this->extensionId,
-            'started_at' => $this->startedAt->format('Y-m-d\TH:i:s\Z'),
-            'ended_at' => $this->endedAt->format('Y-m-d\TH:i:s\Z'),
+            'started_at' => $this->startedAt,
+            'ended_at' => $this->endedAt,
             'type' => $this->type,
         ]);
     }

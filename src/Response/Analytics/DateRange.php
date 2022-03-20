@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Response\Analytics;
 
+use DateTimeImmutable;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
 final class DateRange implements ResponseInterface
 {
-    private string $statedAt;
+    private string $startedAt;
     private string $endedAt;
 
     public static function createFromArray(array $data): self
     {
         $self = new self();
 
-        $self->statedAt = $data['startedAt'];
+        $self->startedAt = $data['startedAt'];
         $self->endedAt = $data['endedAt'];
 
         return $self;
@@ -24,18 +25,18 @@ final class DateRange implements ResponseInterface
     public function jsonSerialize(): array
     {
         return [
-            'startedAt' => $this->statedAt,
+            'startedAt' => $this->startedAt,
             'endedAt' => $this->endedAt,
         ];
     }
 
-    public function getStatedAt(): string
+    public function getStartedAt(): DateTimeImmutable
     {
-        return $this->statedAt;
+        return new DateTimeImmutable($this->startedAt);
     }
 
-    public function getEndedAt(): string
+    public function getEndedAt(): DateTimeImmutable
     {
-        return $this->endedAt;
+        return new DateTimeImmutable($this->endedAt);
     }
 }
