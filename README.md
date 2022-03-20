@@ -58,7 +58,7 @@ $users = $response->getUsers();
   * [ ] Schedule
   * [ ] Search
   * [ ] Streams
-  * [ ] Subscriptions
+  * [x] Subscriptions
   * [ ] Tags
   * [ ] Teams
   * [ ] Users
