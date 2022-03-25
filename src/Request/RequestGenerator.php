@@ -10,10 +10,8 @@ use Padhie\TwitchApiBundle\Exception\InvalidRequestException;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
 
-use function array_key_exists;
 use function array_merge;
 use function count;
-use function implode;
 use function in_array;
 use function sprintf;
 use function trim;
@@ -67,9 +65,12 @@ final class RequestGenerator
         }
 
         $responseClass = $request->getResponseClass();
+
+        /** @var array<int, string> $responseClassImplements */
         $responseClassImplements = class_implements($responseClass);
+
         if (!in_array(ResponseInterface::class, $responseClassImplements, true)) {
-            throw new InvalidRequestException('Response need implement XYZInterface');
+            throw new InvalidRequestException('Response need implement ResponseInterface');
         }
     }
 
@@ -83,7 +84,6 @@ final class RequestGenerator
     }
 
     /**
-     * @param array<mixed> $header
      * @return array<mixed>
      */
     private function generateHeader(RequestInterface $request): array

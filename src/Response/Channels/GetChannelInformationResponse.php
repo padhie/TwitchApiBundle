@@ -11,9 +11,6 @@ final class GetChannelInformationResponse implements ResponseInterface
     /** @var array<int, Channel> */
     private array $channels = [];
 
-    /**
-     * @var array<string, array<string, mixed>> $data
-     */
     public static function createFromArray(array $data): self
     {
         $self = new self();
