@@ -1,6 +1,6 @@
 {
     "name": "padhie/twitch-api-bundle",
-    "version": "1.2.4",
+    "version": "2.0.0",
     "type": "library",
     "keywords": [
         "twitch",
@@ -10,7 +10,7 @@
         "api"
     ],
     "license": "MIT",
-    "description": "A little collection to work with the Twitch-Api https://dev.twitch.tv/docs/v5/",
+    "description": "Simple Client for Twitch-Api https://dev.twitch.tv/docs/api/reference",
     "authors": [
         {
             "name": "padhie",
@@ -21,11 +21,16 @@
         "php": "^7.4 || ^8",
         "ext-curl": "*",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^7.4",
+        "psr/http-message": "^1.0",
+        "guzzlehttp/psr7": "^2.1",
+        "guzzlehttp/promises": "^1.5"
     },
     "require-dev": {
         "phpunit/phpunit": "^7",
-        "phpstan/phpstan": "^0.12"
+        "phpstan/phpstan": "^1.5",
+        "friendsofphp/php-cs-fixer": "^3.6",
+        "maglnet/composer-require-checker": "^3.8"
     },
     "autoload": {
         "psr-4": {
@@ -34,11 +39,23 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Padhie\\Tests\\": "tests/"
+            "Padhie\\TwitchApiBundle\\Tests\\": "tests/"
         }
     },
     "scripts": {
-        "phpunit": ["vendor/bin/phpunit tests"],
-        "phpstan": ["vendor/bin/phpstan analyse -c phpstan.neon --ansi"]
+        "test": [
+            "@phpunit",
+            "@phpstan",
+            "@require-checker"
+        ],
+        "test-ci": [
+            "@phpunit",
+            "@phpstan",
+            "@require-checker"
+        ],
+        "phpunit": "vendor/bin/phpunit tests",
+        "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --ansi",
+        "phpcs": "vendor/bin/php-cs-fixer",
+        "require-checker": "composer-require-checker check"
     }
 }

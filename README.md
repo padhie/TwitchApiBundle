@@ -1,22 +1,68 @@
 # TwitchApi
-A little collection to work with the Twitch-Api https://dev.twitch.tv/docs/v5/
+Simple Client for Twitch-Api https://dev.twitch.tv/docs/api/reference
 
 ## How to use
+### Create Client
 ```php
-<?php
-use TwitchApiBundle\Service\TwitchApiService;
+// see https://dev.twitch.tv/docs/authentication/getting-tokens-oauth
+$clientId = 'CLIENT_ID';
+$authorization = 'AUTHORIZATION';
 
-$twitchApiService = new TwitchApiService('client_Id', 'client_secret', 'redirekt_url');
+$client = new \Padhie\TwitchApiBundle\TwitchClient(
+    new \GuzzleHttp\Client(),
+    new \Padhie\TwitchApiBundle\Request\RequestGenerator($clientId, $authorization)
+);
 
-// get authorisation url
-$url = $twitchApiService->getAccessTokenUrl(TwitchApiService::SCOPE_CHANNEL);
-
-// set access token
-$twitchApiService->setOAuth('access_token');
-
-// get own user data
-$user = $twitchApiService->getUser();
-
-// get own channel data
-$channel = $twitchApiService->getChannel();
 ```
+
+### send Single Request
+```php
+$request = new \Padhie\TwitchApiBundle\Request\Channels\GetChannelRequest($broadcasterId);
+
+$response = $client->send($request);
+assert($response instanceof \Padhie\TwitchApiBundle\Request\Channels\GetChannelResponse);
+
+$title = $response->getTitle();
+```
+
+### send Pagination Request
+```php
+$request = new \Padhie\TwitchApiBundle\Request\Users\GetUsersFollowsRequest($broadcasterId);
+
+$response = $client->sendWithPagination($request);
+assert($response instanceof \Padhie\TwitchApiBundle\Request\Users\GetUsersFollowsResponse);
+
+$users = $response->getUsers();
+```
+
+
+## Todo
+* [ ] implement Namespaces
+  * [x] Ads
+  * [x] Analytics
+  * [x] Bits
+  * [ ] ChannelPoints
+  * [x] Channels
+  * [ ] Chat
+  * [ ] Clips
+  * [ ] Entitlements
+  * [ ] EventSub
+  * [ ] Extensions
+  * [x] Games
+  * [x] Goals
+  * [ ] HypeTrain
+  * [ ] Moderation
+  * [ ] Music
+  * [ ] Polls
+  * [ ] Predictions
+  * [ ] Schedule
+  * [ ] Search
+  * [ ] Streams
+  * [x] Subscriptions
+  * [ ] Tags
+  * [ ] Teams
+  * [ ] Users
+  * [x] Videos
+* [ ] tests with Response Examples (from Documentation)
+* [x] implement Parallel Request
+* [ ] implement Async Request
