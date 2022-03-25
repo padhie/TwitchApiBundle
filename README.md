@@ -49,7 +49,7 @@ $users = $response->getUsers();
   * [ ] EventSub
   * [ ] Extensions
   * [x] Games
-  * [ ] Goals
+  * [x] Goals
   * [ ] HypeTrain
   * [ ] Moderation
   * [ ] Music
@@ -62,7 +62,7 @@ $users = $response->getUsers();
   * [ ] Tags
   * [ ] Teams
   * [ ] Users
-  * [ ] Videos
+  * [x] Videos
 * [ ] tests with Response Examples (from Documentation)
 * [x] implement Parallel Request
 * [ ] implement Async Request

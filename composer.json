@@ -1,6 +1,6 @@
 {
     "name": "padhie/twitch-api-bundle",
-    "version": "2.0.0-BETA3",
+    "version": "2.0.0",
     "type": "library",
     "keywords": [
         "twitch",
