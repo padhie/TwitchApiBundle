@@ -19,6 +19,9 @@ final class ResponseGenerator
         return $this->generateFromArray($request, $jsonResponse);
     }
 
+    /**
+     * @param array<mixed> $response
+     */
     public function generateFromArray(RequestInterface $request, array $response): ResponseInterface
     {
         $responseClass = $request->getResponseClass();

@@ -15,7 +15,7 @@ final class GetUsersFollowsResponse implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public static function createFromArray(array $data): ResponseInterface
+    public static function createFromArray(array $data): self
     {
         $self = new self();
 

@@ -29,6 +29,9 @@ final class GetChannelEditorsResponse implements ResponseInterface
         ];
     }
 
+    /**
+     * @return array<int, Editor>
+     */
     public function getEditors(): array
     {
         return $this->editors;

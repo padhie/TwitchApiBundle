@@ -96,6 +96,9 @@ final class TwitchAuthenticator
         $this->redirectUrl = $redirectUrl;
     }
 
+    /**
+     * @param array<int, string> $scopeList
+     */
     public function getAccessTokenUrl(array $scopeList = []): string
     {
         return sprintf(

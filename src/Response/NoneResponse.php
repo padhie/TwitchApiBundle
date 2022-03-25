@@ -6,7 +6,7 @@ namespace Padhie\TwitchApiBundle\Response;
 
 final class NoneResponse implements ResponseInterface
 {
-    public static function createFromArray(array $data): ResponseInterface
+    public static function createFromArray(array $data): self
     {
         return new self();
     }

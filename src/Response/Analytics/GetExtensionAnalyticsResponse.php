@@ -29,6 +29,9 @@ final class GetExtensionAnalyticsResponse implements ResponseInterface
         ];
     }
 
+    /**
+     * @return array<int, Extension>
+     */
     public function getExtensions(): array
     {
         return $this->extensions;

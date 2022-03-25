@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle\Request;
 
+use Padhie\TwitchApiBundle\Response\ResponseInterface;
+
 interface RequestInterface
 {
     public const METHOD_GET = 'GET';
@@ -40,6 +42,7 @@ interface RequestInterface
 
     /**
      * Class must be implement ResponseInterface
+     * @return class-string<ResponseInterface>
      */
     public function getResponseClass(): string;
 }

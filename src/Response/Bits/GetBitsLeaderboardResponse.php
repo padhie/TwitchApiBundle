@@ -8,14 +8,11 @@ use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
 final class GetBitsLeaderboardResponse implements ResponseInterface
 {
-    /** @var array<int LeaderboardItem> */
+    /** @var array<int, LeaderboardItem> */
     private array $items = [];
     private DateRange $dateRange;
     private int $total;
 
-    /**
-     * @var array<string, array<string, mixed>> $data
-     */
     public static function createFromArray(array $data): self
     {
         $self = new self();
@@ -38,6 +35,9 @@ final class GetBitsLeaderboardResponse implements ResponseInterface
         ];
     }
 
+    /**
+     * @return array<int, LeaderboardItem>
+     */
     public function getItems(): array
     {
         return $this->items;
