@@ -6,3 +6,6 @@ services:
         volumes:
             - .:/application
         working_dir: "/application"
+        environment:
+            PHP_EXTENSION_XDEBUG: 1
+            PHP_INI_XDEBUG__REMOTE_AUTOSTART: 1

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Padhie\TwitchApiBundle;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Promise\Utils;
 use JsonException;
 use Padhie\TwitchApiBundle\Exception\InvalidRequestException;
@@ -44,7 +45,12 @@ final class TwitchClient
     public function send(RequestInterface $request): ResponseInterface
     {
         $prsRequest = $this->requestGenerator->generate($request);
-        $response = $this->executeRequest($prsRequest);
+
+        try {
+            $response = $this->executeRequest($prsRequest);
+        } catch (ClientException $exception) {
+            return $this->responseGenerator->generateErrorResponseFromException($exception);
+        }
 
         return $this->responseGenerator->generateFromString($request, $response);
     }
@@ -60,7 +66,13 @@ final class TwitchClient
             }
 
             $prsRequest = $this->requestGenerator->generate($request);
-            $responseString = $this->executeRequest($prsRequest);
+
+            try {
+                $responseString = $this->executeRequest($prsRequest);
+            } catch (ClientException $exception) {
+                return $this->responseGenerator->generateErrorResponseFromException($exception);
+            }
+
             $jsonResponse = json_decode($responseString, true, 512, JSON_THROW_ON_ERROR);
 
             $dataCollection = array_merge($dataCollection, $jsonResponse['data'] ?? []);
@@ -101,8 +113,10 @@ final class TwitchClient
                     $responseString = $this->loadBody($response);
                     $responses[$key] = $this->responseGenerator->generateFromString($request, $responseString);
                 },
-                function($response) use ($key,  &$responses): void {
-                    $responses[$key] = null;
+                function($response) use ($key, &$responses): void {
+                    $responses[$key] = $response instanceof \Throwable
+                        ? $this->responseGenerator->generateErrorResponseFromException($response)
+                        : null;
                 }
             );
 

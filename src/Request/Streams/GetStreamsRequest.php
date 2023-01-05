@@ -19,7 +19,8 @@ final class GetStreamsRequest implements PaginationRequestInterface
     private ?string $gameId = null;
     private ?string $language = null;
     private ?string $userId = null;
-    private ?string $userLogin = null;
+    /** @var array<string> */
+    private array $userLogins = [];
 
     public function getMethod(): string
     {
@@ -38,6 +39,18 @@ final class GetStreamsRequest implements PaginationRequestInterface
 
     public function getParameter(): array
     {
+        $userLoginString = '';
+        if (count($this->userLogins) > 1) {
+            $userLoginString = $this->userLogins[0];
+            if (count($this->userLogins) > 2) {
+                $userLogins = $this->userLogins;
+                array_shift($userLogins);
+                $userLoginString .= implode('&', array_map(static function (string $item) {
+                    return 'userLogin=' . $item;
+                }, $userLogins));
+            }
+        }
+
         return [
             'after' => $this->after,
             'before' => $this->before,
@@ -45,7 +58,7 @@ final class GetStreamsRequest implements PaginationRequestInterface
             'game_id' => $this->gameId,
             'language' => $this->language,
             'user_id' => $this->userId,
-            'user_login' => $this->userLogin,
+            'user_login' => $userLoginString,
         ];
     }
 
@@ -110,7 +123,7 @@ final class GetStreamsRequest implements PaginationRequestInterface
     public function withUserLogin(string $userLogin): self
     {
         $self = clone $this;
-        $self->userLogin = $userLogin;
+        $self->userLogins[] = $userLogin;
 
         return $self;
     }
