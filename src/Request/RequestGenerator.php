@@ -79,7 +79,9 @@ final class RequestGenerator
         return sprintf(
             '%s?%s',
             $request->getUrl(),
-            http_build_query($request->getParameter())
+            urldecode(
+                http_build_query($request->getParameter())
+            )
         );
     }
 
