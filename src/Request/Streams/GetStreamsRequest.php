@@ -39,13 +39,13 @@ final class GetStreamsRequest implements PaginationRequestInterface
 
     public function getParameter(): array
     {
-        $userLoginString = '';
-        if (count($this->userLogins) > 1) {
+        $userLoginString = null;
+        if (count($this->userLogins) > 0) {
             $userLoginString = $this->userLogins[0];
-            if (count($this->userLogins) > 2) {
+            if (count($this->userLogins) > 1) {
                 $userLogins = $this->userLogins;
                 array_shift($userLogins);
-                $userLoginString .= implode('&', array_map(static function (string $item) {
+                $userLoginString .= '&' . implode('&', array_map(static function (string $item) {
                     return 'userLogin=' . $item;
                 }, $userLogins));
             }
