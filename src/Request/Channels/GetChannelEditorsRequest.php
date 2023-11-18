@@ -10,13 +10,10 @@ use Padhie\TwitchApiBundle\Response\Channels\GetChannelEditorsResponse;
 /**
  * Scope: channel:read:editors
  */
-final class GetChannelEditorsRequest implements RequestInterface
+final readonly class GetChannelEditorsRequest implements RequestInterface
 {
-    private string $broadcasterId;
-
-    public function __construct(string $broadcasterId)
+    public function __construct(private string $broadcasterId)
     {
-        $this->broadcasterId = $broadcasterId;
     }
 
     public function getMethod(): string

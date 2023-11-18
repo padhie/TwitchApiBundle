@@ -10,19 +10,20 @@ $authorization = 'AUTHORIZATION';
 
 $client = new \Padhie\TwitchApiBundle\TwitchClient(
     new \GuzzleHttp\Client(),
-    new \Padhie\TwitchApiBundle\Request\RequestGenerator($clientId, $authorization)
+    new \Padhie\TwitchApiBundle\Request\RequestGenerator($clientId, $authorization),
+    new \Padhie\TwitchApiBundle\Response\ResponseGenerator(),
 );
 
 ```
 
 ### send Single Request
 ```php
-$request = new \Padhie\TwitchApiBundle\Request\Channels\GetChannelRequest($broadcasterId);
+$request = new \Padhie\TwitchApiBundle\Request\Channels\GetChannelInformationRequest($broadcasterId);
 
 $response = $client->send($request);
-assert($response instanceof \Padhie\TwitchApiBundle\Request\Channels\GetChannelResponse);
+assert($response instanceof \Padhie\TwitchApiBundle\Response\Channels\GetChannelInformationResponse);
 
-$title = $response->getTitle();
+$title = $response->getChannels()[0]->getTitle();
 ```
 
 ### send Pagination Request

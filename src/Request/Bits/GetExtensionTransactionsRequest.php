@@ -13,14 +13,12 @@ use Padhie\TwitchApiBundle\Response\Bits\GetExtensionTransactionsResponse;
  */
 final class GetExtensionTransactionsRequest implements PaginationRequestInterface
 {
-    private string $extensionId;
     private ?string $id = null;
     private ?string $after = null;
     private ?string $first = null;
 
-    public function __construct(string $extensionId)
+    public function __construct(private string $extensionId)
     {
-        $this->extensionId = $extensionId;
     }
 
     public function getMethod(): string

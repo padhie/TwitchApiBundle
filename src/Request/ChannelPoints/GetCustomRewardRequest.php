@@ -12,13 +12,11 @@ use Padhie\TwitchApiBundle\Response\ChannelPoints\GetCustomRewardResponse;
  */
 final class GetCustomRewardRequest implements RequestInterface
 {
-    private string $broadcasterId;
     private ?string $id = null;
     private bool $onlyManageableRewards = false;
 
-    public function __construct(string $broadcasterId)
+    public function __construct(private string $broadcasterId)
     {
-        $this->broadcasterId = $broadcasterId;
     }
 
     public function getMethod(): string

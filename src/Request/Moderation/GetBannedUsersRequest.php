@@ -13,14 +13,12 @@ use Padhie\TwitchApiBundle\Response\Moderation\GetBannedUsersResponse;
  */
 final class GetBannedUsersRequest implements PaginationRequestInterface
 {
-    private string $broadcasterId;
     private ?string $after = null;
     private ?string $first = null;
     private ?string $before = null;
 
-    public function __construct(string $broadcasterId)
+    public function __construct(private string $broadcasterId)
     {
-        $this->broadcasterId = $broadcasterId;
     }
 
     public function getMethod(): string

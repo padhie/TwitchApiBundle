@@ -16,7 +16,7 @@ use function in_array;
 use function sprintf;
 use function trim;
 
-final class RequestGenerator
+final readonly class RequestGenerator implements RequestGeneratorInterface
 {
     private const ALLOWED_METHODS = [
         RequestInterface::METHOD_GET,
@@ -26,13 +26,10 @@ final class RequestGenerator
         RequestInterface::METHOD_PATCH,
     ];
 
-    private string $clientId;
-    private string $authorization;
-
-    public function __construct(string $clientId, string $authorization)
-    {
-        $this->clientId = $clientId;
-        $this->authorization = $authorization;
+    public function __construct(
+        private string $clientId,
+        private string $authorization
+    ) {
     }
 
     /**

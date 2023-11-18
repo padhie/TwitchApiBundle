@@ -7,13 +7,10 @@ namespace Padhie\TwitchApiBundle\Request\Channels;
 use Padhie\TwitchApiBundle\Request\RequestInterface;
 use Padhie\TwitchApiBundle\Response\Channels\GetChannelInformationResponse;
 
-final class GetChannelInformationRequest implements RequestInterface
+final readonly class GetChannelInformationRequest implements RequestInterface
 {
-    private int $broadcasterId;
-
-    public function __construct(int $broadcasterId)
+    public function __construct(private int $broadcasterId)
     {
-        $this->broadcasterId = $broadcasterId;
     }
 
     public function getMethod(): string

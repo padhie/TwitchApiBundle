@@ -13,12 +13,10 @@ use Padhie\TwitchApiBundle\Response\Subscriptions\GetBroadcasterSubscriptionsRes
  */
 final class GetBroadcasterSubscriptionsRequest implements PaginationRequestInterface
 {
-    private string $broadcasterId;
     private ?string $after = null;
 
-    public function __construct(string $broadcasterId)
+    public function __construct(private string $broadcasterId)
     {
-        $this->broadcasterId = $broadcasterId;
     }
 
     public function getMethod(): string

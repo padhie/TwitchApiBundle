@@ -13,14 +13,10 @@ use Padhie\TwitchApiBundle\Response\Games\GetGamesResponse;
  */
 final class GetGamesRequest implements PaginationRequestInterface
 {
-    private ?string $id;
-    private ?string $name;
     private ?string $after = null;
 
-    public function __construct(?string $id = null, ?string $name = null)
+    public function __construct(private ?string $id = null, private ?string $name = null)
     {
-        $this->id = $id;
-        $this->name = $name;
     }
 
     public function getMethod(): string

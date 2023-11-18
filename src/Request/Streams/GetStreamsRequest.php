@@ -46,9 +46,7 @@ final class GetStreamsRequest implements PaginationRequestInterface
             if (count($this->userLogins) > 1) {
                 $userLogins = $this->userLogins;
                 array_shift($userLogins);
-                $userLoginString .= '&' . implode('&', array_map(static function (string $item) {
-                        return 'user_login=' . $item;
-                    }, $userLogins));
+                $userLoginString .= '&' . implode('&', array_map(static fn(string $item) => 'user_login=' . $item, $userLogins));
             }
         }
 

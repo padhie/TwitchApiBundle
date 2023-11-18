@@ -12,8 +12,8 @@ final class UserSubscription implements ResponseInterface
     private string $broadcasterName;
     private string $broadcasterLogin;
     private bool $isGift;
-    private ?string $gifterLogin;
-    private ?string $gifterName;
+    private ?string $gifterLogin = null;
+    private ?string $gifterName = null;
     private string $tier;
 
     public static function createFromArray(array $data): self
