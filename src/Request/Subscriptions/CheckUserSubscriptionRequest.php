@@ -10,15 +10,10 @@ use Padhie\TwitchApiBundle\Response\Subscriptions\CheckUserSubscriptionResponse;
 /**
  * Scope: user:read:subscriptions
  */
-final class CheckUserSubscriptionRequest implements RequestInterface
+final readonly class CheckUserSubscriptionRequest implements RequestInterface
 {
-    private string $broadcasterId;
-    private string $userId;
-
-    public function __construct(string $broadcasterId, string $userId)
+    public function __construct(private string $broadcasterId, private string $userId)
     {
-        $this->broadcasterId = $broadcasterId;
-        $this->userId = $userId;
     }
 
     public function getMethod(): string

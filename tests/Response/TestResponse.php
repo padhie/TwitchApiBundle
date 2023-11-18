@@ -6,12 +6,10 @@ namespace Padhie\TwitchApiBundle\Tests\Response;
 
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 
-final class TestResponse implements ResponseInterface
+final readonly class TestResponse implements ResponseInterface
 {
-    private array $data;
-
-    private function __construct(array $data) {
-        $this->data = $data;
+    private function __construct(private array $data)
+    {
     }
 
     public static function createFromArray(array $data): self

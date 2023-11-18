@@ -10,15 +10,10 @@ use Padhie\TwitchApiBundle\Response\Ads\StartCommercialResponse;
 /**
  * Scope: channel:edit:commercial
  */
-final class StartCommercialRequest implements RequestInterface
+final readonly class StartCommercialRequest implements RequestInterface
 {
-    private int $broadcasterId;
-    private int $length;
-
-    public function __construct(int $broadcasterId, int $length = 60)
+    public function __construct(private int $broadcasterId, private int $length = 60)
     {
-        $this->broadcasterId = $broadcasterId;
-        $this->length = $length;
     }
 
     public function getMethod(): string

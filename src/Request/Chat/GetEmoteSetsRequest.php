@@ -10,13 +10,10 @@ use Padhie\TwitchApiBundle\Response\Chat\GetEmoteSetsResponse;
 /**
  * Scope: -
  */
-final class GetEmoteSetsRequest implements RequestInterface
+final readonly class GetEmoteSetsRequest implements RequestInterface
 {
-    private string $emoteSetId;
-
-    public function __construct(string $emoteSetId)
+    public function __construct(private string $emoteSetId)
     {
-        $this->emoteSetId = $emoteSetId;
     }
 
     public function getMethod(): string

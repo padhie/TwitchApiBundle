@@ -11,9 +11,9 @@ use JsonException;
 use Padhie\TwitchApiBundle\Exception\InvalidRequestException;
 use Padhie\TwitchApiBundle\Exception\InvalidResponseException;
 use Padhie\TwitchApiBundle\Request\PaginationRequestInterface;
-use Padhie\TwitchApiBundle\Request\RequestGenerator;
+use Padhie\TwitchApiBundle\Request\RequestGeneratorInterface;
 use Padhie\TwitchApiBundle\Request\RequestInterface;
-use Padhie\TwitchApiBundle\Response\ResponseGenerator;
+use Padhie\TwitchApiBundle\Response\ResponseGeneratorInterface;
 use Padhie\TwitchApiBundle\Response\ResponseInterface;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
@@ -23,19 +23,15 @@ use function count;
 use function json_decode;
 use function strlen;
 
-final class TwitchClient
+final readonly class TwitchClient implements TwitchClientInterface
 {
     private const REQUEST_READ_LIMIT = 8192;
 
-    private ClientInterface $client;
-    private RequestGenerator $requestGenerator;
-    private ResponseGenerator $responseGenerator;
-
-    public function __construct(ClientInterface $client, RequestGenerator $requestGenerator, ResponseGenerator $responseGenerator)
-    {
-        $this->client = $client;
-        $this->requestGenerator = $requestGenerator;
-        $this->responseGenerator = $responseGenerator;
+    public function __construct(
+        private ClientInterface $client,
+        private RequestGeneratorInterface $requestGenerator,
+        private ResponseGeneratorInterface $responseGenerator,
+    ) {
     }
 
     /**

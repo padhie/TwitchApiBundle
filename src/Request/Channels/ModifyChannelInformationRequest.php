@@ -10,21 +10,10 @@ use Padhie\TwitchApiBundle\Response\NoneResponse;
 /**
  * Scope: channel:manage:broadcast
  */
-final class ModifyChannelInformationRequest implements RequestInterface
+final readonly class ModifyChannelInformationRequest implements RequestInterface
 {
-    private string $broadcasterId;
-    private ?string $gameId;
-    private ?string $broadcasterLanguage;
-    private ?string $title;
-    private ?int $delay;
-
-    public function __construct(string $broadcasterId, ?string $gameId = null, ?string $broadcasterLanguage = null, ?string $title = null, ?int $delay = null)
+    public function __construct(private string $broadcasterId, private ?string $gameId = null, private ?string $broadcasterLanguage = null, private ?string $title = null, private ?int $delay = null)
     {
-        $this->broadcasterId = $broadcasterId;
-        $this->gameId = $gameId;
-        $this->broadcasterLanguage = $broadcasterLanguage;
-        $this->title = $title;
-        $this->delay = $delay;
     }
 
     public function getMethod(): string

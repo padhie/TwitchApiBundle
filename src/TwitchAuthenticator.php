@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Padhie\TwitchApiBundle;
 
-final class TwitchAuthenticator
+final readonly class TwitchAuthenticator
 {
     /**
      * analytics:read:extensions
@@ -87,13 +87,8 @@ final class TwitchAuthenticator
         'channel:moderate',
     ];
 
-    private string $clientId;
-    private string $redirectUrl;
-
-    public function __construct(string $clientId, string $redirectUrl)
+    public function __construct(private string $clientId, private string $redirectUrl)
     {
-        $this->clientId = $clientId;
-        $this->redirectUrl = $redirectUrl;
     }
 
     /**

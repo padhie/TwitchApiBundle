@@ -10,7 +10,7 @@ use Padhie\TwitchApiBundle\Request\RequestInterface;
 use function call_user_func;
 use function json_decode;
 
-final class ResponseGenerator
+final class ResponseGenerator implements ResponseGeneratorInterface
 {
     public function generateFromString(RequestInterface $request, string $response): ResponseInterface
     {
@@ -29,22 +29,17 @@ final class ResponseGenerator
         if ($exception instanceof ClientException) {
             $message = $exception->getMessage();
             $posOfResponse = strpos($message, 'response:') + 9;
-
-            if ($posOfResponse >= 9) {
-                $response = substr($message, $posOfResponse);
-                $jsonResponse = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
-
-                return ErrorResponse::createFromArray($jsonResponse);
-            }
+            $response = substr($message, $posOfResponse);
+            $jsonResponse = json_decode((string) $response, true, 512, JSON_THROW_ON_ERROR);
+            return ErrorResponse::createFromArray($jsonResponse);
         }
 
         return ErrorResponse::createFromArray([
-            'error' => get_class($exception),
+            'error' => $exception::class,
             'status' => $exception->getCode(),
             'message' => $exception->getMessage(),
         ]);
     }
-
 
     /**
      * @param array<mixed> $response

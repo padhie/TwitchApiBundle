@@ -10,15 +10,10 @@ use Padhie\TwitchApiBundle\Response\Users\GetUsersResponse;
 /**
  * Scope: -/user:read:email
  */
-final class GetUsersRequest implements RequestInterface
+final readonly class GetUsersRequest implements RequestInterface
 {
-    private ?string $id;
-    private ?string $login;
-
-    public function __construct(?string $id = null, ?string $login = null)
+    public function __construct(private ?string $id = null, private ?string $login = null)
     {
-        $this->id = $id;
-        $this->login = $login;
     }
 
     public function getMethod(): string

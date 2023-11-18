@@ -12,10 +12,10 @@ final class CustomReward implements ResponseInterface
     private string $broadcasterLogin;
     private string $broadcasterId;
     private string $id;
-    private ?Image $image;
+    private ?Image $image = null;
     private string $backgroundColor;
     private bool $isEnabled;
-    private ?int $cost;
+    private ?int $cost = null;
     private string $title;
     private string $prompt;
     private bool $isUserInputRequired;
@@ -26,7 +26,7 @@ final class CustomReward implements ResponseInterface
     private bool $isInStock;
     private Image $defaultImage;
     private bool $shouldRedemptionsSkipRequestQueue;
-    private ?int $redemptionsRedeemedCurrentStream;
+    private ?int $redemptionsRedeemedCurrentStream = null;
     private string $cooldownExpiresAt;
 
     public static function createFromArray(array $data): self

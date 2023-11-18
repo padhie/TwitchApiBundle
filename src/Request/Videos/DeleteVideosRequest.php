@@ -10,13 +10,10 @@ use Padhie\TwitchApiBundle\Response\NoneResponse;
 /**
  * Scope: channel:manage:videos
  */
-final class DeleteVideosRequest implements RequestInterface
+final readonly class DeleteVideosRequest implements RequestInterface
 {
-    private string $id;
-
-    public function __construct(string $id)
+    public function __construct(private string $id)
     {
-        $this->id = $id;
     }
 
     public function getMethod(): string
